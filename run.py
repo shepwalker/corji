@@ -14,7 +14,7 @@ def hello_monkey():
 
     print("hi!")
     body = request.values.get("Body")
-    grin = emoji.emojize(":grin:")
+    grin = emoji.emojize(":grin:", use_aliases=True)
     print(body == grin)
     print(grin)
 
