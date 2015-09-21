@@ -91,11 +91,11 @@ def hello_monkey():
         "🐚": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQi1ey76NCrkJDraxz4Agq5yVnuG7aj1pwMR7dKUP1oIGMU01wY",
         "🔙": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRHmF6GkEIDGO5-RryHoqhMbdu8DSmB6NJeAjkL8nu5cknbE1cJ",
         "🎾": "http://i.imgur.com/0M61ueZ.jpg",
-        "📚": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR9QjcgUCwRJwEiE6VtLFhf680gEyJaJSCPBHqazmuTybW8SuFlLQ"
-        "📖": "http://api.ning.com/files/vXXelbezpSI6ZZ7FWTCci-XD8UYT7i9*hPntWEVrPicQ7SiSAdJJy0-DlNzAGhTlWeTI9u5c6p0jOoMN8buGscAu0tsROsqA/1348670784_34a9bdbfaf.jpg?crop=1%3A1&width=171"
+        "📚": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR9QjcgUCwRJwEiE6VtLFhf680gEyJaJSCPBHqazmuTybW8SuFlLQ",
+        "📖": "http://api.ning.com/files/vXXelbezpSI6ZZ7FWTCci-XD8UYT7i9*hPntWEVrPicQ7SiSAdJJy0-DlNzAGhTlWeTI9u5c6p0jOoMN8buGscAu0tsROsqA/1348670784_34a9bdbfaf.jpg?crop=1%3A1&width=171",
         "📗": "https://autumnbyrd001.files.wordpress.com/2015/01/loving-corgis2.jpg",
         "💍": "http://40.media.tumblr.com/3456713cfb1adf2bf0bfc3830657a459/tumblr_njvy3iEMlb1ti3ngio1_1280.jpg",
-        "🎸": "http://www.google.com/imgres?imgurl=http://cuteanimals.me/-img/52642fe21605fb7f04000041.jpg%253Fw%253D768%2526h%253D1024&imgrefurl=http://cuteanimals.me/p/26q/this-guy-outside-the-gas-station-was-singing-and-p&h=1024&w=768&tbnid=BHjtrW8SwgBFxM:&docid=vU_1vJVFL0fz8M&ei=Rqn_VYzUFtHboAS3v6G4Cg&tbm=isch&ved=0CDsQMygUMBRqFQoTCIyPuKXFh8gCFdEtiAodt18Ipw"
+        "🎸": "http://www.google.com/imgres?imgurl=http://cuteanimals.me/-img/52642fe21605fb7f04000041.jpg%253Fw%253D768%2526h%253D1024&imgrefurl=http://cuteanimals.me/p/26q/this-guy-outside-the-gas-station-was-singing-and-p&h=1024&w=768&tbnid=BHjtrW8SwgBFxM:&docid=vU_1vJVFL0fz8M&ei=Rqn_VYzUFtHboAS3v6G4Cg&tbm=isch&ved=0CDsQMygUMBRqFQoTCIyPuKXFh8gCFdEtiAodt18Ipw",
         "💻": "http://thisiswhyyourejolly.com/wp-content/uploads/2012/05/Places-You%E2%80%99d-Never-Think-to-Find-a-Corgi-560x420.jpg",
         "🍄": "http://www.thatcutesite.com/uploads/2011/10/super_mario_corgi_costume.jpg",
         "🌱": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTI5JHMzLuXS-AwHo1q1_isMhjGHgDDdT3ugdDxzQid2FIlfRqM5Q",
