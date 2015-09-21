@@ -17,6 +17,8 @@ def hello_monkey():
     grin = emoji.emojize(":grin:", use_aliases=True)
     print(body == grin)
     print(grin)
+    print(request)
+    print(body)
 
     resp = twilio.twiml.Response()
     with resp.message("") as m:
