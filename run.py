@@ -2,6 +2,7 @@
 
 from flask import Flask, request
 import twilio.twiml
+import emoji
 
 
 app = Flask(__name__)
@@ -12,7 +13,10 @@ def hello_monkey():
     """Respond to incoming calls with a simple text message."""
 
     print("hi!")
-    print(request.values.get("Body"))
+    body = request.values.get("Body")
+    grin = emoji.emojize(":grin:")
+    print(body == grin)
+    print(grin)
 
     resp = twilio.twiml.Response()
     with resp.message("") as m:
