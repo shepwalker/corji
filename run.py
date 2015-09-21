@@ -81,7 +81,38 @@ def hello_monkey():
         "😧": "https://encrypted-tbn2.gstatic.com/images?q=tbn%3AANd9GcTloV67lCnK3G1-oxs7b51UlrJhS2ufvaggBJD3wlxpsDW62hue1A",
         "👨‍❤️‍👨": "https://s-media-cache-ak0.pinimg.com/236x/b4/3b/5f/b43b5f508f251bfa591796e731bee5e0.jpg",
         "🌹": "http://www.blogcdn.com/travel.aol.co.uk/media/2013/02/corgi.jpg",
-        "🍕": "http://41.media.tumblr.com/tumblr_m97vn82Te91rcxvfjo1_540.jpg"
+        "🍕": "http://41.media.tumblr.com/tumblr_m97vn82Te91rcxvfjo1_540.jpg",
+        "🚙": "https://encrypted-tbn2.gstatic.com/images?q=tbn%3AANd9GcRPRDpvvADVPRaDLYxRVJkLzxihgVsCf28paI8x8gUu46TW_UjM",
+        "😶": "https://encrypted-tbn2.gstatic.com/images?q=tbn%3AANd9GcRJYcON4jcGITzdi-guGdo5G-9QOomD_3R1HwVkPXgOG6oHLT3S",
+        "🐙": "https://s-media-cache-ak0.pinimg.com/236x/51/87/e6/5187e6b677e948ec93a3018a105ce32e.jpg",
+        "💃": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS2O47RbMTUYng0CVqHaAka4iU4Y8Nq_XFF-3SoMw9iUZPw65f0",
+        "😘": "http://i.imgur.com/4QjPER9.jpg",
+        "😚": "https://s-media-cache-ak0.pinimg.com/736x/95/e2/63/95e263bce536f82188f2664b5827ebb0.jpg",
+        "🐚": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQi1ey76NCrkJDraxz4Agq5yVnuG7aj1pwMR7dKUP1oIGMU01wY",
+        "🔙": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRHmF6GkEIDGO5-RryHoqhMbdu8DSmB6NJeAjkL8nu5cknbE1cJ",
+        "🎾": "http://i.imgur.com/0M61ueZ.jpg",
+        "📚": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR9QjcgUCwRJwEiE6VtLFhf680gEyJaJSCPBHqazmuTybW8SuFlLQ"
+        "📖": "http://api.ning.com/files/vXXelbezpSI6ZZ7FWTCci-XD8UYT7i9*hPntWEVrPicQ7SiSAdJJy0-DlNzAGhTlWeTI9u5c6p0jOoMN8buGscAu0tsROsqA/1348670784_34a9bdbfaf.jpg?crop=1%3A1&width=171"
+        "📗": "https://autumnbyrd001.files.wordpress.com/2015/01/loving-corgis2.jpg",
+        "💍": "http://40.media.tumblr.com/3456713cfb1adf2bf0bfc3830657a459/tumblr_njvy3iEMlb1ti3ngio1_1280.jpg",
+        "🎸": "http://www.google.com/imgres?imgurl=http://cuteanimals.me/-img/52642fe21605fb7f04000041.jpg%253Fw%253D768%2526h%253D1024&imgrefurl=http://cuteanimals.me/p/26q/this-guy-outside-the-gas-station-was-singing-and-p&h=1024&w=768&tbnid=BHjtrW8SwgBFxM:&docid=vU_1vJVFL0fz8M&ei=Rqn_VYzUFtHboAS3v6G4Cg&tbm=isch&ved=0CDsQMygUMBRqFQoTCIyPuKXFh8gCFdEtiAodt18Ipw"
+        "💻": "http://thisiswhyyourejolly.com/wp-content/uploads/2012/05/Places-You%E2%80%99d-Never-Think-to-Find-a-Corgi-560x420.jpg",
+        "🍄": "http://www.thatcutesite.com/uploads/2011/10/super_mario_corgi_costume.jpg",
+        "🌱": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTI5JHMzLuXS-AwHo1q1_isMhjGHgDDdT3ugdDxzQid2FIlfRqM5Q",
+        "🐮": "https://s-media-cache-ak0.pinimg.com/736x/82/64/7d/82647d0157deb56651dd9776cc04548f.jpg",
+        "👩‍❤️‍💋‍👩": "https://encrypted-tbn3.gstatic.com/images?q=tbn%3AANd9GcTWkExG3dQdEs89IvHWKCFcCxQ75DCc3Zl64VpsvA2tYAIdMMKo",
+        "🐂": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTs_pMhPH_VgUX1Ib1Jp44mln5cWQIY6OJWte3qKTMtkpzEj2Q8",
+        "🎓": "http://40.media.tumblr.com/tumblr_m382ovsjFR1qbwakso1_500.jpg",
+        "🌀": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQi1ey76NCrkJDraxz4Agq5yVnuG7aj1pwMR7dKUP1oIGMU01wY",
+        "💯": "http://api.ning.com/files/bYU8eojPnjo5jNaOMK5uQc3ilwZGOLQwVLNkOi3eFy4_/corgi3_anemicopy.jpg?width=300",
+        "🔍": "http://25.media.tumblr.com/981c26e2d4f9d50be01ddaf66025bdc6/tumblr_mg6mhcbc1W1s0ath6o1_250.jpg",
+        "🍸": "https://encrypted-tbn1.gstatic.com/images?q=tbn%3AANd9GcRey2nZgI62a3eWQIakufrEyvsQjEUqr68830yetHQIKuopA3y6Ag",
+        "👃": "https://s-media-cache-ak0.pinimg.com/736x/c2/5c/4d/c25c4d052a1f28691dcb8e390b960754.jpg",
+        "🐇": "http://37.media.tumblr.com/tumblr_lwyze443a01qdceeqo1_500.jpg",
+        "👬": "https://encrypted-tbn2.gstatic.com/images?q=tbn%3AANd9GcQgcX6AUnuOcYo1UElDjEjKdCgyfDJHELGXwNFzFlGU11HFiKoqjg",
+        "👩‍👩‍👦‍👦": "http://static6.businessinsider.com/image/521cd3f8eab8eaf91e3a6b9a-1200-924/corgi-family-portrait-best.jpg",
+        "👓": "http://40.media.tumblr.com/756f62d0dd1348412004081848981ef2/tumblr_ml10d3RznO1ry3xglo1_500.jpg",
+        "😡": "https://s-media-cache-ak0.pinimg.com/236x/24/c4/46/24c4466b975d331ddf1ec02e9d8be6cd.jpg",
     }
     corgi = corgis.get(body, None)
     message = ""
