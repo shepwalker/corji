@@ -18,7 +18,7 @@ def hello_monkey():
     print(body == grin)
     print(grin)
     print(request)
-    print(body)
+    print(body == "😬")
 
     resp = twilio.twiml.Response()
     with resp.message("") as m:
