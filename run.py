@@ -15,6 +15,8 @@ def hello_monkey():
 
     emoji = request.values.get("Body") or ""
 
+    print(emoji)
+    print(len(corgis.keys()))
     corgi = corgis.get(emoji, None)
 
     message = ""
