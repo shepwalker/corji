@@ -30,8 +30,6 @@ def hello_monkey():
 
 
 if __name__ == "__main__":
-    global corgis
-
     sheetsu_url = "http://sheetsu.com/apis/23efc212"
     payload = requests.get(sheetsu_url).json()
     raw_data = payload['result']
