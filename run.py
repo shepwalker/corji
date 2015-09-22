@@ -14,9 +14,8 @@ def hello_monkey():
     """Respond to incoming calls with a simple text message."""
 
     emoji = request.values.get("Body") or ""
-    encoded_emoji = unicode(emoji, "utf-8")
 
-    corgi = corgis.get(encoded_emoji, None)
+    corgi = corgis.get(emoji, None)
 
     message = ""
     if not corgi:
