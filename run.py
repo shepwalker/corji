@@ -15,7 +15,7 @@ def hello_monkey():
 
     emoji = request.values.get("Body") or ""
 
-    corgi = corgis.get(emoji, None)
+    corgi = corgis.get("👃", None)
 
     message = ""
     if not corgi:
@@ -29,10 +29,10 @@ def hello_monkey():
 
 
 if __name__ == "__main__":
-    sheetsu_url = "http://sheetsu.com/apis/23efc212"
+    sheetsu_url = "https://spreadsheets.google.com/feeds/list/1vDkS3vwXrT4mSyI8JVHQ_Z7GGRF90GnUTbX8p0zoqNM/od6/public/values?alt=json"
     payload = requests.get(sheetsu_url).json()
-    raw_data = payload['result']
-    corgis = {i['emoji']: i['url'] for i in raw_data}
+    raw_data = payload['feed']['entry']
+    corgis = {i['gsx$emoji']['$t']: i['gsx$url']['$t'] for i in raw_data}
     app.run(debug=True)
 
 
