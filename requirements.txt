@@ -1,4 +1,5 @@
 emoji
 gunicorn
 flask
+requests
 twilio
