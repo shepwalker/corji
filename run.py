@@ -15,7 +15,7 @@ def hello_monkey():
 
     emoji = request.values.get("Body") or ""
 
-    corgi = corgis.get("👃", None)
+    corgi = corgis.get(emoji, None)
 
     message = ""
     if not corgi:
