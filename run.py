@@ -3,6 +3,9 @@
 from flask import Flask, request
 import requests
 import twilio.twiml
+import os
+import urllib.request
+import emoji
 
 app = Flask(__name__)
 
@@ -13,6 +16,28 @@ payload = requests.get(url).json()
 raw_data = payload['feed']['entry']
 corgis = {i['gsx$emoji']['$t']: i['gsx$url']['$t'] for i in raw_data}
 
+cacheDir = os.getenv('CORJI_CACHE_PATH', './cache')
+for i in corgis:
+    corgi = corgis.get(i, None)
+    if not corgi:
+        continue
+
+    #emojiDir = str(i.encode('unicode_escape')).replace("\\", "").replace("'", "")
+    emojiDir = emoji.demojize(i).replace(":","")
+    try:
+        print(emojiDir)
+    except:
+        #TODO: insert debugging logic so we know where we're failing to successfully demojize
+        continue
+
+    directory = cacheDir + '/' + emojiDir
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        try:
+            urllib.request.urlretrieve(corgi, directory +"/01.jpg")
+        except:
+            print("FAILED ON:" + emojiDir)
+    
 
 @app.route("/", methods=['GET', 'POST'])
 def corgi():
