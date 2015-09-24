@@ -1,6 +1,6 @@
 # This Python file uses the following encoding: utf-8
 
-from flask import Flask, request, send_from_directory, abort
+from flask import Flask, request, send_from_directory, abort, url_for, request
 import requests
 import twilio.twiml
 import os
@@ -18,6 +18,7 @@ corgis = {i['gsx$emoji']['$t']: i['gsx$url']['$t'] for i in raw_data}
 
 cache_dir = os.getenv('CORJI_CACHE_PATH', './cache')
 
+
 for i in corgis:
     corgi = corgis.get(i, None)
     if not corgi:
@@ -25,24 +26,16 @@ for i in corgis:
 
     emoji_dir = emoji.demojize(i).replace(":", "")
     try:
-        print(emoji_dir)
-    except:
-        # TODO: insert debugging logic so we know where we're failing to
-        # successfully demojize
-        continue
-
-    directory = cache_dir + '/' + emoji_dir
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        try:
+        directory = cache_dir + '/' + emoji_dir
+        if not os.path.exists(directory):
+            os.makedirs(directory)
             urllib.request.urlretrieve(corgi, directory + "/01.jpg")
-        except:
-            print("FAILED ON:" + emoji_dir)
+    except:
+        print("Failed on: " + i)
 
 
 @app.route("/emoji/<path:file_name>", methods=['GET'])
 def get_image(file_name):
-    print(file_name)
     full_file_name = cache_dir+"/"+file_name
     split_name = file_name.split('/')
     if(os.path.exists(full_file_name)):
@@ -54,21 +47,21 @@ def get_image(file_name):
 @app.route("/", methods=['GET', 'POST'])
 def corgi():
     """Respond to incoming calls with a simple text message."""
+    print(request.url_root + url_for('get_image', file_name='bell/01.jpg')[1:])
 
-    emoji = request.values.get("Body") or ""
-
-    print(emoji)
-    print(len(corgis.keys()))
-    corgi = corgis.get(emoji, None)
-
+    this_emoji = request.values.get("Body") or ""
+    print(this_emoji)
+    corgi = corgis.get(this_emoji, None)
+    
     message = ""
     if not corgi:
         message = "No corgi :("
 
-    possible_corji_dir = emoji_dir + "/" + emoji.demojize(i).replace(":", "")
+    possible_corji_path = emoji_dir + "/" + emoji.demojize(i).replace(":", "") + "/01.jpg"
 
-    if(os.path.exists(possible_corji_dir + "/01.jpg"))
-        corgi = os.path.exists(possible_corji_dir + "/01.jpg"
+
+    if(os.path.exists(possible_corji_path)):
+        corgi = request.url_root + url_for('get_image', possible_corji_path)
 
     resp=twilio.twiml.Response()
     with resp.message(message) as m:
@@ -79,3 +72,4 @@ def corgi():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
