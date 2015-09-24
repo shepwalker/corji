@@ -47,23 +47,22 @@ def get_image(file_name):
 @app.route("/", methods=['GET', 'POST'])
 def corgi():
     """Respond to incoming calls with a simple text message."""
-    print(request.url_root + url_for('get_image', file_name='bell/01.jpg')[1:])
 
     this_emoji = request.values.get("Body") or ""
-    print(this_emoji)
+
     corgi = corgis.get(this_emoji, None)
-    
+
     message = ""
     if not corgi:
         message = "No corgi :("
 
-    possible_corji_path = emoji_dir + "/" + emoji.demojize(i).replace(":", "") + "/01.jpg"
-
+    possible_corji_path = emoji_dir + "/" + \
+        emoji.demojize(i).replace(":", "") + "/01.jpg"
 
     if(os.path.exists(possible_corji_path)):
         corgi = request.url_root + url_for('get_image', possible_corji_path)
 
-    resp=twilio.twiml.Response()
+    resp = twilio.twiml.Response()
     with resp.message(message) as m:
         if corgi:
             m.media(corgi)
@@ -72,4 +71,3 @@ def corgi():
 
 if __name__ == "__main__":
     app.run(debug=True)
-
