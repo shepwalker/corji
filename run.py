@@ -1,10 +1,10 @@
 # This Python file uses the following encoding: utf-8
-
-from flask import Flask, request, send_from_directory, abort, url_for, request
-import requests
-import twilio.twiml
 import os
 import urllib.request
+import requests
+from flask import Flask, request, \
+    send_from_directory, abort, url_for, request
+import twilio.twiml
 import emoji
 
 app = Flask(__name__)
@@ -36,10 +36,11 @@ for i in corgis:
 
 @app.route("/emoji/<path:file_name>", methods=['GET'])
 def get_image(file_name):
-    full_file_name = cache_dir+"/"+file_name
+    """Return an emoji image given a file path"""
+    full_file_name = cache_dir + "/" + file_name
     split_name = file_name.split('/')
     if(os.path.exists(full_file_name)):
-        return send_from_directory(cache_dir + "/"+split_name[0], split_name[1])
+        return send_from_directory(cache_dir + "/" + split_name[0], split_name[1])
     else:
         abort(404)
 
