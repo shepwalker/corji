@@ -5,3 +5,4 @@ lib/
 pip-selfcheck.json
 *.pyc
 cache/
+*.sublime-project
