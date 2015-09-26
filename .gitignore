@@ -6,3 +6,5 @@ pip-selfcheck.json
 *.pyc
 cache/
 *.sublime-project
+*.sublime-workspace
+logs/
