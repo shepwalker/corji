@@ -1,48 +1,53 @@
 # This Python file uses the following encoding: utf-8
 import os
-import urllib.request
-import requests
-from flask import Flask, request, \
-    send_from_directory, abort, url_for, request
+
+from flask import (
+    Flask,
+    send_from_directory,
+    url_for,
+    request
+)
 import twilio.twiml
-import emoji
+
+import cache
+import data_sources
+from exceptions import CorgiNotFoundException
 
 app = Flask(__name__)
 
-# TODO: make composable.
-# TODO: move URL to .env variable
-url = "https://spreadsheets.google.com/feeds/list/1vDkS3vwXrT4mSyI8JVHQ_Z7GGRF90GnUTbX8p0zoqNM/od6/public/values?alt=json"
-payload = requests.get(url).json()
-raw_data = payload['feed']['entry']
-corgis = {i['gsx$emoji']['$t']: i['gsx$url']['$t'] for i in raw_data}
+SPREADSHEET_URL = os.getenv('CORGI_URL', '')
 
-cache_dir = os.getenv('CORJI_CACHE_PATH', './cache')
+# TODO: GLOBALS BAD.
+corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
+cache.put_in_local_cache(corgis)
 
 
-for i in corgis:
-    corgi = corgis.get(i, None)
-    if not corgi:
-        continue
-
-    emoji_dir = emoji.demojize(i).replace(":", "")
-    try:
-        directory = cache_dir + '/' + emoji_dir
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-            urllib.request.urlretrieve(corgi, directory + "/01.jpg")
-    except:
-        print("Failed on: " + i)
-
-
-@app.route("/emoji/<path:file_name>", methods=['GET'])
+# TODO: Serve statics not via Flask.
+@app.route("/local/<path:file_name>", methods=['GET'])
 def get_image(file_name):
     """Return an emoji image given a file path"""
-    full_file_name = cache_dir + "/" + file_name
-    split_name = file_name.split('/')
-    if(os.path.exists(full_file_name)):
-        return send_from_directory(cache_dir + "/" + split_name[0], split_name[1])
-    else:
-        abort(404)
+    file_path = file_name.split('/')
+    directory = "/".join(file_path[:-1])
+    name = file_path[-1]
+    return send_from_directory(directory, name)
+
+
+@app.route("/mock/<emoji>", methods=['GET'])
+def get_corgi(emoji):
+    """Returns the TWIML to mock a given request."""
+
+    resp = twilio.twiml.Response()
+
+    try:
+        possible_corji_path = cache.get_from_local_cache(emoji)
+    except CorgiNotFoundException as e:
+        return str(resp.message(e.message()))
+
+    corgi = request.url_root + url_for('get_image', file_name=possible_corji_path)
+    with resp.message() as m:
+        m.media(corgi)
+
+    return str(resp)
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -50,25 +55,7 @@ def corgi():
     """Respond to incoming calls with a simple text message."""
 
     this_emoji = request.values.get("Body") or ""
-
-    corgi = corgis.get(this_emoji, None)
-
-    message = ""
-    if not corgi:
-        message = "No corgi :("
-
-    possible_corji_path = emoji_dir + "/" + \
-        emoji.demojize(i).replace(":", "") + "/01.jpg"
-
-    if(os.path.exists(possible_corji_path)):
-        corgi = request.url_root + url_for('get_image', possible_corji_path)
-
-    resp = twilio.twiml.Response()
-    with resp.message(message) as m:
-        if corgi:
-            m.media(corgi)
-    return str(resp)
-
+    return get_corgi(this_emoji)
 
 if __name__ == "__main__":
     app.run(debug=True)
