@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
-import os
-
+from logging.handlers import (
+    TimedRotatingFileHandler
+)
 from flask import (
     Flask,
     send_from_directory,
@@ -12,14 +13,25 @@ import twilio.twiml
 import cache
 import data_sources
 from exceptions import CorgiNotFoundException
+from log import setup_app_logger, logged_view
+import settings
 
 app = Flask(__name__)
+app.config.from_object('settings.Config')
+# logging nonsense
+logpath = app.config['CORJI_LOG_PATH']
+logname = app.config['CORJI_LOG_NAME']
 
-SPREADSHEET_URL = os.getenv('CORGI_URL', '')
+main_logger = setup_app_logger(app)
 
+SPREADSHEET_URL = app.config['CORJI_SPREADSHEET_URL']
+main_logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 # TODO: GLOBALS BAD.
 corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
+
+main_logger.debug("START: Starting to load Corjis into cache.")
 cache.put_in_local_cache(corgis)
+main_logger.debug("START: Completed Corji Cache loading")
 
 
 # TODO: Serve statics not via Flask.
@@ -41,9 +53,11 @@ def get_corgi(emoji):
     try:
         possible_corji_path = cache.get_from_local_cache(emoji)
     except CorgiNotFoundException as e:
+        main_logger.warn("Corji not found for request %s", emoji)
         return str(resp.message(e.message()))
 
-    corgi = request.url_root + url_for('get_image', file_name=possible_corji_path)
+    corgi = request.url_root + \
+        url_for('get_image', file_name=possible_corji_path)
     with resp.message() as m:
         m.media(corgi)
 
@@ -51,9 +65,9 @@ def get_corgi(emoji):
 
 
 @app.route("/", methods=['GET', 'POST'])
+@logged_view
 def corgi():
     """Respond to incoming calls with a simple text message."""
-
     this_emoji = request.values.get("Body") or ""
     return get_corgi(this_emoji)
 
