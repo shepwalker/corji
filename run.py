@@ -1,11 +1,7 @@
 # This Python file uses the following encoding: utf-8
-import logging
-import os
-
 from logging.handlers import (
     TimedRotatingFileHandler
 )
-from functools import wraps
 from flask import (
     Flask,
     send_from_directory,
@@ -17,7 +13,7 @@ import twilio.twiml
 import cache
 import data_sources
 from exceptions import CorgiNotFoundException
-from log import setup_app_logger
+from log import setup_app_logger, logged_view
 import settings
 
 app = Flask(__name__)
@@ -37,15 +33,6 @@ main_logger.debug("START: Starting to load Corjis into cache.")
 cache.put_in_local_cache(corgis)
 main_logger.debug("START: Completed Corji Cache loading")
 
-
-def logged_view(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        main_logger.info("REQUEST: Request to Corji: %s",args)
-        fn = f(*args, **kwargs)
-        main_logger.info("REQUEST: Response to Corji: %s", fn)
-        return fn
-    return decorated_function
 
 # TODO: Serve statics not via Flask.
 @app.route("/local/<path:file_name>", methods=['GET'])
