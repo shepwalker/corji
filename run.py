@@ -1,7 +1,6 @@
 # This Python file uses the following encoding: utf-8
-import os
-import sys
 import logging
+import os
 
 from logging.handlers import (
     TimedRotatingFileHandler
@@ -18,40 +17,33 @@ import twilio.twiml
 import cache
 import data_sources
 from exceptions import CorgiNotFoundException
+from log import setup_app_logger
+import settings
 
 app = Flask(__name__)
-
+app.config.from_object('settings.Config')
 # logging nonsense
-logpath = os.getenv('CORJI_LOG_PATH', './logs')
+logpath = app.config['CORJI_LOG_PATH']
+logname = app.config['CORJI_LOG_NAME']
 
-file_handler = TimedRotatingFileHandler(logpath + '/corji.log', 'midnight', 1)
-file_handler.setFormatter(
-    logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s'))
-file_handler.setLevel(logging.INFO)
-mainLogger = app.logger
-mainLogger.addHandler(file_handler)
-mainLogger.setLevel(logging.INFO)
+mainLogger = setup_app_logger(app)
 
-if app.debug:
-    local_handler = logging.StreamHandler(sys.stdout)
-    mainLogger.addHandler(local_handler)
-
-SPREADSHEET_URL = os.getenv('CORGI_URL', '')
-mainLogger.debug("Spreadsheet URL defined: %s", SPREADSHEET_URL)
+SPREADSHEET_URL = app.config['CORJI_SPREADSHEET_URL']
+mainLogger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 # TODO: GLOBALS BAD.
 corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
 
-mainLogger.debug("Starting to load Corjis into cache.")
+mainLogger.debug("START: Starting to load Corjis into cache.")
 cache.put_in_local_cache(corgis)
-mainLogger.debug("Completed Corji Cache loading")
+mainLogger.debug("START: Completed Corji Cache loading")
 
 
 def logged_view(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        mainLogger.info("Request to Corji: %s",args)
+        mainLogger.info("REQUEST: Request to Corji: %s",args)
         fn = f(*args, **kwargs)
-        mainLogger.info("Response to Corji: %s", fn)
+        mainLogger.info("REQUEST: Response to Corji: %s", fn)
         return fn
     return decorated_function
 
