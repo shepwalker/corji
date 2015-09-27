@@ -26,24 +26,24 @@ app.config.from_object('settings.Config')
 logpath = app.config['CORJI_LOG_PATH']
 logname = app.config['CORJI_LOG_NAME']
 
-mainLogger = setup_app_logger(app)
+main_logger = setup_app_logger(app)
 
 SPREADSHEET_URL = app.config['CORJI_SPREADSHEET_URL']
-mainLogger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
+main_logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 # TODO: GLOBALS BAD.
 corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
 
-mainLogger.debug("START: Starting to load Corjis into cache.")
+main_logger.debug("START: Starting to load Corjis into cache.")
 cache.put_in_local_cache(corgis)
-mainLogger.debug("START: Completed Corji Cache loading")
+main_logger.debug("START: Completed Corji Cache loading")
 
 
 def logged_view(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        mainLogger.info("REQUEST: Request to Corji: %s",args)
+        main_logger.info("REQUEST: Request to Corji: %s",args)
         fn = f(*args, **kwargs)
-        mainLogger.info("REQUEST: Response to Corji: %s", fn)
+        main_logger.info("REQUEST: Response to Corji: %s", fn)
         return fn
     return decorated_function
 
@@ -66,7 +66,7 @@ def get_corgi(emoji):
     try:
         possible_corji_path = cache.get_from_local_cache(emoji)
     except CorgiNotFoundException as e:
-        mainLogger.warn("Corji not found for request %s", emoji)
+        main_logger.warn("Corji not found for request %s", emoji)
         return str(resp.message(e.message()))
 
     corgi = request.url_root + \

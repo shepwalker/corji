@@ -1,7 +1,11 @@
 import logging
 import os
 import sys
-
+#LOG LEVELS:
+#DEBUG being used for service start/regular events
+#INFO being used for all happy-path requests
+#WARN being used for happy-path requests that can't find valid corji
+#ERROR being used for errors (though not actually logging this well yet)
 from logging.handlers import (
     TimedRotatingFileHandler
 )
