@@ -32,4 +32,4 @@ def get_from_local_cache(raw_emoji):
     if(os.path.exists(cached_filename)):
         return CACHE_DIR + "/" + split_name[0] + "/01.jpg"
     else:
-        raise CorgiNotFoundException(raw_emoji)
+        raise CorgiNotFoundException("Corgi not found for emoji: {}".format(raw_emoji))

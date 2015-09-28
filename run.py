@@ -1,5 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
+import random
+
 from logging.handlers import (
     TimedRotatingFileHandler
 )
@@ -50,11 +52,23 @@ def get_corgi(emoji):
 
     resp = twilio.twiml.Response()
 
+    message = ""
     try:
         possible_corji_path = cache.get_from_local_cache(emoji)
     except CorgiNotFoundException as e:
+        logger.error(e)
         logger.warn("Corji not found for request %s", emoji)
-        return str(resp.message(e.message()))
+
+        # Add a random emoji instead fo just a sadface.
+        possible_emojis = [emoji for emoji in corgis.keys() if corgis[emoji]]
+        random_emoji = random.choice(possible_emojis)
+        message = '''
+        We couldn't find a corgi for {} :(.
+
+        To make up for it, here's a corgi for {}.
+        '''.format(emoji, random_emoji)
+        possible_corji_path = cache.get_from_local_cache(random_emoji)
+
 
     # Remove the trailing slash since we're appending a relative URL.
     base_url = request.url_root[:-1]
@@ -62,7 +76,7 @@ def get_corgi(emoji):
     image_path = url_for('get_image', file_name=possible_corji_path)
     absolute_image_url = base_url + image_path
 
-    with resp.message() as m:
+    with resp.message(message) as m:
         m.media(absolute_image_url)
 
     return str(resp)
