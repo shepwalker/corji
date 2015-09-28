@@ -1,0 +1,2 @@
+class CorgiNotFoundException(Exception):
+    pass
