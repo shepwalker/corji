@@ -44,7 +44,7 @@ def get_image(file_name):
     return send_from_directory(directory, name)
 
 
-@app.route("/mock/<emoji>", methods=['GET'])
+@app.route("/emoji/<emoji>", methods=['GET'])
 def get_corgi(emoji):
     """Returns the TWIML to mock a given request."""
 
@@ -56,10 +56,14 @@ def get_corgi(emoji):
         logger.warn("Corji not found for request %s", emoji)
         return str(resp.message(e.message()))
 
-    corgi = request.url_root + \
-        url_for('get_image', file_name=possible_corji_path)
+    # Remove the trailing slash since we're appending a relative URL.
+    base_url = request.url_root[:-1]
+
+    image_path = url_for('get_image', file_name=possible_corji_path)
+    absolute_image_url = base_url + image_path
+
     with resp.message() as m:
-        m.media(corgi)
+        m.media(absolute_image_url)
 
     return str(resp)
 
