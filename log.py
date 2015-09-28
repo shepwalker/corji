@@ -32,7 +32,6 @@ def Logger(app, log_path, log_name):
         logger.addHandler(local_handler)
     return logger
 
-
 def logged_view(logger):
     def inner_decorator(f):
         @wraps(f)
