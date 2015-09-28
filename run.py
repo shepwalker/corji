@@ -63,11 +63,9 @@ def get_corgi(emoji):
         # Add a random emoji instead fo just a sadface.
         possible_emojis = [emoji for emoji in corgis.keys() if corgis[emoji]]
         random_emoji = random.choice(possible_emojis)
-        message = '''
-        We couldn't find a corgi for {} :(.
-
-        To make up for it, here's a corgi for {}.
-        '''.format(emoji, random_emoji)
+        message_template = open("templates/requested_emoji_does_not_exist.txt").read()
+        message = message_template.format(requested_emoji = emoji,
+                                          fallback_emoji = random_emoji)
         possible_corji_path = cache.get_from_local_cache(random_emoji)
 
 
@@ -89,12 +87,7 @@ def corgi():
     """Respond to incoming calls with a simple text message."""
     text = request.values.get("Body") or ""
     if not text_contains_emoji(text):
-        # TODO: Move these text messages to templates.
-        no_emoji_message = '''
-        Welcome to Corji, the Corgi Delivery Network!\n
-
-        Try sending us an emoji.  Like, say... 🏀.
-        '''
+        no_emoji_message = open("templates/request_does_not_contain_emoji.txt").read()
         resp = twilio.twiml.Response()
         return str(resp.message(no_emoji_message))
     return get_corgi(text)
