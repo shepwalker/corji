@@ -20,9 +20,9 @@ import settings
 app = Flask(__name__)
 app.config.from_object('settings.Config')
 
-LOG_PATH = app.config['CORJI_LOG_PATH']
-LOG_NAME = app.config['CORJI_LOG_NAME']
-logger = Logger(Flask(__name__), LOG_PATH, LOG_NAME)
+logger = Logger(Flask(__name__),
+                app.config['CORJI_LOG_PATH'],
+                app.config['CORJI_LOG_NAME'])
 
 SPREADSHEET_URL = app.config['CORJI_SPREADSHEET_URL']
 logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
