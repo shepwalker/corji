@@ -86,6 +86,7 @@ def get_corgi(emoji):
 @logged_view(logger)
 def corgi():
     """Respond to incoming calls with a simple text message."""
+    # TODO: Check body to see if it's an emoji, and send a ?help if not.
     this_emoji = request.values.get("Body") or ""
     return get_corgi(this_emoji)
 
