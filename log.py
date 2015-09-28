@@ -18,6 +18,7 @@ main_logger = ""
 def setup_app_logger(app):
 	if not os.path.exists(app.config['CORJI_LOG_PATH']):
 		os.makedirs(app.config['CORJI_LOG_PATH'])
+	global main_logger
 	file_handler = TimedRotatingFileHandler(app.config['CORJI_LOG_PATH'] + '/' + app.config['CORJI_LOG_NAME'], 'midnight', 1)
 	file_handler.setFormatter(
 	logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s'))
@@ -33,7 +34,7 @@ def setup_app_logger(app):
 def logged_view(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
-	    main_logger.info("REQUEST: Request to Corji: %s",args)
+	    main_logger.info("REQUEST: Request to Corji: %s", "" if args is None else args)
 	    fn = f(*args, **kwargs)
 	    main_logger.info("REQUEST: Response to Corji: %s", fn)
 	    return fn
