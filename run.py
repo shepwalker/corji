@@ -47,13 +47,19 @@ def get_image(file_name):
     return send_from_directory(directory, name)
 
 
-@app.route("/emoji/<emoji>", methods=['GET'])
-def get_corgi(emoji):
+@app.route("/emoji/<original_emoji>", methods=['GET'])
+def get_corgi(original_emoji):
     """Returns the TWIML to mock a given request."""
 
-    resp = twilio.twiml.Response()
-
     message = ""
+    emoji = original_emoji
+    # If it's a multi-emoji that we don't track, just grab the first emoji.
+    if len(emoji) > 1 and emoji not in corgis.keys():
+        emoji = original_emoji[0]
+        message_template = open("templates/requested_emoji_does_not_exist.txt").read()
+        message = message_template.format(requested_emoji = original_emoji,
+                                          fallback_emoji = emoji)
+
     try:
         possible_corji_path = cache.get_from_local_cache(emoji)
     except CorgiNotFoundException as e:
@@ -64,7 +70,7 @@ def get_corgi(emoji):
         possible_emojis = [emoji for emoji in corgis.keys() if corgis[emoji]]
         random_emoji = random.choice(possible_emojis)
         message_template = open("templates/requested_emoji_does_not_exist.txt").read()
-        message = message_template.format(requested_emoji = emoji,
+        message = message_template.format(requested_emoji = original_emoji,
                                           fallback_emoji = random_emoji)
         possible_corji_path = cache.get_from_local_cache(random_emoji)
 
@@ -75,6 +81,7 @@ def get_corgi(emoji):
     image_path = url_for('get_image', file_name=possible_corji_path)
     absolute_image_url = base_url + image_path
 
+    resp = twilio.twiml.Response()
     with resp.message(message) as m:
         m.media(absolute_image_url)
 
