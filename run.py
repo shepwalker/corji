@@ -18,6 +18,7 @@ import data_sources
 from exceptions import CorgiNotFoundException
 from log import Logger, logged_view
 import settings
+from utils import text_contains_emoji
 
 app = Flask(__name__)
 app.config.from_object('settings.Config')
@@ -86,9 +87,17 @@ def get_corgi(emoji):
 @logged_view(logger)
 def corgi():
     """Respond to incoming calls with a simple text message."""
-    # TODO: Check body to see if it's an emoji, and send a ?help if not.
-    this_emoji = request.values.get("Body") or ""
-    return get_corgi(this_emoji)
+    text = request.values.get("Body") or ""
+    if not text_contains_emoji(text):
+        # TODO: Move these text messages to templates.
+        no_emoji_message = '''
+        Welcome to Corji, the Corgi Delivery Network!\n
+
+        Try sending us an emoji.  Like, say... 🏀.
+        '''
+        resp = twilio.twiml.Response()
+        return str(resp.message(no_emoji_message))
+    return get_corgi(text)
 
 if __name__ == "__main__":
     app.run(debug=True)
