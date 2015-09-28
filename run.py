@@ -24,10 +24,10 @@ app = Flask(__name__)
 app.config.from_object('settings.Config')
 
 logger = Logger(Flask(__name__),
-                app.config['CORJI_LOG_PATH'],
-                app.config['CORJI_LOG_NAME'])
+                settings.Config.LOG_PATH,
+                settings.Config.LOG_NAME)
 
-SPREADSHEET_URL = app.config['CORJI_SPREADSHEET_URL']
+SPREADSHEET_URL = settings.Config.SPREADSHEET_URL
 logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 # TODO: GLOBALS BAD.
 corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)

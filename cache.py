@@ -5,9 +5,7 @@ import urllib.request
 import emoji
 
 from exceptions import CorgiNotFoundException
-
-CACHE_DIR = os.getenv('CORJI_CACHE_PATH', './cache')
-
+from settings import Config
 
 def put_in_local_cache(corgis):
     for i in corgis:
@@ -17,7 +15,7 @@ def put_in_local_cache(corgis):
 
         emoji_dir = emoji.demojize(i).replace(":", "")
         try:
-            directory = CACHE_DIR + '/' + emoji_dir
+            directory = Config.CACHE_DIR + '/' + emoji_dir
             if not os.path.exists(directory):
                 os.makedirs(directory)
                 urllib.request.urlretrieve(corgi, directory + "/01.jpg")
@@ -27,9 +25,9 @@ def put_in_local_cache(corgis):
 
 def get_from_local_cache(raw_emoji):
     filename = emoji.demojize(raw_emoji).replace(":", "")
-    cached_filename = CACHE_DIR + "/" + filename
+    cached_filename = Config.CACHE_DIR + "/" + filename
     split_name = filename.split('/')
     if(os.path.exists(cached_filename)):
-        return CACHE_DIR + "/" + split_name[0] + "/01.jpg"
+        return Config.CACHE_DIR + "/" + split_name[0] + "/01.jpg"
     else:
         raise CorgiNotFoundException("Corgi not found for emoji: {}".format(raw_emoji))

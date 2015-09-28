@@ -1,7 +1,8 @@
 import os
 
 class Config(object):
+	CACHE_DIR = os.getenv('CACHE_DIR', './.cache')
 	DEBUG = os.getenv('DEBUG', False)
-	CORJI_LOG_PATH = os.getenv('CORJI_LOG_PATH', './logs')
-	CORJI_LOG_NAME = os.getenv('CORJI_LOG_NAME', 'corji.log')
-	CORJI_SPREADSHEET_URL = os.getenv('CORGI_URL', '')
+	LOG_NAME = os.getenv('LOG_NAME', 'corji.log')
+	LOG_PATH = os.getenv('LOG_PATH', './.logs')
+	SPREADSHEET_URL = os.getenv('SPREADSHEET_URL', '')
