@@ -13,6 +13,7 @@ from flask import (
 )
 import twilio.twiml
 
+# Why yes, this *is* janky as hell.  Needed to avoid circular imports.
 app = Flask(__name__)
 
 import corji.cache as cache
