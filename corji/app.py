@@ -13,17 +13,18 @@ from flask import (
 )
 import twilio.twiml
 
+app = Flask(__name__)
+
 import corji.cache as cache
 import corji.data_sources as data_sources
 from corji.exceptions import CorgiNotFoundException
-from corji.log import Logger, logged_view
+from corji.logging import Logger, logged_view
 import corji.settings as settings
 from corji.utils import text_contains_emoji
 
-app = Flask(__name__)
 app.config.from_object('corji.settings.Config')
 
-logger = Logger(Flask(__name__),
+logger = Logger(app,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
 
@@ -48,6 +49,7 @@ def get_image(file_name):
 
 
 @app.route("/emoji/<original_emoji>", methods=['GET'])
+@logged_view(logger)
 def get_corgi(original_emoji):
     """Returns the TWIML to mock a given request."""
 

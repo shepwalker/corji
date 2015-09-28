@@ -1,17 +1,23 @@
 # This Python file uses the following encoding: utf-8
+import logging
 import os
 import urllib.request
 
 import emoji
 
+from corji.app import app
 from corji.exceptions import CorgiNotFoundException
 from corji.settings import Config
+
+logger = app.logger
 
 def put_in_local_cache(corgis):
     for i in corgis:
         corgi = corgis.get(i, None)
         if not corgi:
             continue
+
+        logger.error("Failed on: " + i)
 
         emoji_dir = emoji.demojize(i).replace(":", "")
         try:
@@ -20,7 +26,7 @@ def put_in_local_cache(corgis):
                 os.makedirs(directory)
                 urllib.request.urlretrieve(corgi, directory + "/01.jpg")
         except:
-            print("Failed on: " + i)
+            logger.error("Failed on: " + i)
 
 
 def get_from_local_cache(raw_emoji):
