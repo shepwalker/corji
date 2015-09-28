@@ -17,8 +17,6 @@ def put_in_local_cache(corgis):
         if not corgi:
             continue
 
-        logger.error("Failed on: " + i)
-
         emoji_dir = emoji.demojize(i).replace(":", "")
         try:
             directory = Config.CACHE_DIR + '/' + emoji_dir
