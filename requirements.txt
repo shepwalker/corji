@@ -1,5 +1,6 @@
 emoji
 flask
 gunicorn
+nose
 requests
 twilio
