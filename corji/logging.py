@@ -6,7 +6,6 @@ from logging.handlers import (
     TimedRotatingFileHandler
 )
 
-from flask import Flask
 
 """
 LOG LEVELS:
@@ -19,7 +18,12 @@ ERROR being used for errors (though not actually logging this well yet)
 # TODO: Actually make this a class.
 def Logger(app, log_path, log_name):
     if not os.path.exists(log_path):
-        os.makedirs(log_path)
+        try:
+            os.makedirs(log_path)
+        except Exception as e:
+            # TODO: WTF
+            pass
+
     file_handler = TimedRotatingFileHandler(log_path + '/' + log_name, 'midnight', 1)
     file_handler.setFormatter(
     logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s'))
