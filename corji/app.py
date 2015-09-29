@@ -68,14 +68,18 @@ def get_corgi(original_emoji):
     except CorgiNotFoundException as e:
         logger.error(e)
         logger.warn("Corji not found for request %s", emoji)
+        logger.info("Attempting fallback to remote URL.")
 
-        # Add a random emoji instead fo just a sadface.
-        possible_emojis = [emoji for emoji in corgis.keys() if corgis[emoji]]
-        random_emoji = random.choice(possible_emojis)
-        message_template = open("corji/templates/requested_emoji_does_not_exist.txt").read()
-        message = message_template.format(requested_emoji = original_emoji,
-                                          fallback_emoji = random_emoji)
-        possible_corji_path = cache.get_from_local_cache(random_emoji)
+        try:
+            possible_corji_path = corgis[emoji]
+        except CorgiNotFoundException as e:
+            # Add a random emoji instead of just a sadface.
+            possible_emojis = [emoji for emoji in corgis.keys() if corgis[emoji]]
+            random_emoji = random.choice(possible_emojis)
+            message_template = open("corji/templates/requested_emoji_does_not_exist.txt").read()
+            message = message_template.format(requested_emoji = original_emoji,
+                                              fallback_emoji = random_emoji)
+            possible_corji_path = cache.get_from_local_cache(random_emoji)
 
 
     # Remove the trailing slash since we're appending a relative URL.
