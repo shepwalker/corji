@@ -83,11 +83,15 @@ def get_corgi(original_emoji):
             possible_corji_path = cache.get_from_local_cache(random_emoji)
 
 
-    # Remove the trailing slash since we're appending a relative URL.
-    base_url = request.url_root[:-1]
+    # Only append base URL if it's a local path.
+    if "http" not in possible_corji_path:
+        # Remove the trailing slash since we're appending a relative URL.
+        base_url = request.url_root[:-1]
 
-    image_path = url_for('get_image', file_name=possible_corji_path)
-    absolute_image_url = base_url + image_path
+        image_path = url_for('get_image', file_name=possible_corji_path)
+        absolute_image_url = base_url + image_path
+    else:
+        absolute_image_url = possible_corji_path
 
     resp = twilio.twiml.Response()
     with resp.message(message) as m:
