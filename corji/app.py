@@ -63,8 +63,9 @@ def get_corgi(original_emoji):
         message = message_template.format(requested_emoji = original_emoji,
                                           fallback_emoji = emoji)
 
+    # TODO: Use cache, test cache URL, and then fall back.
     try:
-        possible_corji_path = cache.get_from_local_cache(emoji)
+        possible_corji_path = corgis[emoji]
     except CorgiNotFoundException as e:
         logger.error(e)
         logger.warn("Corji not found for request %s", emoji)
