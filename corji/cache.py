@@ -1,5 +1,4 @@
 # This Python file uses the following encoding: utf-8
-import logging
 import os
 import urllib.request
 
@@ -10,6 +9,7 @@ from corji.exceptions import CorgiNotFoundException
 from corji.settings import Config
 
 logger = app.logger
+
 
 def put_in_local_cache(corgis):
     for i in corgis:
@@ -34,4 +34,5 @@ def get_from_local_cache(raw_emoji):
     if(os.path.exists(cached_filename)):
         return Config.CACHE_DIR + "/" + split_name[0] + "/01.jpg"
     else:
-        raise CorgiNotFoundException("Corgi not found for emoji: {}".format(raw_emoji))
+        raise CorgiNotFoundException("Corgi not found for emoji: {}"
+                                     .format(raw_emoji))

@@ -15,18 +15,20 @@ WARN being used for happy-path requests that can't find valid corji
 ERROR being used for errors (though not actually logging this well yet)
 """
 
+
 # TODO: Actually make this a class.
 def Logger(app, log_path, log_name):
     if not os.path.exists(log_path):
         try:
             os.makedirs(log_path)
-        except Exception as e:
+        except Exception:
             # TODO: WTF
             pass
 
-    file_handler = TimedRotatingFileHandler(log_path + '/' + log_name, 'midnight', 1)
+    qualified_log_name = log_path + '/' + log_name
+    file_handler = TimedRotatingFileHandler(qualified_log_name, 'midnight', 1)
     file_handler.setFormatter(
-    logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s'))
+        logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s'))
     file_handler.setLevel(logging.INFO)
     logger = app.logger
     logger.addHandler(file_handler)
@@ -35,6 +37,7 @@ def Logger(app, log_path, log_name):
         local_handler = logging.StreamHandler(sys.stdout)
         logger.addHandler(local_handler)
     return logger
+
 
 def logged_view(logger):
     def inner_decorator(f):

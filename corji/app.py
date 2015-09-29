@@ -2,9 +2,6 @@
 
 import random
 
-from logging.handlers import (
-    TimedRotatingFileHandler
-)
 from flask import (
     Flask,
     send_from_directory,
@@ -59,9 +56,10 @@ def get_corgi(original_emoji):
     # If it's a multi-emoji that we don't track, just grab the first emoji.
     if len(emoji) > 1 and emoji not in corgis.keys():
         emoji = original_emoji[0]
-        message_template = open("corji/templates/requested_emoji_does_not_exist.txt").read()
-        message = message_template.format(requested_emoji = original_emoji,
-                                          fallback_emoji = emoji)
+        template_name = "corji/templates/requested_emoji_does_not_exist.txt"
+        message_template = open(template_name).read()
+        message = message_template.format(requested_emoji=original_emoji,
+                                          fallback_emoji=emoji)
 
     # TODO: Use cache, test cache URL, and then fall back.
     try:
@@ -75,13 +73,13 @@ def get_corgi(original_emoji):
             possible_corji_path = corgis[emoji]
         except CorgiNotFoundException as e:
             # Add a random emoji instead of just a sadface.
-            possible_emojis = [emoji for emoji in corgis.keys() if corgis[emoji]]
+            possible_emojis = [e for e in corgis.keys() if corgis[e]]
             random_emoji = random.choice(possible_emojis)
-            message_template = open("corji/templates/requested_emoji_does_not_exist.txt").read()
-            message = message_template.format(requested_emoji = original_emoji,
-                                              fallback_emoji = random_emoji)
+            template_name = "corji/templates/requested_emoji_does_not_exist.txt"
+            message_template = open(template_name).read()
+            message = message_template.format(requested_emoji=original_emoji,
+                                              fallback_emoji=random_emoji)
             possible_corji_path = cache.get_from_local_cache(random_emoji)
-
 
     # Only append base URL if it's a local path.
     if "http" not in possible_corji_path:
@@ -106,7 +104,8 @@ def corgi():
     """Respond to incoming calls with a simple text message."""
     text = request.values.get("Body") or ""
     if not text_contains_emoji(text):
-        no_emoji_message = open("corji/templates/request_does_not_contain_emoji.txt").read()
+        template_name = "corji/templates/request_does_not_contain_emoji.txt"
+        no_emoji_message = open(template_name).read()
         resp = twilio.twiml.Response()
         resp.message(no_emoji_message)
         return str(resp)
