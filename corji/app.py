@@ -108,5 +108,6 @@ def corgi():
     if not text_contains_emoji(text):
         no_emoji_message = open("corji/templates/request_does_not_contain_emoji.txt").read()
         resp = twilio.twiml.Response()
-        return str(resp.message(no_emoji_message))
+        resp.message(no_emoji_message)
+        return str(resp)
     return get_corgi(text)
