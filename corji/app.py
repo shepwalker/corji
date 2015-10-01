@@ -32,7 +32,7 @@ logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
 
 logger.debug("START: Starting to load Corjis into cache.")
-cache.put_in_local_cache(corgis)
+#cache.put_in_remote_cache(corgis)
 logger.debug("START: Completed Corji Cache loading")
 
 
@@ -96,7 +96,7 @@ def get_corgi(original_emoji):
         m.media(absolute_image_url)
 
     return str(resp)
-
+        
 
 @app.route("/", methods=['GET', 'POST'])
 @logged_view(logger)
