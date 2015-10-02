@@ -25,15 +25,16 @@ app.config.from_object('corji.settings.Config')
 logger = Logger(app,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
-
+print(settings.Config.SPREADSHEET_URL)
 SPREADSHEET_URL = settings.Config.SPREADSHEET_URL
 logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 # TODO: GLOBALS BAD.
 corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
 
-logger.debug("START: Starting to load Corjis into cache.")
-#cache.put_in_remote_cache(corgis)
-logger.debug("START: Completed Corji Cache loading")
+if settings.Config.REMOTE_CACHE_ENABLED:
+    logger.debug("START: Starting to load Corjis into cache.")
+    cache.put_in_remote_cache(corgis)
+    logger.debug("START: Completed Corji Cache loading")
 
 
 # TODO: Serve statics not via Flask.
@@ -41,8 +42,10 @@ logger.debug("START: Completed Corji Cache loading")
 def get_image(file_name):
     """Return an emoji image given a file path"""
     file_path = file_name.split('/')
+    logger.debug("Attempting to load image from %s", file_path)
     directory = "/".join(file_path[:-1])
     name = file_path[-1]
+    logger.debug("return image with directory: %s and name: %s", directory, name)
     return send_from_directory(directory, name)
 
 
@@ -63,7 +66,10 @@ def get_corgi(original_emoji):
 
     # TODO: Use cache, test cache URL, and then fall back.
     try:
-        possible_corji_path = corgis[emoji]
+        if(settings.Config.REMOTE_CACHE_ENABLED):
+            possible_corji_path = cache.get_from_remote_cache(emoji)
+        else:
+            possible_corji_path = corgis[emoji]
     except CorgiNotFoundException as e:
         logger.error(e)
         logger.warn("Corji not found for request %s", emoji)
