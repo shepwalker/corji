@@ -18,8 +18,12 @@ import corji.data_sources as data_sources
 from corji.exceptions import CorgiNotFoundException
 from corji.logging import Logger, logged_view
 import corji.settings as settings
-from corji.utils import text_contains_emoji
+from corji.utils import (
+    emojis_for_emoticons,
+    text_contains_emoji
+)
 
+logger = None
 app.config.from_object('corji.settings.Config')
 
 logger = Logger(app,
@@ -31,9 +35,10 @@ logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 # TODO: GLOBALS BAD.
 corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
 
-logger.debug("START: Starting to load Corjis into cache.")
-cache.put_in_local_cache(corgis)
-logger.debug("START: Completed Corji Cache loading")
+if __name__ == "__main__":
+    logger.debug("START: Starting to load Corjis into cache.")
+    cache.put_in_local_cache(corgis)
+    logger.debug("START: Completed Corji Cache loading")
 
 
 # TODO: Serve statics not via Flask.
@@ -64,6 +69,8 @@ def get_corgi(original_emoji):
     # TODO: Use cache, test cache URL, and then fall back.
     try:
         possible_corji_path = corgis[emoji]
+        if not possible_corji_path:
+            raise CorgiNotFoundException()
     except CorgiNotFoundException as e:
         logger.error(e)
         logger.warn("Corji not found for request %s", emoji)
@@ -71,6 +78,8 @@ def get_corgi(original_emoji):
 
         try:
             possible_corji_path = corgis[emoji]
+            if not possible_corji_path:
+                raise CorgiNotFoundException()
         except CorgiNotFoundException as e:
             # Add a random emoji instead of just a sadface.
             possible_emojis = [e for e in corgis.keys() if corgis[e]]
@@ -103,10 +112,17 @@ def get_corgi(original_emoji):
 def corgi():
     """Respond to incoming calls with a simple text message."""
     text = request.values.get("Body") or ""
-    if not text_contains_emoji(text):
-        template_name = "corji/templates/request_does_not_contain_emoji.txt"
-        no_emoji_message = open(template_name).read()
-        resp = twilio.twiml.Response()
-        resp.message(no_emoji_message)
-        return str(resp)
-    return get_corgi(text)
+
+    if text_contains_emoji(text):
+        return get_corgi(text)
+
+    emoji = emojis_for_emoticons.get(text, None)
+    if emoji:
+        print(emoji)
+        return get_corgi(emoji)
+
+    template_name = "corji/templates/request_does_not_contain_emoji.txt"
+    no_emoji_message = open(template_name).read()
+    resp = twilio.twiml.Response()
+    resp.message(no_emoji_message)
+    return str(resp)

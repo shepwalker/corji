@@ -8,11 +8,28 @@ def text_contains_emoji(text):
         if emoji.demojize(char) != char:
             return True
 
-    # Edge case: check for flags as they're represented
-    # as multiple characters: https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
+    # Edge case: check for flags as they're represented as multiple chars:
+    # https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
     if len(text) == 2:
         spaced_string = "{} {}".format(text[0], text[1])
         if emoji.demojize(spaced_string) != spaced_string:
             return True
 
     return False
+
+emojis_for_emoticons = {
+    ':D': '😀',
+    ':)': '😊',
+    ':(': '😞',
+    ':P': '😜',
+    '=)': '😃',
+    '=(': '😞',
+    '=P': '😜',
+    ';)': '😉',
+    'XD': '😝',
+    '<3': '❤️',
+    ':|': '😐',
+    ':o': '😮',
+    ':3': '😙',
+    '(Y)': '👍',
+}

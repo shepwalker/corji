@@ -43,9 +43,11 @@ def logged_view(logger):
     def inner_decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            logger.info("Request: %s", args or "")
+            if logger:
+                logger.info("Request: %s", args or "")
             fn = f(*args, **kwargs)
-            logger.info("Response: %s", fn)
+            if logger:
+                logger.info("Response: %s", fn)
             return fn
         return decorated_function
     return inner_decorator
