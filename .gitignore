@@ -10,3 +10,4 @@ cache/
 logs/
 .logs/
 .cache/
+.DS_Store
