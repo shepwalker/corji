@@ -5,6 +5,8 @@ from urllib.error import HTTPError
 
 import emoji
 import boto3
+import boto3.s3
+from boto3.s3.transfer import S3Transfer
 
 from corji.app import app
 from corji.exceptions import CorgiNotFoundException
@@ -56,8 +58,11 @@ def put_in_remote_cache(corgis):
         directory = Config.CACHE_DIR + '/' + emoji_dir
         s3_key = emoji_dir + "/01.jpg"
         #see if this corgi already exists in s3 bucket
-        possible_s3_entry = next(
-            (item for item in all_objects['Contents'] if item['Key'] == s3_key), None)
+        if 'Content' in all_objects:
+            possible_s3_entry = next(
+                (item for item in all_objects['Contents'] if item['Key'] == s3_key), None)
+        else:
+            possible_s3_entry = None
         try:
             
             if not possible_s3_entry:
@@ -72,8 +77,9 @@ def put_in_remote_cache(corgis):
                     logger.debug("Downloading corgi %s in prep for remote cache", i)
                     request.urlretrieve(corgi, directory + "/01.jpg")
                 logger.debug("Adding %s to remote cache", i)
-                aws_s3_client.upload_file(
-                    directory+"/01.jpg", Config.AWS_S3_CACHE_BUCKET_NAME, s3_key)
+                transfer_s3_client = S3Transfer(aws_s3_client)
+                transfer_s3_client.upload_file(
+                    directory+"/01.jpg", Config.AWS_S3_CACHE_BUCKET_NAME, s3_key, extra_args={'ContentType':"image/jpeg"})
             else:
                 logger.debug("%s found in remote cache. Skipping", i)
         except HTTPError:

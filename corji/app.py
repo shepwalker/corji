@@ -85,7 +85,10 @@ def get_corgi(original_emoji):
             message_template = open(template_name).read()
             message = message_template.format(requested_emoji=original_emoji,
                                               fallback_emoji=random_emoji)
-            possible_corji_path = cache.get_from_local_cache(random_emoji)
+            if(settings.Config.REMOTE_CACHE_ENABLED):
+                possible_corji_path = cache.get_from_remote_cache(random_emoji)
+            else:
+                possible_corji_path = corgis[random_emoji]
 
     # Only append base URL if it's a local path.
     if "http" not in possible_corji_path:
