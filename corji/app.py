@@ -122,7 +122,7 @@ def corgi():
         return get_corgi(emoji)
 
     template_name = "corji/templates/request_does_not_contain_emoji.txt"
-    no_emoji_message = open(template_name).read()
+    no_emoji_message = open(template_name, encoding='utf-8').read()
     resp = twilio.twiml.Response()
     resp.message(no_emoji_message)
     return str(resp)
