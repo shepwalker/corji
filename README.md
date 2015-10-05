@@ -26,3 +26,7 @@ We're using [Flask](http://flask.pocoo.org/) to deliver TwiML via [Twilio](http:
 - [ ] Actual frontend
 - [ ] Logging and metrics
 - [ ] Testing + CI.
+
+## Testing
+
+Execute tests using `nosetest`.
