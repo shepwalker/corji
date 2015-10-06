@@ -5,11 +5,11 @@
 
     <link href='https://fonts.googleapis.com/css?family=Sacramento' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-    <link rel='stylesheet' href="/static/css/bigfoot.css">
-    <link rel='stylesheet' href="/static/css/style.css">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/bigfoot.css') }}">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
 
-    <script type="text/javascript" src="/static/js/jquery.js"></script>
-    <script type="text/javascript" src="/static/js/bigfoot.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bigfoot.js') }}">></script>
 
 </head>
 
