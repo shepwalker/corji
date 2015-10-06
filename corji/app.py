@@ -4,9 +4,10 @@ import random
 
 from flask import (
     Flask,
+    render_template,
+    request,
     send_from_directory,
     url_for,
-    request
 )
 import twilio.twiml
 
@@ -84,10 +85,9 @@ def get_corgi(original_emoji):
             # Add a random emoji instead of just a sadface.
             possible_emojis = [e for e in corgis.keys() if corgis[e]]
             random_emoji = random.choice(possible_emojis)
-            template_name = "corji/templates/requested_emoji_does_not_exist.txt"
-            message_template = open(template_name).read()
-            message = message_template.format(requested_emoji=original_emoji,
-                                              fallback_emoji=random_emoji)
+            message = render_template('txt/requested_emoji_does_not_exist.txt',
+                                      requested_emoji=original_emoji,
+                                      fallback_emoji=random_emoji)
             possible_corji_path = cache.get_from_local_cache(random_emoji)
 
     # Only append base URL if it's a local path.
@@ -121,8 +121,13 @@ def corgi():
         print(emoji)
         return get_corgi(emoji)
 
-    template_name = "corji/templates/request_does_not_contain_emoji.txt"
-    no_emoji_message = open(template_name, encoding='utf-8').read()
+    message = render_template('txt/request_does_not_contain_emoji.txt')
     resp = twilio.twiml.Response()
-    resp.message(no_emoji_message)
+    resp.message(message)
     return str(resp)
+
+
+@app.route("/about", methods=['GET'])
+def about():
+    """Much hype.  Very disruptive.  Such blurb."""
+    return render_template('html/about.html')

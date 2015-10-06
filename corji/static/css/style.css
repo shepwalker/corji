@@ -1,0 +1,36 @@
+body {
+    margin-top: 3em;
+    font: 24px Avenir;
+}
+
+h1 {
+    font-family: 'Sacramento';
+    font-size: 96px;
+    font-weight: normal;
+    margin-bottom: 0;
+}
+
+h2 {
+    color: #665;
+    font-weight: normal;
+}
+
+#number {
+    color: #00cc00;
+    font-size: 48px;
+    text-shadow: #00aa00 1px 1px 0px;
+    font-family: "Menlo";
+}
+
+.container {
+    width: 60%;
+    margin-left: 20%;
+}
+
+.footer {
+    color: #aaa;
+    font-size: 16px;
+    border-top: 1px #aaa solid;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
