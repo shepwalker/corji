@@ -3,6 +3,5 @@ flask
 gunicorn
 nose
 requests
-supervisor
 uwsgi
 twilio
