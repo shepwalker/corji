@@ -52,7 +52,7 @@ def get_image(file_name):
     return send_from_directory(directory, name)
 
 
-@app.route("/emoji/<original_emoji>", methods=['GET'])
+@app.route("/sms/<original_emoji>", methods=['GET'])
 @logged_view(logger)
 def get_corgi(original_emoji):
     """Returns the TWIML to mock a given request."""
@@ -107,7 +107,7 @@ def get_corgi(original_emoji):
     return str(resp)
 
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/sms", methods=['GET', 'POST'])
 @logged_view(logger)
 def corgi():
     """Respond to incoming calls with a simple text message."""
@@ -127,7 +127,7 @@ def corgi():
     return str(resp)
 
 
-@app.route("/about", methods=['GET'])
+@app.route("/", methods=['GET'])
 def about():
     """Much hype.  Very disruptive.  Such blurb."""
     return render_template('html/about.html')
