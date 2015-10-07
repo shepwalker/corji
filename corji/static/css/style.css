@@ -24,8 +24,8 @@ h2 {
 }
 
 .container {
-    width: 60%;
-    margin-left: 20%;
+    max-width: 720px;
+    margin: 0 auto;
 }
 
 .footer {
@@ -34,4 +34,17 @@ h2 {
     border-top: 1px #aaa solid;
     padding-top: 1em;
     padding-bottom: 1em;
+}
+
+.examples {
+    width: 100%;
+    float: left;
+}
+.examples img {
+    min-width: 200px;
+    width: 40%;
+    float: left;
+    margin: 5%;
+    border: 1px #aaa solid;
+    box-sizing: border-box;
 }

@@ -3,6 +3,8 @@
 
     <title>corji: the Corgi Delivery Network</title>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link href='https://fonts.googleapis.com/css?family=Sacramento' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link rel='stylesheet' href="{{ url_for('static', filename='css/bigfoot.css') }}">
@@ -18,19 +20,36 @@
     <div class="container">
         <h1>corji</h1>
 
-        <h2>A distributed, resilient <a href="#fn:2" rel="footnote">2</a>, high-availability <a href="#fn:1" rel="footnote">1</a> CDN <a href="#fn:3" rel="footnote">3</a> using SMS as a transport layer.</h2>
+        <h2>A distributed, resilient, high-availability <a href="#fn:1" rel="footnote">1</a> CDN <a href="#fn:3" rel="footnote">3</a> using SMS as a transport layer.</h2>
 
         <h2 id="number">+16693420943</h2>
+
+        <h3>What it does</h3>
+        <p>See that phone number up there?  The green one?</p>
+        <p>Text it an emoji <a href="#fn:11" rel="footnote">11</a>, like: </p>
+        <p>🏀</p>
+        <p>And we'll send you back a corgi!  Like:</p>
+        <img src="https://s-media-cache-ak0.pinimg.com/236x/6b/bf/37/6bbf3751b876a4dbdf73ff3f6ac3d3e2.jpg">
+        <p>Yup.  It's pretty great.  Some might even call it disruptive.</p>
 
         <h3>How it works</h3>
         <p>Corji leverages a number of hither-to underutilized protocols and content discovery mechanisms <a href="#fn:4" rel="footnote">4</a> in order to seed our initial database <a href="#fn:6" rel="footnote">6</a>.</p>
         <p>The actual SMS heavy lifting is handled by <a href="http://twilio.com">Twilio</a>, with the TwiML being served Flask on EC2 hosts.</p>
         <p>Assets are served via S3 + CloudFront.</p>
-        <p>No corgis were harmed in the process of the development of corgis. <a href="#fn:5" rel="footnote">5</a>
+        <p>The actual mappings between emojis and URLs is on Google Spreadsheets. <a href="#fn:7" rel="footnote">7</a></p>
+        <p>No corgis were harmed in the process of the development of Corji. <a href="#fn:5" rel="footnote">5</a>
 
         <h3>Examples</h3>
+        <div class="examples">
+            <img src="/static/img/screen1.png">
+            <img src="/static/img/screen2.png">
+        </div>
 
         <h3>FAQ</h3>
+
+        <h4>I have a corgi pic you should include!</h4>
+        <p>Trust us when we say that we welcome all user submissions as there's literally no such thing as too many corgi pictures.  If you run into an emoji we don't have in our database, we'll prompt you to send your own in -- if you'd rather do it the old-fashioned way, just shoot us an <a href="me+corji@jmduke.com">email</a> or open up an issue in <a href="http://github.com/jmduke/corji">GitHub</a>.</p>
+
         <h4>Why? Like, seriously... why?</h4>
         <p>What, do you have something against corgis or something?</p>
 
@@ -41,11 +60,8 @@
 
     <div class="footnotes">
         <ol>
-            <li class="footnote" id="fn:2">
-                Disclaimer: <strong>corji</strong> is probably not resilient.<a href="#fnref:2" title="return to article"> ↩</a>
-            </li>
             <li class="footnote" id="fn:1">
-                Disclaimer: <strong>corji</strong> is probably not high-availability.<a href="#fnref:1" title="return to article"> ↩</a>
+                Disclaimer: <strong>corji</strong> is probably not high-availability or even particularly resilient.  But we'll do our best!<a href="#fnref:1" title="return to article"> ↩</a>
             </li>
             <li class="footnote" id="fn:3">
                 <strong>CDN</strong>: Corgi Delivery Network
@@ -58,6 +74,12 @@
             </li>
             <li class="footnote" id="fn:6">
                 And by "database", we mean a Google Doc.
+            </li>
+            <li class="footnote" id="fn:7">
+                You thought we were joking, didn't you?
+            </li>
+            <li class="footnote" id="fn:11">
+                Note that it has to be an actual emoji, not just a picture of an emoji.  Don't pull a <a href="https://twitter.com/paulpierce34/status/618860245025030144?lang=en">Paul Pierce</a>.
             </li>
         </ol>
     </div>
