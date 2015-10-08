@@ -29,7 +29,6 @@ app.config.from_object('corji.settings.Config')
 logger = Logger(app,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
-print(settings.Config.SPREADSHEET_URL)
 SPREADSHEET_URL = settings.Config.SPREADSHEET_URL
 logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 # TODO: GLOBALS BAD.
@@ -49,11 +48,11 @@ if __name__ == "__main__":
 def get_image(file_name):
     """Return an emoji image given a file path"""
     file_path = file_name.split('/')
-    logger.debug("Attempting to load image from %s", file_path)
+    logger.debug("Attempting to load image from %s", file_name)
     directory = "/".join(file_path[:-1])
     name = file_path[-1]
     logger.debug(
-        "return image with directory: %s and name: %s", directory, name)
+        "Returning image with directory: %s and name: %s", directory, name)
     return send_from_directory(directory, name)
 
 
@@ -75,7 +74,7 @@ def get_corgi(original_emoji):
     # TODO: Use cache, test cache URL, and then fall back.
     try:
 
-        if(settings.Config.REMOTE_CACHE_RETRIEVE_ENABLED):
+        if settings.Config.REMOTE_CACHE_RETRIEVE_ENABLED:
             possible_corji_path = cache.get_from_remote_cache(emoji)
         else:
             possible_corji_path = corgis[emoji]
@@ -100,7 +99,7 @@ def get_corgi(original_emoji):
             message_template = open(template_name).read()
             message = message_template.format(requested_emoji=original_emoji,
                                               fallback_emoji=random_emoji)
-            if(settings.Config.REMOTE_CACHE_ENABLED):
+            if settings.Config.REMOTE_CACHE_RETRIEVE_ENABLED:
                 possible_corji_path = cache.get_from_remote_cache(random_emoji)
             else:
                 possible_corji_path = corgis[random_emoji]
@@ -133,7 +132,6 @@ def corgi():
 
     emoji = emojis_for_emoticons.get(text, None)
     if emoji:
-        print(emoji)
         return get_corgi(emoji)
 
     template_name = "corji/templates/request_does_not_contain_emoji.txt"
