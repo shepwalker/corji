@@ -33,11 +33,12 @@ print(settings.Config.SPREADSHEET_URL)
 SPREADSHEET_URL = settings.Config.SPREADSHEET_URL
 logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 # TODO: GLOBALS BAD.
+
 corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
 
 
 if __name__ == "__main__":
-    if settings.Config.REMOTE_CACHE_ENABLED:
+    if settings.Config.REMOTE_CACHE_POPULATE_ENABLED:
         logger.debug("START: Starting to load Corjis into cache.")
         cache.put_in_remote_cache(corgis)
         logger.debug("START: Completed Corji Cache loading")
@@ -74,7 +75,7 @@ def get_corgi(original_emoji):
     # TODO: Use cache, test cache URL, and then fall back.
     try:
 
-        if(settings.Config.REMOTE_CACHE_ENABLED):
+        if(settings.Config.REMOTE_CACHE_RETRIEVE_ENABLED):
             possible_corji_path = cache.get_from_remote_cache(emoji)
         else:
             possible_corji_path = corgis[emoji]
