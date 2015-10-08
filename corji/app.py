@@ -62,10 +62,9 @@ def get_corgi(original_emoji):
     # If it's a multi-emoji that we don't track, just grab the first emoji.
     if len(emoji) > 1 and emoji not in corgis.keys():
         emoji = original_emoji[0]
-        template_name = "corji/templates/requested_emoji_does_not_exist.txt"
-        message_template = open(template_name).read()
-        message = message_template.format(requested_emoji=original_emoji,
-                                          fallback_emoji=emoji)
+        message = render_template('txt/requested_emoji_does_not_exist.txt',
+                                  requested_emoji=original_emoji,
+                                  fallback_emoji=emoji)
 
     # TODO: Use cache, test cache URL, and then fall back.
     try:
