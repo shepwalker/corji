@@ -5,6 +5,7 @@ import unittest
 from corji.app import app
 
 
+# TODO: actually relying on the SPREADSHEET_URL is a codesmell.
 class AppTestCase(unittest.TestCase):
 
     def setUp(self):
