@@ -88,12 +88,12 @@ def get_corgi(original_emoji):
                 raise CorgiNotFoundException()
         except CorgiNotFoundException as e:
             # Add a random emoji instead of just a sadface.
-            possible_emojis = [e for e in corgis.keys() if corgis[e]]
+            possible_emojis = [e for e in corgis.keys() if corgis[e] != '']
             random_emoji = random.choice(possible_emojis)
             message = render_template('txt/requested_emoji_does_not_exist.txt',
                                       requested_emoji=original_emoji,
                                       fallback_emoji=random_emoji)
-            possible_corji_path = cache.get_from_local_cache(random_emoji)
+            possible_corji_path = corgis[random_emoji]
 
     # Only append base URL if it's a local path.
     if "http" not in possible_corji_path:
