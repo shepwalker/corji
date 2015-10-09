@@ -42,7 +42,11 @@ class AppTestCase(unittest.TestCase):
     def test_sad_case_emoji(self):
         response = self.send_message_with_body('🔶')
         assert 'http' in str(response.data)
-        assert '.jpg' in str(response.data)
+        assert (
+            '.jpg' in str(response.data) or
+            '.gif' in str(response.data) or
+            '.png' in str(response.data)
+        )
         assert ':(' in str(response.data)
 
     def test_emoticon_support(self):

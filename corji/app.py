@@ -32,10 +32,8 @@ logger = Logger(app,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
 
-SPREADSHEET_URL = settings.Config.SPREADSHEET_URL
-logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 # TODO: GLOBALS BAD.
-corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
+corgis = data_sources.load_from_spreadsheet(settings.Config.SPREADSHEET_URL)
 
 if __name__ == "__main__":
     logger.debug("START: Starting to load Corjis into cache.")
@@ -76,24 +74,19 @@ def get_corgi(original_emoji):
     try:
         possible_corji_path = corgis[emoji]
         if not possible_corji_path:
-            raise CorgiNotFoundException()
+            raise CorgiNotFoundException("Do not have a corgi for emoji: " + emoji)
     except CorgiNotFoundException as e:
         logger.error(e)
-        logger.warn("Corji not found for request %s", emoji)
+        logger.warn("Corji not found for emoji %s", emoji)
         logger.info("Attempting fallback to remote URL.")
 
-        try:
-            possible_corji_path = corgis[emoji]
-            if not possible_corji_path:
-                raise CorgiNotFoundException()
-        except CorgiNotFoundException as e:
-            # Add a random emoji instead of just a sadface.
-            possible_emojis = [e for e in corgis.keys() if corgis[e] != '']
-            random_emoji = random.choice(possible_emojis)
-            message = render_template('txt/requested_emoji_does_not_exist.txt',
-                                      requested_emoji=original_emoji,
-                                      fallback_emoji=random_emoji)
-            possible_corji_path = corgis[random_emoji]
+        # Add a random emoji instead of just a sadface.
+        possible_emojis = [e for e in corgis.keys() if corgis[e] != '']
+        random_emoji = random.choice(possible_emojis)
+        message = render_template('txt/requested_emoji_does_not_exist.txt',
+                                  requested_emoji=original_emoji,
+                                  fallback_emoji=random_emoji)
+        possible_corji_path = corgis[random_emoji]
 
     # Only append base URL if it's a local path.
     if "http" not in possible_corji_path:
