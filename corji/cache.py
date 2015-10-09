@@ -5,22 +5,22 @@ from urllib import request
 from urllib.error import HTTPError
 
 
-import emoji
 import boto3
 import boto3.s3
 from boto3.s3.transfer import S3Transfer
-
+import emoji
+import requests
 
 from corji.exceptions import CorgiNotFoundException
 from corji.settings import Config
 
 logger = logging.getLogger(Config.LOGGER_NAME)
 
-if (Config.REMOTE_CACHE_POPULATE_ENABLED or 
-    Config.REMOTE_CACHE_RETRIEVE_ENABLED):
+if (Config.REMOTE_CACHE_POPULATE or 
+    Config.REMOTE_CACHE_RETRIEVE):
     aws_s3_client = boto3.client("s3")
     all_objects = aws_s3_client.list_objects(
-        Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
+        Bucket = Config.AWS_S3_CACHE_BUCKET_NAME)
 
 
 def put_in_remote_cache(corgis):
@@ -37,29 +37,22 @@ def put_in_remote_cache(corgis):
         s3_key = get_file_name_from_emoji(i)
 
         # see if this corgi already exists in s3 bucket
-        if 'Content' in all_objects:
+        #print(all_objects)
+        if 'Contents' in all_objects:
             possible_s3_entry = next(
                 (item for item in all_objects['Contents'] if item['Key'] == s3_key), None)
         else:
             possible_s3_entry = None
         try:
-
             if not possible_s3_entry:
-                # edge case if corgi doesn't exist in s3 but
-                # somehow directory exists locally
-                if not os.path.exists(directory):
-                    os.makedirs(directory)
-                local_file_target = directory + "/01.jpg"
-                # edge case if corgi doesn't exist in s3 but
-                # somehow  exists locally
-                if not os.path.exists(local_file_target):
-                    logger.debug(
-                        "Downloading corgi %s in prep for remote cache", i)
-                    request.urlretrieve(corgi, directory + "/01.jpg")
                 logger.debug("Adding %s to remote cache", i)
-                transfer_s3_client = S3Transfer(aws_s3_client)
-                transfer_s3_client.upload_file(
-                    directory+"/01.jpg", Config.AWS_S3_CACHE_BUCKET_NAME, s3_key, extra_args={'ContentType': "image/jpeg"})
+                logger.debug(
+                        "Downloading corgi %s in prep for remote cache", i)
+                picture_request = requests.get(corgi)
+                logger.debug("Adding %s to remote cache", i)
+                aws_s3_client.put_object(Body = picture_request.content, ContentType = "image/jpeg", 
+                  Key = s3_key, Bucket = Config.AWS_S3_CACHE_BUCKET_NAME)
+
             else:
                 logger.debug("%s found in remote cache. Skipping", i)
         except HTTPError:

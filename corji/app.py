@@ -13,7 +13,7 @@ import twilio.twiml
 # Why yes, this *is* janky as hell.  Needed to avoid circular imports.
 app = Flask(__name__)
 
-import corji.cache
+import corji.cache as cache
 import corji.data_sources as data_sources
 from corji.exceptions import CorgiNotFoundException
 from corji.logging import Logger, logged_view
@@ -67,7 +67,7 @@ def get_corgi(original_emoji):
     # TODO: Use cache, test cache URL, and then fall back.
     try:
 
-        if settings.Config.REMOTE_CACHE_RETRIEVE_ENABLED:
+        if settings.Config.REMOTE_CACHE_RETRIEVE:
             possible_corji_path = cache.get_from_remote_cache(emoji)
         else:
             possible_corji_path = corgis[emoji]
@@ -92,7 +92,7 @@ def get_corgi(original_emoji):
             message_template = open(template_name).read()
             message = message_template.format(requested_emoji=original_emoji,
                                               fallback_emoji=random_emoji)
-            if settings.Config.REMOTE_CACHE_RETRIEVE_ENABLED:
+            if settings.Config.REMOTE_CACHE_RETRIEVE:
                 possible_corji_path = cache.get_from_remote_cache(random_emoji)
             else:
                 possible_corji_path = corgis[random_emoji]

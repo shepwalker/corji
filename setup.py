@@ -13,7 +13,7 @@ corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
 
 
 if __name__ == "__main__":
-    if Config.REMOTE_CACHE_POPULATE_ENABLED:
+    if Config.REMOTE_CACHE_POPULATE:
         logger.debug("START: Starting to load Corjis into cache.")
         cache.put_in_remote_cache(corgis)
         logger.debug("START: Completed Corji Cache loading")

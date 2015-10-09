@@ -3,7 +3,7 @@ import os
 
 class Config(object):
     CACHE_DIR = os.getenv('CACHE_DIR', './.cache')
-    DEBUG = os.getenv('DEBUG', False)
+    DEBUG = True if (os.getenv('DEBUG') == "TRUE") else False
     LOG_NAME = os.getenv('LOG_NAME', 'corji.log')
     LOG_PATH = os.getenv('LOG_PATH', './.logs')
     LOGGER_NAME = "FLASK_APP_LOGGER"
@@ -13,5 +13,8 @@ class Config(object):
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'SUPER_NOT_VALID_SECRET')
     AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION', 'SUPER_NOT_VALID_REGION')
     AWS_S3_CACHE_BUCKET_NAME = os.getenv('AWS_S3_CACHE_BUCKET_NAME', 'SUPER_NOT_VALID_BUCKET')
-    REMOTE_CACHE_RETRIEVE_ENABLED = True if (os.getenv('REMOTE_CACHE_RETRIEVE_ENABLED') == "TRUE") else False
-    REMOTE_CACHE_POPULATE_ENABLED = True if (os.getenv('REMOTE_CACHE_POPULATE_ENABLED') == "TRUE") else False
+    REMOTE_CACHE_RETRIEVE = True if (os.getenv('REMOTE_CACHE_RETRIEVE') == "TRUE") else False
+    REMOTE_CACHE_POPULATE = True if (os.getenv('REMOTE_CACHE_POPULATE') == "TRUE") else False
+
+    RESIZE_IMAGE = True if (os.getenv('RESIZE_IMAGE_ENABLED') == "TRUE") else False
+    RESIZE_IMAGE_LONGEST_EDGE_SIZE = os.getenv('RESIZE_IMAGE_LONGEST_EDGE_SIZE', 400)
