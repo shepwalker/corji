@@ -17,6 +17,11 @@ class AppTestCase(unittest.TestCase):
         response = self.app.get('/sms')
         assert 'Welcome to Corji' in str(response.data)
 
+    def test_failure_fallback(self):
+        response = self.app.get('/sms/fallback')
+        assert 'Sorry' in str(response.data)
+        assert 'http' in str(response.data)
+
     def test_happy_case_emoji(self):
         response = self.app.post('/sms', data={
             'From': '+15556667777',

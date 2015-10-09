@@ -125,6 +125,17 @@ def corgi():
     resp.message(message)
     return str(resp)
 
+@app.route("/sms/fallback", methods=['GET'])
+def fallback():
+    """Fallback to be called when something else errors."""
+    message = render_template('txt/request_failure_fallback.txt')
+    resp = twilio.twiml.Response()
+    resp.message(message)
+
+    # Hardcoded since, you know, SPOFs are bad.
+    resp.media("https://s-media-cache-ak0.pinimg.com/736x/49/2a/7f/492a7ff287bdc50d34a4989ab83d9830.jpg")
+
+    return str(resp)
 
 @app.route("/", methods=['GET'])
 def about():
