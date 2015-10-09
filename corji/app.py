@@ -65,7 +65,8 @@ def get_corgi(original_emoji):
 
         emoji = original_emoji[0]
 
-        # Check for skin-toned emojis.  (This only handles the one-emoji case for now.)
+        # Check for skin-toned emojis.
+        # (This only handles the one-emoji case for now.)
         if not emoji_contains_skin_tone(original_emoji):
             message = render_template('txt/requested_emoji_does_not_exist.txt',
                                       requested_emoji=original_emoji,
@@ -122,13 +123,13 @@ def corgi():
 
     emoji = emojis_for_emoticons.get(text, None)
     if emoji:
-        print(emoji)
         return get_corgi(emoji)
 
     message = render_template('txt/request_does_not_contain_emoji.txt')
     resp = twilio.twiml.Response()
     resp.message(message)
     return str(resp)
+
 
 @app.route("/sms/fallback", methods=['GET'])
 def fallback():
@@ -137,9 +138,10 @@ def fallback():
     resp = twilio.twiml.Response()
     with resp.message(message) as m:
         # Hardcoded since, you know, SPOFs are bad.
-        m.media("https://s-media-cache-ak0.pinimg.com/736x/49/2a/7f/492a7ff287bdc50d34a4989ab83d9830.jpg")
+        m.media(settings.Config.FALLBACK_IMAGE)
 
     return str(resp)
+
 
 @app.route("/", methods=['GET'])
 def about():
