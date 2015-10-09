@@ -14,18 +14,18 @@ class AppTestCase(unittest.TestCase):
         assert True
 
     def test_fallback_message(self):
-        response = self.app.get('/')
+        response = self.app.get('/sms')
         assert 'Welcome to Corji' in str(response.data)
 
     def test_happy_case_emoji(self):
-        response = self.app.post('/', data={
+        response = self.app.post('/sms', data={
             'From': '+15556667777',
             'Body': '😀'}
         )
         assert 'http' in str(response.data)
 
     def test_sad_case_emoji(self):
-        response = self.app.post('/', data={
+        response = self.app.post('/sms', data={
             'From': '+15556667777',
             'Body': '🔶'}
         )
@@ -34,7 +34,7 @@ class AppTestCase(unittest.TestCase):
         assert ':(' in str(response.data)
 
     def test_emoticon_support(self):
-        response = self.app.post('/', data={
+        response = self.app.post('/sms', data={
             'From': '+15556667777',
             'Body': ':D'}
         )
