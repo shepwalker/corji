@@ -27,10 +27,13 @@ def put_in_remote_cache(corgis):
         if not corgi:
             continue
 
+        # redundant but need the directory path to confirm it
+        # exists and such
         emoji_dir = emoji.demojize(i).replace(":", "")
-
         directory = Config.CACHE_DIR + '/' + emoji_dir
-        s3_key = emoji_dir + "/01.jpg"
+
+        s3_key = get_file_name_from_emoji(i)
+
         # see if this corgi already exists in s3 bucket
         if 'Content' in all_objects:
             possible_s3_entry = next(
@@ -63,9 +66,8 @@ def put_in_remote_cache(corgis):
 
 
 def get_from_remote_cache(raw_emoji):
-    filename = emoji.demojize(raw_emoji).replace(":", "")
 
-    possible_s3_key = filename + "/01.jpg"
+    possible_s3_key = get_file_name_from_emoji(raw_emoji)
     possible_s3_entry = next(
         (item for item in all_objects['Contents'] if item['Key'] == possible_s3_key), None)
 
@@ -74,8 +76,8 @@ def get_from_remote_cache(raw_emoji):
             'get_object', Params={'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME, 'Key': possible_s3_key})
         return possible_url
     else:
-        raise CorgiNotFoundException("Corgi not found for emoji: {}"
+        raise CorgiNotFoundException("Corgi not found in remote store for emoji: {}"
                                      .format(raw_emoji))
 
-def get_dir_for_corji(corji):
-
+def get_file_name_from_emoji(emoji):
+    return  emoji.demojize(raw_emoji).replace(":", "") + "/01.jpg"
