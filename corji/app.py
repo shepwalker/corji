@@ -13,7 +13,7 @@ import twilio.twiml
 # Why yes, this *is* janky as hell.  Needed to avoid circular imports.
 app = Flask(__name__)
 
-import corji.cache as cache
+import corji.cache
 import corji.data_sources as data_sources
 from corji.exceptions import CorgiNotFoundException
 from corji.logging import Logger, logged_view
@@ -26,7 +26,7 @@ from corji.utils import (
 logger = None
 app.config.from_object('corji.settings.Config')
 
-logger = Logger(app,
+logger = Logger(app.logger_name,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
 SPREADSHEET_URL = settings.Config.SPREADSHEET_URL

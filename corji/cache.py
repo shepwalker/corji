@@ -3,19 +3,23 @@ import os
 from urllib import request
 from urllib.error import HTTPError
 
+
 import emoji
 import boto3
 import boto3.s3
 from boto3.s3.transfer import S3Transfer
 
-from corji.app import app
+
 from corji.exceptions import CorgiNotFoundException
+from corji.logging import Logger
 from corji.settings import Config
 
-logger = app.logger
+logger = Logger(Config.LOGGER_NAME,
+                Config.LOG_PATH,
+                Config.LOG_NAME)
 
-if Config.REMOTE_CACHE_POPULATE_ENABLED or
-    Config.REMOTE_CACHE_RETRIEVE_ENABLED:
+if (Config.REMOTE_CACHE_POPULATE_ENABLED or 
+    Config.REMOTE_CACHE_RETRIEVE_ENABLED):
     aws_s3_client = boto3.client("s3")
     all_objects = aws_s3_client.list_objects(
         Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)

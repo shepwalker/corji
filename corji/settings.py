@@ -6,6 +6,7 @@ class Config(object):
     DEBUG = os.getenv('DEBUG', False)
     LOG_NAME = os.getenv('LOG_NAME', 'corji.log')
     LOG_PATH = os.getenv('LOG_PATH', './.logs')
+    LOGGER_NAME = "FLASK_APP_LOGGER"
     SPREADSHEET_URL = os.getenv('SPREADSHEET_URL', '')
     
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', 'SUPER_NOT_VALID_KEY')
