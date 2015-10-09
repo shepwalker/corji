@@ -25,7 +25,7 @@ if (Config.REMOTE_CACHE_POPULATE_ENABLED or
 
 def put_in_remote_cache(corgis):
     for i in corgis:
-        corgi = corgis.get(i, None)
+        corgi = corgis[i]
         if not corgi:
             continue
 
