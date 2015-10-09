@@ -17,6 +17,7 @@ def text_contains_emoji(text):
 
     return False
 
+
 def emoji_contains_skin_tone(text):
     # Naive check for a two-char string,
     # with the second char being the skin tone modifier.
