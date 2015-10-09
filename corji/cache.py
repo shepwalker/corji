@@ -1,5 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import os
+import logging
 from urllib import request
 from urllib.error import HTTPError
 
@@ -11,12 +12,9 @@ from boto3.s3.transfer import S3Transfer
 
 
 from corji.exceptions import CorgiNotFoundException
-from corji.logging import Logger
 from corji.settings import Config
 
-logger = Logger(Config.LOGGER_NAME,
-                Config.LOG_PATH,
-                Config.LOG_NAME)
+logger = logging.getLogger(Config.LOGGER_NAME)
 
 if (Config.REMOTE_CACHE_POPULATE_ENABLED or 
     Config.REMOTE_CACHE_RETRIEVE_ENABLED):
@@ -83,5 +81,5 @@ def get_from_remote_cache(raw_emoji):
         raise CorgiNotFoundException("Corgi not found in remote store for emoji: {}"
                                      .format(raw_emoji))
 
-def get_file_name_from_emoji(emoji):
+def get_file_name_from_emoji(raw_emoji):
     return  emoji.demojize(raw_emoji).replace(":", "") + "/01.jpg"

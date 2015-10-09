@@ -36,13 +36,6 @@ logger.debug("START: Spreadsheet URL defined: %s", SPREADSHEET_URL)
 corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
 
 
-if __name__ == "__main__":
-    if settings.Config.REMOTE_CACHE_POPULATE_ENABLED:
-        logger.debug("START: Starting to load Corjis into cache.")
-        cache.put_in_remote_cache(corgis)
-        logger.debug("START: Completed Corji Cache loading")
-
-
 # TODO: Serve statics not via Flask.
 @app.route("/local/<path:file_name>", methods=['GET'])
 def get_image(file_name):
