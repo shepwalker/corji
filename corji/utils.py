@@ -17,6 +17,23 @@ def text_contains_emoji(text):
 
     return False
 
+def emoji_contains_skin_tone(text):
+    # Naive check for a two-char string,
+    # with the second char being the skin tone modifier.
+    # Deetz here: http://www.unicode.org/reports/tr51/tr51-2.html#Diversity
+    skin_tone_characters = [
+        '\U0001f3fb',
+        '\U0001f3fc',
+        '\U0001f3fd',
+        '\U0001f3fe',
+        '\U0001f3ff'
+    ]
+
+    if len(text) == 1:
+        return False
+
+    return text[1] in skin_tone_characters
+
 emojis_for_emoticons = {
     ':D': '😀',
     ':)': '😊',

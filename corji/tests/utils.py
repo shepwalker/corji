@@ -2,7 +2,10 @@
 
 import unittest
 
-from corji.utils import text_contains_emoji
+from corji.utils import (
+    emoji_contains_skin_tone,
+    text_contains_emoji
+)
 
 
 class UtilsTestCase(unittest.TestCase):
@@ -18,6 +21,11 @@ class UtilsTestCase(unittest.TestCase):
         assert text_contains_emoji("🏀asd")
         assert text_contains_emoji("asd🏀")
         assert text_contains_emoji("🇫🇷")
+
+    def test_emoji_contains_skin_tone(self):
+        assert not emoji_contains_skin_tone("🏀")
+        assert not emoji_contains_skin_tone("🙏")
+        assert emoji_contains_skin_tone("🙏🏾")
 
 if __name__ == '__main__':
     unittest.main()

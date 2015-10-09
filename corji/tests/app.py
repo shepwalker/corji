@@ -29,6 +29,17 @@ class AppTestCase(unittest.TestCase):
         )
         assert 'http' in str(response.data)
 
+    def test_skin_tone_emoji(self):
+        response = self.app.post('/sms', data={
+            'From': '+15556667777',
+            'Body': '🙏🏾'}
+        )
+        base_response = self.app.post('/sms', data={
+            'From': '+15556667777',
+            'Body': '🙏'}
+        )
+        assert response.data == base_response.data
+
     def test_sad_case_emoji(self):
         response = self.app.post('/sms', data={
             'From': '+15556667777',

@@ -21,6 +21,7 @@ from corji.logging import Logger, logged_view
 import corji.settings as settings
 from corji.utils import (
     emojis_for_emoticons,
+    emoji_contains_skin_tone,
     text_contains_emoji
 )
 
@@ -61,10 +62,14 @@ def get_corgi(original_emoji):
     emoji = original_emoji
     # If it's a multi-emoji that we don't track, just grab the first emoji.
     if len(emoji) > 1 and emoji not in corgis.keys():
+
         emoji = original_emoji[0]
-        message = render_template('txt/requested_emoji_does_not_exist.txt',
-                                  requested_emoji=original_emoji,
-                                  fallback_emoji=emoji)
+
+        # Check for skin-toned emojis.  (This only handles the one-emoji case for now.)
+        if not emoji_contains_skin_tone(original_emoji):
+            message = render_template('txt/requested_emoji_does_not_exist.txt',
+                                      requested_emoji=original_emoji,
+                                      fallback_emoji=emoji)
 
     # TODO: Use cache, test cache URL, and then fall back.
     try:
@@ -128,12 +133,11 @@ def corgi():
 @app.route("/sms/fallback", methods=['GET'])
 def fallback():
     """Fallback to be called when something else errors."""
-    message = render_template('txt/request_failure_fallback.txt')
+    message = render_template('txt/request_failed_fallback.txt')
     resp = twilio.twiml.Response()
-    resp.message(message)
-
-    # Hardcoded since, you know, SPOFs are bad.
-    resp.media("https://s-media-cache-ak0.pinimg.com/736x/49/2a/7f/492a7ff287bdc50d34a4989ab83d9830.jpg")
+    with resp.message(message) as m:
+        # Hardcoded since, you know, SPOFs are bad.
+        m.media("https://s-media-cache-ak0.pinimg.com/736x/49/2a/7f/492a7ff287bdc50d34a4989ab83d9830.jpg")
 
     return str(resp)
 
