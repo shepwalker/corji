@@ -28,17 +28,13 @@ from corji.utils import (
 logger = None
 app.config.from_object('corji.settings.Config')
 
-logger = Logger(app,
+logger = Logger(app.logger_name,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
 
+
 # TODO: GLOBALS BAD.
 corgis = data_sources.load_from_spreadsheet(settings.Config.SPREADSHEET_URL)
-
-if __name__ == "__main__":
-    logger.debug("START: Starting to load Corjis into cache.")
-    cache.put_in_local_cache(corgis)
-    logger.debug("START: Completed Corji Cache loading")
 
 
 # TODO: Serve statics not via Flask.
@@ -46,8 +42,11 @@ if __name__ == "__main__":
 def get_image(file_name):
     """Return an emoji image given a file path"""
     file_path = file_name.split('/')
+    logger.debug("Attempting to load image from %s", file_name)
     directory = "/".join(file_path[:-1])
     name = file_path[-1]
+    logger.debug(
+        "Returning image with directory: %s and name: %s", directory, name)
     return send_from_directory(directory, name)
 
 
@@ -72,7 +71,11 @@ def get_corgi(original_emoji):
 
     # TODO: Use cache, test cache URL, and then fall back.
     try:
-        possible_corji_path = corgis[emoji]
+        if settings.Config.REMOTE_CACHE_RETRIEVE:
+            possible_corji_path = cache.get_from_remote_cache(emoji)
+        else:
+            possible_corji_path = corgis[emoji]
+
         if not possible_corji_path:
             raise CorgiNotFoundException("Do not have a corgi for emoji: " + emoji)
     except CorgiNotFoundException as e:
@@ -87,6 +90,7 @@ def get_corgi(original_emoji):
                                   requested_emoji=original_emoji,
                                   fallback_emoji=random_emoji)
         possible_corji_path = corgis[random_emoji]
+
 
     # Only append base URL if it's a local path.
     if "http" not in possible_corji_path:

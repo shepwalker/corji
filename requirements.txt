@@ -1,4 +1,5 @@
 awsebcli
+boto3
 coverage
 emoji
 flask

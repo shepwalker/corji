@@ -8,3 +8,7 @@ cache/
 *.sublime-project
 *.sublime-workspace
 logs/
+.logs/
+.cache/
+.DS_Store
+dev/
