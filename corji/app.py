@@ -6,7 +6,6 @@ from flask import (
     Flask,
     render_template,
     request,
-    send_from_directory,
     url_for,
 )
 import twilio.twiml
@@ -32,22 +31,7 @@ logger = Logger(app.logger_name,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
 
-
-# TODO: GLOBALS BAD.
 corgis = data_sources.load_from_spreadsheet(settings.Config.SPREADSHEET_URL)
-
-
-# TODO: Serve statics not via Flask.
-@app.route("/local/<path:file_name>", methods=['GET'])
-def get_image(file_name):
-    """Return an emoji image given a file path"""
-    file_path = file_name.split('/')
-    logger.debug("Attempting to load image from %s", file_name)
-    directory = "/".join(file_path[:-1])
-    name = file_path[-1]
-    logger.debug(
-        "Returning image with directory: %s and name: %s", directory, name)
-    return send_from_directory(directory, name)
 
 
 @app.route("/sms/<original_emoji>", methods=['GET'])
@@ -90,7 +74,6 @@ def get_corgi(original_emoji):
                                   requested_emoji=original_emoji,
                                   fallback_emoji=random_emoji)
         possible_corji_path = corgis[random_emoji]
-
 
     # Only append base URL if it's a local path.
     if "http" not in possible_corji_path:
