@@ -5,6 +5,7 @@ from urllib.error import HTTPError
 
 import boto3
 import boto3.s3
+from botocore.vendored.requests.exceptions import ConnectionError
 import emoji
 import requests
 
@@ -13,10 +14,8 @@ from corji.settings import Config
 
 logger = logging.getLogger(Config.LOGGER_NAME)
 
-if Config.REMOTE_CACHE_POPULATE or Config.REMOTE_CACHE_RETRIEVE:
-    aws_s3_client = boto3.client("s3")
-    all_objects = aws_s3_client.list_objects(
-        Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
+aws_s3_client = boto3.client("s3")
+all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
 
 def put_in_remote_cache(corgis):
@@ -45,13 +44,12 @@ def put_in_remote_cache(corgis):
 
             else:
                 logger.debug("%s found in remote cache. Skipping", i)
-        except HTTPError:
+        except (HTTPError, ConnectionError) as e:
             logger.error(
-                "Http error occurred while creating remote cache on %s", i)
+                "Http error occurred while creating remote cache on %s", i, e)
 
 
 def get_from_remote_cache(raw_emoji):
-
     possible_s3_key = get_file_name_from_emoji(raw_emoji)
     possible_s3_entry = next(
         (item for item in all_objects['Contents'] if item['Key'] == possible_s3_key), None)

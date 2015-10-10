@@ -52,10 +52,12 @@ def get_corgi(original_emoji):
                                       requested_emoji=original_emoji,
                                       fallback_emoji=emoji)
 
-    # TODO: Use cache, test cache URL, and then fall back.
     try:
         if settings.Config.REMOTE_CACHE_RETRIEVE:
-            possible_corji_path = cache.get_from_remote_cache(emoji)
+            try:
+                possible_corji_path = cache.get_from_remote_cache(emoji)
+            except CorgiNotFoundException as e:
+                possible_corji_path = corgis[emoji]
         else:
             possible_corji_path = corgis[emoji]
 

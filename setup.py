@@ -1,6 +1,6 @@
 import corji.cache as cache
 import corji.data_sources as data_sources
-from corji.logging import Logger, logged_view
+from corji.logging import Logger
 from corji.settings import Config
 
 
@@ -13,7 +13,6 @@ corgis = data_sources.load_from_spreadsheet(SPREADSHEET_URL)
 
 
 if __name__ == "__main__":
-    if Config.REMOTE_CACHE_POPULATE:
-        logger.debug("START: Starting to load Corjis into cache.")
-        cache.put_in_remote_cache(corgis)
-        logger.debug("START: Completed Corji Cache loading")
+    logger.debug("START: Starting to load Corjis into cache.")
+    cache.put_in_remote_cache(corgis)
+    logger.debug("START: Completed Corji Cache loading")
