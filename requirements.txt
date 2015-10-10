@@ -4,6 +4,6 @@ emoji
 flask
 gunicorn
 nose
-requests
+requests==2.6.1 # Needed for awsebcli.
 uwsgi
 twilio
