@@ -24,7 +24,6 @@ from corji.utils import (
     text_contains_emoji
 )
 
-logger = None
 app.config.from_object('corji.settings.Config')
 
 logger = Logger(app.logger_name,

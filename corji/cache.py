@@ -13,8 +13,7 @@ from corji.settings import Config
 
 logger = logging.getLogger(Config.LOGGER_NAME)
 
-if (Config.REMOTE_CACHE_POPULATE or 
-    Config.REMOTE_CACHE_RETRIEVE):
+if Config.REMOTE_CACHE_POPULATE or Config.REMOTE_CACHE_RETRIEVE:
     aws_s3_client = boto3.client("s3")
     all_objects = aws_s3_client.list_objects(
         Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
@@ -36,8 +35,7 @@ def put_in_remote_cache(corgis):
         try:
             if not possible_s3_entry:
                 logger.debug("Adding %s to remote cache", i)
-                logger.debug(
-                        "Downloading corgi %s in prep for remote cache", i)
+                logger.debug("Downloading corgi %s in prep for remote cache", i)
                 picture_request = requests.get(corgi)
                 logger.debug("Adding %s to remote cache", i)
                 aws_s3_client.put_object(Body=picture_request.content,

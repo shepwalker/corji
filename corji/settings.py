@@ -12,7 +12,6 @@ class Config(object):
     REMOTE_CACHE_RETRIEVE = True if (os.getenv('REMOTE_CACHE_RETRIEVE') == "TRUE") else False
     REMOTE_CACHE_POPULATE = True if (os.getenv('REMOTE_CACHE_POPULATE') == "TRUE") else False
 
-
     # Operational variables.
     LOG_NAME = os.getenv('LOG_NAME', 'corji.log')
     LOG_PATH = os.getenv('LOG_PATH', './.logs')
@@ -21,7 +20,7 @@ class Config(object):
     # Frontend variables.
     GOOGLE_ANALYTICS_ID = os.getenv('GOOGLE_ANALYTICS_ID', '')
 
-    # AWS variables.    
+    # AWS variables.
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', 'SUPER_NOT_VALID_KEY')
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'SUPER_NOT_VALID_SECRET')
     AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION', 'SUPER_NOT_VALID_REGION')
