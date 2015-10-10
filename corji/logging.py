@@ -19,7 +19,7 @@ ERROR being used for errors (though not actually logging this well yet)
 
 
 # TODO: Actually make this a class.
-def Logger(app, log_path, log_name):
+def Logger(logger_name, log_path, log_name):
     if not os.path.exists(log_path):
         try:
             os.makedirs(log_path)
@@ -30,14 +30,13 @@ def Logger(app, log_path, log_name):
     qualified_log_name = log_path + '/' + log_name
     file_handler = TimedRotatingFileHandler(qualified_log_name, 'midnight', 1)
     file_handler.setFormatter(
-        logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s'))
-    file_handler.setLevel(logging.INFO)
-    logger = app.logger
+        logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s %(filename)s %(funcName)s %(lineno)d'))
+    file_handler.setLevel(logging.DEBUG)
+    logger = logging.getLogger(logger_name)
     logger.addHandler(file_handler)
-    logger.setLevel(logging.INFO)
-    if app.debug:
-        local_handler = logging.StreamHandler(sys.stdout)
-        logger.addHandler(local_handler)
+    logger.setLevel(logging.DEBUG)
+    local_handler = logging.StreamHandler(sys.stdout)
+    logger.addHandler(local_handler)
     return logger
 
 
