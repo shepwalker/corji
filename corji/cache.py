@@ -17,7 +17,7 @@ if (Config.REMOTE_CACHE_POPULATE or
     Config.REMOTE_CACHE_RETRIEVE):
     aws_s3_client = boto3.client("s3")
     all_objects = aws_s3_client.list_objects(
-        Bucket = Config.AWS_S3_CACHE_BUCKET_NAME)
+        Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
 
 def put_in_remote_cache(corgis):
