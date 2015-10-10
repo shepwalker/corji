@@ -1,3 +1,9 @@
+deployment:
+  production:
+    branch: master
+    commands:
+      - bash ./setup-eb.sh
+      - eb deploy
 machine:
   python:
     version: 3.4.2

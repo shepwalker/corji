@@ -1,0 +1,10 @@
+branch-defaults:
+  master:
+    environment: corji-dev
+global:
+  application_name: corji
+  default_ec2_keyname: pug&chalice
+  default_platform: Python 3.4
+  default_region: us-west-1
+  profile: eb-cli
+  sc: git
