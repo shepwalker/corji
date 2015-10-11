@@ -6,7 +6,6 @@ from flask import (
     Flask,
     render_template,
     request,
-    url_for,
 )
 import twilio.twiml
 
@@ -33,6 +32,16 @@ logger = Logger(app.logger_name,
 corgis = data_sources.load_from_spreadsheet(settings.Config.SPREADSHEET_URL)
 
 
+def create_response(text, image_url=None):
+    """Crafts a TwiML response using the supplied text and image."""
+    resp = twilio.twiml.Response()
+    with resp.message(text) as m:
+        if image_url:
+            m.media(image_url)
+
+    return str(resp)
+
+
 @app.route("/sms/<original_emoji>", methods=['GET'])
 @logged_view(logger)
 def get_corgi(original_emoji):
@@ -40,9 +49,9 @@ def get_corgi(original_emoji):
 
     message = ""
     emoji = original_emoji
+
     # If it's a multi-emoji that we don't track, just grab the first emoji.
     if len(emoji) > 1 and emoji not in corgis.keys():
-
         emoji = original_emoji[0]
 
         # Check for skin-toned emojis.
@@ -52,45 +61,33 @@ def get_corgi(original_emoji):
                                       requested_emoji=original_emoji,
                                       fallback_emoji=emoji)
 
-    try:
-        if settings.Config.REMOTE_CACHE_RETRIEVE:
-            try:
-                possible_corji_path = cache.get_from_remote_cache(emoji)
-            except CorgiNotFoundException as e:
-                possible_corji_path = corgis[emoji]
-        else:
-            possible_corji_path = corgis[emoji]
+    # Time to grab the filepath for the emoji!
+    possible_corji_path = None
 
-        if not possible_corji_path:
-            raise CorgiNotFoundException("Do not have a corgi for emoji: " + emoji)
-    except CorgiNotFoundException as e:
-        logger.error(e)
-        logger.warn("Corji not found for emoji %s", emoji)
-        logger.info("Attempting fallback to remote URL.")
+    # First we'll try using S3.
+    if settings.Config.REMOTE_CACHE_RETRIEVE:
+        try:
+            possible_corji_path = cache.get_from_remote_cache(emoji)
+        except CorgiNotFoundException as e:
+            logger.error(e)
+            logger.warn("Corji not found for emoji %s", emoji)
 
-        # Add a random emoji instead of just a sadface.
+    # Then we'll try using the external copy.
+    if not possible_corji_path:
+        possible_corji_path = corgis[emoji]
+
+    # If that still doesn't work, we'll just grab a random one.
+    if not possible_corji_path:
+        logger.warn("Couldn't find corji for {} to remote URL. Using random one.".format(
+                    emoji))
         possible_emojis = [e for e in corgis.keys() if corgis[e] != '']
-        random_emoji = random.choice(possible_emojis)
+        emoji = random.choice(possible_emojis)
         message = render_template('txt/requested_emoji_does_not_exist.txt',
                                   requested_emoji=original_emoji,
-                                  fallback_emoji=random_emoji)
-        possible_corji_path = corgis[random_emoji]
+                                  fallback_emoji=emoji)
+        possible_corji_path = corgis[emoji]
 
-    # Only append base URL if it's a local path.
-    if "http" not in possible_corji_path:
-        # Remove the trailing slash since we're appending a relative URL.
-        base_url = request.url_root[:-1]
-
-        image_path = url_for('get_image', file_name=possible_corji_path)
-        absolute_image_url = base_url + image_path
-    else:
-        absolute_image_url = possible_corji_path
-
-    resp = twilio.twiml.Response()
-    with resp.message(message) as m:
-        m.media(absolute_image_url)
-
-    return str(resp)
+    return create_response(message, image_url=possible_corji_path)
 
 
 @app.route("/sms", methods=['GET', 'POST'])
@@ -116,12 +113,7 @@ def corgi():
 def fallback():
     """Fallback to be called when something else errors."""
     message = render_template('txt/request_failed_fallback.txt')
-    resp = twilio.twiml.Response()
-    with resp.message(message) as m:
-        # Hardcoded since, you know, SPOFs are bad.
-        m.media(settings.Config.FALLBACK_IMAGE)
-
-    return str(resp)
+    return create_response(message, image_url=settings.Config.FALLBACK_IMAGE)
 
 
 @app.route("/", methods=['GET'])
