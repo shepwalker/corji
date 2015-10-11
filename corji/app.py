@@ -112,7 +112,7 @@ def corgi():
     return str(resp)
 
 
-@app.route("/sms/fallback", methods=['GET'])
+@app.route("/sms/fallback", methods=['GET', 'POST'])
 def fallback():
     """Fallback to be called when something else errors."""
     message = render_template('txt/request_failed_fallback.txt')
