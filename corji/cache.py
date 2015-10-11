@@ -44,7 +44,7 @@ def put_in_remote_cache(corgis):
 
             else:
                 logger.debug("%s found in remote cache. Skipping", i)
-        except (HTTPError, ConnectionError) as e:
+        except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
             logger.error(
                 "Http error occurred while creating remote cache on %s", i, e)
 
