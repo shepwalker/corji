@@ -36,7 +36,7 @@ def put_all(corgis):
         else:
             possible_s3_entry = None
         try:
-            if not False:
+            if not possible_s3_entry:
                 logger.debug("Adding %s to remote cache", i)
                 logger.debug("Downloading corgi %s in prep for remote cache", i)
                 picture_request = requests.get(corgi)
