@@ -12,8 +12,10 @@ import twilio.twiml
 # Why yes, this *is* janky as hell.  Needed to avoid circular imports.
 app = Flask(__name__)
 
-import corji.cache as cache
-import corji.data_sources as data_sources
+from corji.data_sources import (
+    google_spreadsheets,
+    s3
+)
 from corji.exceptions import CorgiNotFoundException
 from corji.logging import Logger, logged_view
 import corji.settings as settings
@@ -29,7 +31,7 @@ logger = Logger(app.logger_name,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
 
-corgis = data_sources.load_from_spreadsheet(settings.Config.SPREADSHEET_URL)
+corgis = google_spreadsheets.get_all(settings.Config.SPREADSHEET_URL)
 
 
 def create_response(text, image_url=None):
@@ -67,7 +69,7 @@ def get_corgi(original_emoji):
     # First we'll try using S3.
     if settings.Config.REMOTE_CACHE_RETRIEVE:
         try:
-            possible_corji_path = cache.get_from_remote_cache(emoji)
+            possible_corji_path = s3.get(emoji)
         except CorgiNotFoundException as e:
             logger.error(e)
             logger.warn("Corji not found for emoji %s", emoji)
