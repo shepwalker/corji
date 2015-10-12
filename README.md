@@ -1,5 +1,5 @@
 # Corji
-A distributed\*, resilient\*, high-availability\* CDN (Corgi Delivery Network) using SMS as a transport layer.
+A distributed\*, resilient\*, high-availability\* CDN (Corgi Delivery Network) using SMS as a transport layer.  Check it out live [here](http://corji.club).
 
 ![A corgi!](http://media.giphy.com/media/KY7SQGKthgplm/giphy.gif)
 
@@ -7,7 +7,7 @@ A distributed\*, resilient\*, high-availability\* CDN (Corgi Delivery Network) u
 
 ## The Stack
 
-We're using [Flask](http://flask.pocoo.org/) to deliver TwiML via [Twilio](http://twilio.com).  The images are stored in an external Google Spreadsheet.  All of this is cached locally on a Heroku instance.
+We're using [Flask](http://flask.pocoo.org/) to deliver TwiML via [Twilio](http://twilio.com).  The images are stored in an external Google Spreadsheet.  All of this is cached locally on an EC2 instance (serving images via S3 and Cloudfront.)
 
 ## The API
 
@@ -21,12 +21,22 @@ We're using [Flask](http://flask.pocoo.org/) to deliver TwiML via [Twilio](http:
 
 - [x] MVP
 - [x] Remote data storage
-- [ ] Support for emoticons
+- [x] Support for emoticons
 - [ ] Support for multiple corgis per emoji.
-- [ ] Actual frontend
+- [x] Actual frontend
 - [ ] Logging and metrics
-- [ ] Testing + CI.
+- [x] Testing + CI.
+
+Stuff we'll do in the far off future:
+
+- [ ] expose a REST API
+- [ ] allow user submissions
+- [ ] better use of static HTML
 
 ## Testing
 
 Execute tests using `nosetest`.
+
+Coverage should be > 70%.
+
+Pray for rain.

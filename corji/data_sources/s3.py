@@ -18,11 +18,11 @@ from corji.utils import (
 
 logger = logging.getLogger(Config.LOGGER_NAME)
 
-aws_s3_client = boto3.client("s3")
-all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
+def put_all(corgis):
+    aws_s3_client = boto3.client("s3")
+    all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
-def put_in_remote_cache(corgis):
     cacheable_corgis = [corgi for corgi in corgis if corgis[corgi]]
     for i in cacheable_corgis:
         corgi = corgis[i]
@@ -41,7 +41,7 @@ def put_in_remote_cache(corgis):
                 logger.debug("Downloading corgi %s in prep for remote cache", i)
                 picture_request = requests.get(corgi)
                 logger.debug("Adding %s to remote cache", i)
-                content_type = get_content_type_header
+                content_type = get_content_type_header(picture_request)
                 
                 aws_s3_client.put_object(Body=picture_request.content,
                                          ContentType=content_type,
@@ -50,12 +50,13 @@ def put_in_remote_cache(corgis):
 
             else:
                 logger.debug("%s found in remote cache. Skipping", i)
-        except (HTTPError, ConnectionError, RequestsConnectionError) as e:
+
+        except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
             logger.error(
                 "Http error occurred while creating remote cache on %s", i, e)
 
 
-def get_from_remote_cache(raw_emoji):
+def get(raw_emoji):
     possible_s3_key = get_file_name_from_emoji(raw_emoji)
     possible_s3_entry = next(
         (item for item in all_objects['Contents'] if item['Key'] == possible_s3_key), None)

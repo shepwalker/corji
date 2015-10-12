@@ -18,6 +18,7 @@ def text_contains_emoji(text):
 
     return False
 
+
 def emoji_contains_skin_tone(text):
     # Naive check for a two-char string,
     # with the second char being the skin tone modifier.
@@ -35,9 +36,11 @@ def emoji_contains_skin_tone(text):
 
     return text[1] in skin_tone_characters
 
+
 def get_content_type_header(request):
     detected_content_type = imghdr.what("blerg", h=request.content)
-    content_header = detected_to_header_mapping.get(detected_content_type, None)
+    content_header = detected_to_header_mapping.get(
+        detected_content_type, None)
     if not content_header:
         if request.headers['content-type'] in accepted_mime_types:
             return request.headers['content-type']
@@ -45,7 +48,6 @@ def get_content_type_header(request):
             return 'image/jpeg'
     else:
         return content_header
-
 
 
 emojis_for_emoticons = {
@@ -67,10 +69,11 @@ emojis_for_emoticons = {
     '>_<': '😣',
     'B-)': '😎'
 }
+
 accepted_mime_types = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif']
 
 detected_to_header_mapping = {
     'jpeg': 'image/jpeg',
-    'png' : 'image/png',
-    'gif' : 'image/gif'
+    'png': 'image/png',
+    'gif': 'image/gif'
 }
