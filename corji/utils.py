@@ -37,18 +37,20 @@ def emoji_contains_skin_tone(text):
     return text[1] in skin_tone_characters
 
 
-def get_content_type_header(request):
-    detected_content_type = imghdr.what("blerg", h=request.content)
+def get_content_type_header(response):
+    #Given a requests response from an image download, attempts to 
+    #determine the proper content-type header. Falls back to image/jpeg
+    #if valid header can't be found.
+    detected_content_type = imghdr.what("blerg", h=response.content)
     content_header = detected_to_header_mapping.get(
         detected_content_type, None)
     if not content_header:
-        if request.headers['content-type'] in accepted_mime_types:
-            return request.headers['content-type']
+        if response.headers['content-type'] in accepted_mime_types:
+            return response.headers['content-type']
         else:
             return 'image/jpeg'
     else:
         return content_header
-
 
 emojis_for_emoticons = {
     ':D': '😀',
