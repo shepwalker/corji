@@ -18,12 +18,18 @@ from corji.utils import (
 
 logger = logging.getLogger(Config.LOGGER_NAME)
 
-aws_s3_client = boto3.client("s3")
-all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
+
+aws_s3_client = None
+all_objects = []
+
+
+def load():
+    global aws_s3_client, all_objects
+    aws_s3_client = boto3.client("s3")
+    all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
 
 def put_all(corgis):
-   
     cacheable_corgis = [corgi for corgi in corgis if corgis[corgi]]
     for i in cacheable_corgis:
         corgi = corgis[i]

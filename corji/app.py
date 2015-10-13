@@ -31,7 +31,8 @@ logger = Logger(app.logger_name,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
 
-corgis = google_spreadsheets.get_all(settings.Config.SPREADSHEET_URL)
+google_spreadsheets.load(settings.Config.SPREADSHEET_URL)
+s3.load()
 
 
 def create_response(text, image_url=None):
@@ -53,7 +54,7 @@ def get_corgi(original_emoji):
     emoji = original_emoji
 
     # If it's a multi-emoji that we don't track, just grab the first emoji.
-    if len(emoji) > 1 and emoji not in corgis.keys():
+    if len(emoji) > 1 and emoji not in google_spreadsheets.keys():
         emoji = original_emoji[0]
 
         # Check for skin-toned emojis.
@@ -76,18 +77,18 @@ def get_corgi(original_emoji):
 
     # Then we'll try using the external copy.
     if not possible_corji_path:
-        possible_corji_path = corgis[emoji]
+        possible_corji_path = google_spreadsheets.get(emoji)
 
     # If that still doesn't work, we'll just grab a random one.
     if not possible_corji_path:
         logger.warn("Couldn't find corji for {} to remote URL. Using random one.".format(
                     emoji))
-        possible_emojis = [e for e in corgis.keys() if corgis[e] != '']
+        possible_emojis = google_spreadsheets.keys()
         emoji = random.choice(possible_emojis)
         message = render_template('txt/requested_emoji_does_not_exist.txt',
                                   requested_emoji=original_emoji,
                                   fallback_emoji=emoji)
-        possible_corji_path = corgis[emoji]
+        possible_corji_path = google_spreadsheets.get(emoji)
 
     return create_response(message, image_url=possible_corji_path)
 
