@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+import imghdr
 
 import emoji
 
@@ -35,6 +36,22 @@ def emoji_contains_skin_tone(text):
 
     return text[1] in skin_tone_characters
 
+
+def get_content_type_header(response):
+    #Given a requests response from an image download, attempts to 
+    #determine the proper content-type header. Falls back to image/jpeg
+    #if valid header can't be found.
+    detected_content_type = imghdr.what("blerg", h=response.content)
+    content_header = detected_to_header_mapping.get(
+        detected_content_type, None)
+    if not content_header:
+        if response.headers['content-type'] in accepted_mime_types:
+            return response.headers['content-type']
+        else:
+            return 'image/jpeg'
+    else:
+        return content_header
+
 emojis_for_emoticons = {
     ':D': '😀',
     ':)': '😊',
@@ -53,4 +70,12 @@ emojis_for_emoticons = {
     '^_^': '😸',
     '>_<': '😣',
     'B-)': '😎'
+}
+
+accepted_mime_types = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif']
+
+detected_to_header_mapping = {
+    'jpeg': 'image/jpeg',
+    'png': 'image/png',
+    'gif': 'image/gif'
 }

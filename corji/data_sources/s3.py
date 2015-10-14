@@ -8,11 +8,16 @@ import boto3.s3
 from botocore.vendored.requests.exceptions import ConnectionError
 import emoji
 import requests
+from requests.exceptions import ConnectionError as RequestsConnectionError
 
 from corji.exceptions import CorgiNotFoundException
 from corji.settings import Config
+from corji.utils import (
+    get_content_type_header
+)
 
 logger = logging.getLogger(Config.LOGGER_NAME)
+
 
 aws_s3_client = None
 all_objects = []
@@ -43,13 +48,16 @@ def put_all(corgis):
                 logger.debug("Downloading corgi %s in prep for remote cache", i)
                 picture_request = requests.get(corgi)
                 logger.debug("Adding %s to remote cache", i)
+                content_type = get_content_type_header(picture_request)
+                
                 aws_s3_client.put_object(Body=picture_request.content,
-                                         ContentType="image/jpeg",
+                                         ContentType=content_type,
                                          Key=s3_key,
                                          Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
             else:
                 logger.debug("%s found in remote cache. Skipping", i)
+
         except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
             logger.error(
                 "Http error occurred while creating remote cache on %s", i, e)
