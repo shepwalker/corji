@@ -30,8 +30,9 @@ class AppTestCase(unittest.TestCase):
         assert 'http' in str(response.data)
 
     def test_happy_case_emoji(self):
-        response = self.send_message_with_body('😀')
+        response = self.send_message_with_body('🌈')
         assert 'http' in str(response.data)
+        assert ':(' not in str(response.data)
 
     def test_skin_tone_emoji(self):
         response = self.send_message_with_body('🙏🏾')

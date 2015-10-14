@@ -32,7 +32,9 @@ logger = Logger(app.logger_name,
                 settings.Config.LOG_NAME)
 
 google_spreadsheets.load(settings.Config.SPREADSHEET_URL)
-s3.load()
+
+if settings.Config.REMOTE_CACHE_RETRIEVE:
+    s3.load()
 
 
 def create_response(text, image_url=None):
