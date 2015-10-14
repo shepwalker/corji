@@ -38,9 +38,9 @@ def emoji_contains_skin_tone(text):
 
 
 def get_content_type_header(response):
-    #Given a requests response from an image download, attempts to 
-    #determine the proper content-type header. Falls back to image/jpeg
-    #if valid header can't be found.
+    """Given a requests response from an image download, attempts to
+    determine the proper content-type header. Falls back to image/jpeg
+    if valid header can't be found."""
     detected_content_type = imghdr.what("blerg", h=response.content)
     content_header = detected_to_header_mapping.get(
         detected_content_type, None)

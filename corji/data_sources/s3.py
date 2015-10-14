@@ -29,6 +29,8 @@ def load():
     all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
 
+# TODO: delete_all()
+# TODO: Also create put().
 def put_all(corgis):
     cacheable_corgis = [corgi for corgi in corgis if corgis[corgi]]
     for i in cacheable_corgis:
@@ -49,7 +51,7 @@ def put_all(corgis):
                 picture_request = requests.get(corgi)
                 logger.debug("Adding %s to remote cache", i)
                 content_type = get_content_type_header(picture_request)
-                
+
                 aws_s3_client.put_object(Body=picture_request.content,
                                          ContentType=content_type,
                                          Key=s3_key,
