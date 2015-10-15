@@ -6,8 +6,8 @@ import requests
 
 from corji.utils import (
     emoji_contains_skin_tone,
-    text_contains_emoji, 
-    get_content_type_header
+    get_content_type_header,
+    text_contains_emoji
 )
 
 
