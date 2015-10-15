@@ -28,13 +28,14 @@ def load():
     global aws_s3_client, all_objects
     aws_s3_client = boto3.client("s3")
     all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
-    for obj in all_objects:
+    for obj in all_objects['Contents']:
         possible_url = aws_s3_client.generate_presigned_url(
-            'get_object', Params={'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
-                                  'Key': obj[key], 
-                                  'ExpiresIn': 31540000, }
+            'get_object', ExpiresIn = 31540000, Params={
+                                'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
+                                'Key': obj['Key'], 
+                                  }
         )
-        all_objects[obj[key]] = possible_url
+        all_objects[obj['Key']] = possible_url
 
 # TODO: delete_all()
 # TODO: Also create put().
@@ -80,10 +81,7 @@ def get_all(raw_emoji):
     if possible_s3_entries:
         urls = []
         for entry in possible_s3_entries:
-            url = aws_s3_client.generate_presigned_url(
-                'get_object', Params={'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
-                                      'Key': entry['Key']}
-            )
+            url = all_objects[entry['Key']]
             urls.append(url)
         return urls
     else:
