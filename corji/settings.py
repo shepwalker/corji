@@ -11,6 +11,8 @@ class Config(object):
     SPREADSHEET_URL = os.getenv('SPREADSHEET_URL', '')
     REMOTE_CACHE_RETRIEVE = True if (os.getenv('REMOTE_CACHE_RETRIEVE') == "TRUE") else False
     REMOTE_CACHE_POPULATE = True if (os.getenv('REMOTE_CACHE_POPULATE') == "TRUE") else False
+    IMAGE_RESIZE = True if (os.getenv('IMAGE_RESIZE') == "TRUE") else False
+    IMAGE_RESIZE_PIXELS = os.getenv('IMAGE_RESIZE_PIXELS', 300)
 
     # Operational variables.
     LOG_NAME = os.getenv('LOG_NAME', 'corji.log')

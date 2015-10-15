@@ -3,18 +3,21 @@ import logging
 import random
 from urllib.error import HTTPError
 
+from io import BytesIO
 
 import boto3
 import boto3.s3
 from botocore.vendored.requests.exceptions import ConnectionError
 import emoji
+from PIL import Image
 import requests
 from requests.exceptions import ConnectionError as RequestsConnectionError
 
 from corji.exceptions import CorgiNotFoundException
 from corji.settings import Config
 from corji.utils import (
-    get_content_type_header
+    get_content_type_header,
+    return_image_binary
 )
 
 logger = logging.getLogger(Config.LOGGER_NAME)
@@ -24,21 +27,25 @@ aws_s3_client = None
 all_objects = []
 pre_auth_URLS = {}
 
+
 def load():
     global aws_s3_client, all_objects
     aws_s3_client = boto3.client("s3")
-    all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
+    all_objects = aws_s3_client.list_objects(
+        Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
     for obj in all_objects['Contents']:
         possible_url = aws_s3_client.generate_presigned_url(
-            'get_object', ExpiresIn = 31540000, Params={
-                                'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
-                                'Key': obj['Key'], 
-                                  }
+            'get_object', ExpiresIn=31540000, Params={
+                'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
+                'Key': obj['Key'],
+            }
         )
-        all_objects[obj['Key']] = possible_url
+        pre_auth_URLS[obj['Key']] = possible_url
 
 # TODO: delete_all()
 # TODO: Also create put().
+
+
 def put_all(corgis):
     cacheable_corgis = [corgi for corgi in corgis if corgis[corgi]]
     for emoji in cacheable_corgis:
@@ -56,12 +63,17 @@ def put_all(corgis):
             try:
                 if not possible_s3_entry:
                     logger.debug("Adding %s to remote cache", s3_key)
-                    logger.debug("Downloading corgi %s in prep for remote cache", corgi)
+                    logger.debug(
+                        "Downloading corgi %s in prep for remote cache", corgi)
                     picture_request = requests.get(corgi)
-                    logger.debug("Adding %s to remote cache", s3_key)
-                    content_type = get_content_type_header(picture_request)
+                    image_data = return_image_binary(picture_request)
 
-                    aws_s3_client.put_object(Body=picture_request.content,
+                    picture_body = image_data[0]
+                    content_type = image_data[1]
+
+                    logger.debug("Adding %s to remote cache", s3_key)
+
+                    aws_s3_client.put_object(Body=picture_body,
                                              ContentType=content_type,
                                              Key=s3_key,
                                              Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
@@ -72,21 +84,25 @@ def put_all(corgis):
             except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
                 logger.error(
                     "Http error occurred while creating remote cache on %s", s3_key, e)
+            except (OSError) as e:
+                logger.error("OSError Occurred during resizing", e)
 
 
 def get_all(raw_emoji):
     folder_name = emoji.demojize(raw_emoji).replace(":", "")
-    possible_s3_entries = [item for item in all_objects['Contents'] if folder_name in item['Key']]
+    possible_s3_entries = [
+        item for item in all_objects['Contents'] if folder_name in item['Key']]
 
     if possible_s3_entries:
         urls = []
         for entry in possible_s3_entries:
-            url = all_objects[entry['Key']]
+            url = pre_auth_URLS[entry['Key']]
             urls.append(url)
         return urls
     else:
         raise CorgiNotFoundException("Corgi not found in remote store for emoji: {}"
                                      .format(raw_emoji))
+
 
 def get(emoji):
     """Returns just one corgi for a given emoji."""
