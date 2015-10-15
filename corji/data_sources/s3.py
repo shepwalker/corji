@@ -21,13 +21,19 @@ logger = logging.getLogger(Config.LOGGER_NAME)
 
 aws_s3_client = None
 all_objects = []
-
+pre_auth_URLS = {}
 
 def load():
     global aws_s3_client, all_objects
     aws_s3_client = boto3.client("s3")
     all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
-
+    for obj in all_objects:
+        possible_url = aws_s3_client.generate_presigned_url(
+            'get_object', Params={'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
+                                  'Key': obj[key], 
+                                  'ExpiresIn': 31540000, }
+        )
+        all_objects[obj[key]] = possible_url
 
 def put_all(corgis):
     cacheable_corgis = [corgi for corgi in corgis if corgis[corgi]]
