@@ -1,9 +1,8 @@
 # This Python file uses the following encoding: utf-8
+from io import BytesIO
 import logging
 import random
 from urllib.error import HTTPError
-
-from io import BytesIO
 
 import boto3
 import boto3.s3
@@ -17,7 +16,7 @@ from corji.exceptions import CorgiNotFoundException
 from corji.settings import Config
 from corji.utils import (
     get_content_type_header,
-    return_image_binary
+    resize_image
 )
 
 logger = logging.getLogger(Config.LOGGER_NAME)
@@ -66,11 +65,23 @@ def put_all(corgis):
                     logger.debug(
                         "Downloading corgi %s in prep for remote cache", corgi)
                     picture_request = requests.get(corgi)
-                    image_data = return_image_binary(picture_request)
+                    picture_body = None
+                    content_type = None
+                    if Config.IMAGE_RESIZE:
+                            file_photodata = BytesIO(picture_request.content)
+                            working_image = Image.open(file_photodata)
+                            #width, length
+                            original_width = working_image.size[0]
+                            original_length = working_image.size[1]
 
-                    picture_body = image_data[0]
-                    content_type = image_data[1]
-
+                            if original_width > Config.IMAGE_RESIZE_PIXELS:
+                                picture_body = resize_image(picture_request.content)
+                                content_type = "image/jpeg"
+                    
+                    if not picture_body:
+                        content_type = get_content_type_header(picture_request)
+                        picture_body = picture_request.content
+                    
                     logger.debug("Adding %s to remote cache", s3_key)
 
                     aws_s3_client.put_object(Body=picture_body,
@@ -84,7 +95,7 @@ def put_all(corgis):
             except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
                 logger.error(
                     "Http error occurred while creating remote cache on %s", s3_key, e)
-            except (OSError) as e:
+            except OSError as e:
                 logger.error("OSError Occurred during resizing", e)
 
 
@@ -96,7 +107,12 @@ def get_all(raw_emoji):
     if possible_s3_entries:
         urls = []
         for entry in possible_s3_entries:
-            url = pre_auth_URLS[entry['Key']]
+            url = pre_auth_URLS.get(entry['Key'], None)
+            if not url:
+                url = aws_s3_client.generate_presigned_url(
+                'get_object', Params={'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
+                                     'Key': entry['Key']}
+                )
             urls.append(url)
         return urls
     else:
