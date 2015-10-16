@@ -12,27 +12,23 @@ import twilio.twiml
 # Why yes, this *is* janky as hell.  Needed to avoid circular imports.
 app = Flask(__name__)
 
+from corji.api import CorgiResource
 from corji.data_sources import (
-    google_spreadsheets,
-    s3
+    google_spreadsheets
 )
-from corji.exceptions import CorgiNotFoundException
 from corji.logging import Logger, logged_view
 import corji.settings as settings
 from corji.utils import (
     emojis_for_emoticons,
-    emoji_contains_skin_tone,
     text_contains_emoji
 )
 
 app.config.from_object('corji.settings.Config')
 
+api = CorgiResource()
 logger = Logger(app.logger_name,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)
-
-google_spreadsheets.load(settings.Config.SPREADSHEET_URL)
-s3.load()
 
 
 def create_response(text, image_url=None):
@@ -53,34 +49,18 @@ def get_corgi(original_emoji):
     message = ""
     emoji = original_emoji
 
+    corgi_urls = api.get(emoji=emoji)["results"]
+
     # If it's a multi-emoji that we don't track, just grab the first emoji.
-    if len(emoji) > 1 and emoji not in google_spreadsheets.keys():
+    if len(emoji) > 1 and not corgi_urls:
         emoji = original_emoji[0]
-
-        # Check for skin-toned emojis.
-        # (This only handles the one-emoji case for now.)
-        if not emoji_contains_skin_tone(original_emoji):
-            message = render_template('txt/requested_emoji_does_not_exist.txt',
-                                      requested_emoji=original_emoji,
-                                      fallback_emoji=emoji)
-
-    # Time to grab the filepath for the emoji!
-    possible_corji_path = None
-
-    # First we'll try using S3.
-    if settings.Config.REMOTE_CACHE_RETRIEVE:
-        try:
-            possible_corji_path = s3.get(emoji)
-        except CorgiNotFoundException as e:
-            logger.error(e)
-            logger.warn("Corji not found for emoji %s", emoji)
-
-    # Then we'll try using the external copy.
-    if not possible_corji_path:
-        possible_corji_path = google_spreadsheets.get(emoji)
+        message = render_template('txt/requested_emoji_does_not_exist.txt',
+                                  requested_emoji=original_emoji,
+                                  fallback_emoji=emoji)
+        corgi_urls = api.get(emoji=emoji)["results"]
 
     # If that still doesn't work, we'll just grab a random one.
-    if not possible_corji_path:
+    if not corgi_urls:
         logger.warn("Couldn't find corji for {} to remote URL. Using random one.".format(
                     emoji))
         possible_emojis = google_spreadsheets.keys()
@@ -88,9 +68,12 @@ def get_corgi(original_emoji):
         message = render_template('txt/requested_emoji_does_not_exist.txt',
                                   requested_emoji=original_emoji,
                                   fallback_emoji=emoji)
-        possible_corji_path = google_spreadsheets.get(emoji)
+        corgi_urls = api.get(emoji=emoji)["results"]
 
-    return create_response(message, image_url=possible_corji_path)
+    # TODO: more sophisticated mechanism of choosing from multiple images.
+    corgi_url = random.choice(corgi_urls)
+
+    return create_response(message, image_url=corgi_url)
 
 
 @app.route("/sms", methods=['GET', 'POST'])
@@ -107,9 +90,7 @@ def corgi():
         return get_corgi(emoji)
 
     message = render_template('txt/request_does_not_contain_emoji.txt')
-    resp = twilio.twiml.Response()
-    resp.message(message)
-    return str(resp)
+    return create_response(message)
 
 
 @app.route("/sms/fallback", methods=['GET', 'POST'])

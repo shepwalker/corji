@@ -3,6 +3,7 @@ boto3
 coverage
 emoji
 flask
+flask_restful
 gunicorn
 nose
 requests==2.6.1 # Needed for awsebcli.
