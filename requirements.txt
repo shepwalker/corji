@@ -6,5 +6,6 @@ flask
 gunicorn
 nose
 requests==2.6.1 # Needed for awsebcli.
+tabulate
 twilio
 uwsgi

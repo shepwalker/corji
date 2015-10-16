@@ -20,8 +20,8 @@ def load(url):
             row['gsx$url2']['$t'],
             row['gsx$url3']['$t']
         ]))
-        if len(urls) > 0:
-            corgis[emoji] = urls
+        
+        corgis[emoji] = urls
 
 
 def get_all(emoji):
@@ -37,5 +37,8 @@ def get(emoji):
         return None
 
 
-def keys():
-    return list(corgis.keys())
+def keys(include_empty_keys=False):
+    if include_empty_keys:
+        return list(corgis.keys())
+
+    return list([corgi for corgi in corgis.keys() if len(corgis[corgi])])
