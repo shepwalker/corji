@@ -1,6 +1,6 @@
 # This Python file uses the following encoding: utf-8
-from io import BytesIO
 import imghdr
+from io import BytesIO
 
 import emoji
 from PIL import Image
