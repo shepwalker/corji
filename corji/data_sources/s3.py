@@ -32,14 +32,15 @@ def load():
     aws_s3_client = boto3.client("s3")
     all_objects = aws_s3_client.list_objects(
         Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
-    for obj in all_objects['Contents']:
-        possible_url = aws_s3_client.generate_presigned_url(
-            'get_object', ExpiresIn=31540000, Params={
-                'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
-                'Key': obj['Key'],
-            }
-        )
-        pre_auth_URLS[obj['Key']] = possible_url
+    if 'Contents' in all_objects:
+        for obj in all_objects['Contents']:
+            possible_url = aws_s3_client.generate_presigned_url(
+                'get_object', ExpiresIn=31540000, Params={
+                    'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
+                    'Key': obj['Key'],
+                }
+            )
+            pre_auth_URLS[obj['Key']] = possible_url
 
 # TODO: delete_all()
 # TODO: Also create put().
@@ -72,7 +73,7 @@ def put_all(corgis):
                             working_image = Image.open(file_photodata)
                             #width, length
                             original_width = working_image.size[0]
-                            original_length = working_image.size[1]
+                            
 
                             if original_width > Config.IMAGE_RESIZE_PIXELS:
                                 picture_body = resize_image(picture_request.content)
