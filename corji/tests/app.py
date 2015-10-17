@@ -52,6 +52,16 @@ class AppTestCase(unittest.TestCase):
         assert string_contains_image(response.data)
         assert ':(' not in str(response.data)
 
+    def test_trailing_whitespace_should_be_stripped(self):
+        response = self.send_message_with_body('🌈  ')
+        assert 'http' in str(response.data)
+        assert ':(' not in str(response.data)
+
+    def test_leading_whitespace_should_be_stripped(self):
+        response = self.send_message_with_body('    🌈')
+        assert 'http' in str(response.data)
+        assert ':(' not in str(response.data)
+
 
 def string_contains_image(image_string):
     return (
