@@ -12,6 +12,7 @@ import twilio.twiml
 # Why yes, this *is* janky as hell.  Needed to avoid circular imports.
 app = Flask(__name__)
 
+import corji.customer_data as customer_data
 from corji.data_sources import (
     google_spreadsheets,
     s3
@@ -99,7 +100,15 @@ def get_corgi(original_emoji):
 @logged_view(logger)
 def corgi():
     """Respond to incoming calls with a simple text message."""
+    phone_number = request.values.get("From") or ""
     text = request.values.get("Body") or ""
+
+    # Keep track of phone numbers.
+    customer = customer_data.get(phone_number)
+    if not customer:
+        customer_data.new(phone_number)
+    else:
+        customer_data.increment_consumptions(phone_number)
 
     # Let's just ignore trailing whitespace.
     text = text.strip()

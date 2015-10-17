@@ -21,7 +21,7 @@ class AppTestCase(unittest.TestCase):
         assert True
 
     def test_fallback_message(self):
-        response = self.app.get('/sms')
+        response = self.send_message_with_body("")
         assert 'Welcome to Corji' in str(response.data)
 
     def test_failure_fallback(self):
@@ -38,7 +38,10 @@ class AppTestCase(unittest.TestCase):
         response = self.send_message_with_body('🙏🏾')
         base_response = self.send_message_with_body('🙏')
 
-        assert response.data == base_response.data
+        assert "https://corji.s3.amazonaws.com/person_with_folded_hands/01.jpg" in str(response.data)
+        assert "https://corji.s3.amazonaws.com/person_with_folded_hands/01.jpg" in str(base_response.data)
+        assert ":(" not in str(response.data)
+        assert ":(" not in str(base_response.data)
 
     def test_sad_case_emoji(self):
         response = self.send_message_with_body('🔶')
