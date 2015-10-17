@@ -101,6 +101,9 @@ def corgi():
     """Respond to incoming calls with a simple text message."""
     text = request.values.get("Body") or ""
 
+    # Let's just ignore trailing whitespace.
+    text = text.strip()
+
     if text_contains_emoji(text):
         return get_corgi(text)
 
