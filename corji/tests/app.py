@@ -38,8 +38,8 @@ class AppTestCase(unittest.TestCase):
         response = self.send_message_with_body('🙏🏾')
         base_response = self.send_message_with_body('🙏')
 
-        assert "https://corji.s3.amazonaws.com/person_with_folded_hands/01.jpg" in str(response.data)
-        assert "https://corji.s3.amazonaws.com/person_with_folded_hands/01.jpg" in str(base_response.data)
+        assert ".jpg" in str(response.data)
+        assert ".jpg" in str(base_response.data)
         assert ":(" not in str(response.data)
         assert ":(" not in str(base_response.data)
 
