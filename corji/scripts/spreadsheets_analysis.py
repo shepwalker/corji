@@ -1,5 +1,6 @@
 from collections import Counter
 
+import requests
 from tabulate import tabulate
 
 from corji.data_sources import google_spreadsheets
@@ -20,6 +21,11 @@ if __name__ == "__main__":
     keys = google_spreadsheets.keys(include_empty_keys=True)
     for emoji in keys:
         corgis = google_spreadsheets.get_all(emoji)
+        for corgi in corgis:
+            try:
+                requests.get(corgi)
+            except:
+                print("FAILURE: {}".format(corgi))
         corgi_counter[len(corgis)] += 1
 
     print(tabulate(corgi_counter.items(),

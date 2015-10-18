@@ -27,44 +27,50 @@ all_objects = []
 def load():
     global aws_s3_client, all_objects
     aws_s3_client = boto3.client("s3")
+    # TODO: silently fail if we don't have the thing.
     all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
 
 # TODO: delete_all()
-# TODO: Also create put().
 def put_all(corgis):
     cacheable_corgis = [corgi for corgi in corgis if corgis[corgi]]
     for emoji in cacheable_corgis:
-        corgi_list = corgis[emoji]
+        put(emoji, corgis)
 
-        for i, corgi in enumerate(corgi_list):
-            s3_key = get_file_name_from_emoji(i, emoji)
 
-            # see if this corgi already exists in s3 bucket
-            if 'Contents' in all_objects:
-                possible_s3_entry = next(
-                    (item for item in all_objects['Contents'] if item['Key'] == s3_key), None)
+def put(emoji, corgis):
+    corgi_list = corgis[emoji]
+
+    for i, corgi in enumerate(corgi_list):
+        s3_key = get_file_name_from_emoji(i, emoji)
+
+        # see if this corgi already exists in s3 bucket
+        if 'Contents' in all_objects:
+            possible_s3_entry = next(
+                (item for item in all_objects['Contents'] if item['Key'] == s3_key), None)
+        else:
+            possible_s3_entry = None
+        try:
+            if not possible_s3_entry:
+                logger.debug("Adding %s to remote cache", s3_key)
+                logger.debug("Downloading corgi %s in prep for remote cache", corgi)
+                picture_request = requests.get(corgi)
+                logger.debug("Adding %s to remote cache", s3_key)
+                content_type = get_content_type_header(picture_request)
+
+                aws_s3_client.put_object(Body=picture_request.content,
+                                         ContentType=content_type,
+                                         Key=s3_key,
+                                         Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
+
             else:
-                possible_s3_entry = None
-            try:
-                if not possible_s3_entry:
-                    logger.debug("Adding %s to remote cache", s3_key)
-                    logger.debug("Downloading corgi %s in prep for remote cache", corgi)
-                    picture_request = requests.get(corgi)
-                    logger.debug("Adding %s to remote cache", s3_key)
-                    content_type = get_content_type_header(picture_request)
+                logger.debug("%s found in remote cache. Skipping", s3_key)
 
-                    aws_s3_client.put_object(Body=picture_request.content,
-                                             ContentType=content_type,
-                                             Key=s3_key,
-                                             Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
+        except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
+            logger.error(
+                "Http error occurred while creating remote cache on %s", s3_key, e)
 
-                else:
-                    logger.debug("%s found in remote cache. Skipping", s3_key)
 
-            except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
-                logger.error(
-                    "Http error occurred while creating remote cache on %s", s3_key, e)
 
 
 def get_all(raw_emoji):
