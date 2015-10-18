@@ -14,6 +14,8 @@ class Config(object):
     SPREADSHEET_URL = os.getenv('SPREADSHEET_URL', '')
     REMOTE_CACHE_RETRIEVE = True if (os.getenv('REMOTE_CACHE_RETRIEVE') == "TRUE") else False
     REMOTE_CACHE_POPULATE = True if (os.getenv('REMOTE_CACHE_POPULATE') == "TRUE") else False
+    IMAGE_RESIZE = True if (os.getenv('IMAGE_RESIZE') == "TRUE") else False
+    IMAGE_RESIZE_PIXELS = os.getenv('IMAGE_RESIZE_PIXELS', 300)
 
     # Operational variables.
     LOG_NAME = os.getenv('LOG_NAME', 'corji.log')
@@ -28,3 +30,4 @@ class Config(object):
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'SUPER_NOT_VALID_SECRET')
     AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION', 'SUPER_NOT_VALID_REGION')
     AWS_S3_CACHE_BUCKET_NAME = os.getenv('AWS_S3_CACHE_BUCKET_NAME', 'SUPER_NOT_VALID_BUCKET')
+    AWS_PRELOAD_EXPIRATION_TIME = os.getenv('AWS_PRELOAD_EXPIRATION_TIME', 31540000)
