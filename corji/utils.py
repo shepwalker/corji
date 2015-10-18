@@ -19,6 +19,10 @@ def text_contains_emoji(text):
         if emoji.demojize(spaced_string) != spaced_string:
             return True
 
+    # Check for the numeric emoji things.
+    if emoji_is_numeric(text):
+        return True
+
     return False
 
 

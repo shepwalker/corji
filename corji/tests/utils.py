@@ -29,6 +29,7 @@ class UtilsTestCase(unittest.TestCase):
         assert text_contains_emoji("🏀asd")
         assert text_contains_emoji("asd🏀")
         assert text_contains_emoji("🇫🇷")
+        assert text_contains_emoji("3️⃣")
 
     def test_emoji_contains_skin_tone(self):
         assert not emoji_contains_skin_tone("🏀")
