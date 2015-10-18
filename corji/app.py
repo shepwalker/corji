@@ -104,9 +104,13 @@ def corgi():
     text = request.values.get("Body") or ""
 
     # Keep track of phone numbers.
+    # TODO: test this shit, ffs.
     customer = customer_data.get(phone_number)
     if not customer:
         customer_data.new(phone_number)
+    elif int(customer['consumptions']['N']) > 20:
+        # TODO: Don't make this so janky, but I still don't wanna be bankrupted.
+        return str(twilio.twiml.Response())
     else:
         customer_data.increment_consumptions(phone_number)
 
