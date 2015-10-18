@@ -137,6 +137,15 @@ def fallback():
     return create_response(message, image_url=settings.Config.FALLBACK_IMAGE)
 
 
+@app.route("/voice", methods=['GET', 'POST'])
+def voice():
+    """Corgis don't know how to use the phone!"""
+    message = render_template('txt/request_is_via_voice.txt')
+    resp = twilio.twiml.Response()
+    resp.say(message)
+    return str(resp)
+
+
 @app.route("/", methods=['GET'])
 def about():
     """Much hype.  Very disruptive.  Such blurb."""

@@ -29,6 +29,11 @@ class AppTestCase(unittest.TestCase):
         assert 'Sorry' in str(response.data)
         assert 'http' in str(response.data)
 
+    def test_voice_fallback(self):
+        response = self.app.get('/voice')
+        assert 'Try texting this number' in str(response.data)
+        assert 'Say' in str(response.data)
+
     def test_happy_case_emoji(self):
         response = self.send_message_with_body('🌈')
         assert 'http' in str(response.data)
