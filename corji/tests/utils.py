@@ -1,13 +1,17 @@
 # This Python file uses the following encoding: utf-8
-
+from io import BytesIO
+import os
 import unittest
+
+from PIL import Image
 
 import requests
 
 from corji.utils import (
     emoji_contains_skin_tone,
     get_content_type_header,
-    text_contains_emoji
+    text_contains_emoji, 
+    resize_image
 )
 
 
@@ -40,6 +44,16 @@ class UtilsTestCase(unittest.TestCase):
         assert jpg_header == "image/jpeg"
         assert png_header == "image/png"
         assert nonsense_header == "image/jpeg"
+
+    def test_image_resize(self):
+        os.environ["IMAGE_RESIZE_PIXELS"] = str(150)
+        test_jpg = requests.get("https://i.imgur.com/qRWH5.jpg")
+        image = resize_image(test_jpg.content)
+        file_photodata = BytesIO(image)
+        working_image = Image.open(file_photodata)
+        edited_width = working_image.size[0]
+        print(edited_width)
+        assert edited_width == 300
 
 if __name__ == '__main__':
     unittest.main()

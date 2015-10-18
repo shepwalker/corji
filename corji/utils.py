@@ -1,8 +1,11 @@
 # This Python file uses the following encoding: utf-8
 import imghdr
+from io import BytesIO
 
 import emoji
+from PIL import Image
 
+from corji.settings import Config
 
 def text_contains_emoji(text):
     for char in text:
@@ -51,6 +54,28 @@ def get_content_type_header(response):
             return 'image/jpeg'
     else:
         return content_header
+
+
+def resize_image(original_image):
+    file_photodata = BytesIO(original_image)
+    working_image = Image.open(file_photodata)
+    
+    original_width = working_image.size[0]
+    original_length = working_image.size[1]
+    resize_width = Config.IMAGE_RESIZE_PIXELS
+    resize_ratio = original_width/resize_width
+    resize_length = int(original_length/resize_ratio)
+
+    working_image = working_image.resize(
+        (resize_width, resize_length), resample=Image.ANTIALIAS)
+
+    target_buffer = BytesIO()
+    working_image.save(target_buffer, "JPEG")
+
+    picture_body = target_buffer.getvalue()
+
+    return picture_body
+
 
 emojis_for_emoticons = {
     ':D': '😀',
