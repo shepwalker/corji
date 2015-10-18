@@ -6,7 +6,10 @@ class Config(object):
     DEBUG = os.getenv('DEBUG', False)
     PORT = int(os.getenv('PORT', 8000))
 
-    # Data variables.
+    # Database variables.
+    CUSTOMER_DATA_TABLE_NAME = os.getenv('CUSTOMER_DATA_TABLE_NAME', 'corji')
+
+    # Storage variables.
     FALLBACK_IMAGE = os.getenv('FALLBACK_IMAGE', 'https://s-media-cache-ak0.pinimg.com/736x/49/2a/7f/492a7ff287bdc50d34a4989ab83d9830.jpg')
     SPREADSHEET_URL = os.getenv('SPREADSHEET_URL', '')
     REMOTE_CACHE_RETRIEVE = True if (os.getenv('REMOTE_CACHE_RETRIEVE') == "TRUE") else False

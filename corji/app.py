@@ -117,13 +117,16 @@ def corgi():
     # Let's just ignore trailing whitespace.
     text = text.strip()
 
+    # Base case: the text has emoji.
     if text_contains_emoji(text):
         return get_corgi(text)
 
+    # Edge case: the text has emoticons but not emoji.
     emoji = emojis_for_emoticons.get(text, None)
     if emoji:
         return get_corgi(emoji)
 
+    # Fallback case: no emojis, just text.
     message = render_template('txt/request_does_not_contain_emoji.txt')
     resp = twilio.twiml.Response()
     resp.message(message)

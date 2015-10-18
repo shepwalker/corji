@@ -1,8 +1,10 @@
 import boto3
 
+from corji.settings import Config
+
 dynamo_client = boto3.client("dynamodb", region_name="us-west-1")
 
-TABLE_NAME = "corji"
+TABLE_NAME = Config.AWS_S3_CACHE_BUCKET_NAME
 
 
 def get(phone_number):
@@ -26,8 +28,16 @@ def put(item):
 def increment_consumptions(phone_number):
     dynamo_client.update_item(
         TableName=TABLE_NAME,
-        Key={'phone_number': {"S": phone_number}},
-        AttributeUpdates={"consumptions": {"Action": "ADD", "Value": {"N": "1"}}})
+        Key={
+            'phone_number': {"S": phone_number}
+        },
+        AttributeUpdates={
+            "consumptions": {
+                "Action": "ADD",
+                "Value": {"N": "1"}
+            }
+        }
+    )
 
 
 def new(phone_number):
