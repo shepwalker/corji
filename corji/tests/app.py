@@ -1,5 +1,5 @@
 # This Python file uses the following encoding: utf-8
-
+import random
 import unittest
 
 from corji.app import app
@@ -11,9 +11,9 @@ class AppTestCase(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
 
-    def send_message_with_body(self, body):
+    def send_message_with_body(self, body, phone_number=random.random()):
         return self.app.post('/sms', data={
-            'From': '+15556667777',
+            'From': '{}'.format(phone_number),
             'Body': body}
         )
 
