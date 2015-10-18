@@ -9,7 +9,7 @@ def get(phone_number):
     response = dynamo_client.get_item(
         TableName=TABLE_NAME,
         Key={'phone_number': {'S': phone_number}}
-        )
+    )
     if 'Item' in response:
         return response['Item']
     else:
@@ -20,7 +20,7 @@ def put(item):
     dynamo_client.put_item(
         TableName=TABLE_NAME,
         Item=item
-        )
+    )
 
 
 def increment_consumptions(phone_number):

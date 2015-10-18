@@ -20,7 +20,7 @@ def load(url):
             row['gsx$url2']['$t'],
             row['gsx$url3']['$t']
         ]))
-        
+
         corgis[emoji] = urls
 
 
