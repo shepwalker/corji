@@ -115,8 +115,8 @@ def put(emoji, corgis):
             except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
                 logger.error(
                     "Http error occurred while creating remote cache on %s", s3_key, e)
-            except OSError as e:
-                logger.error("OSError Occurred during resizing", e)
+        except OSError as e:
+            logger.error("OSError Occurred during resizing", e)
 
 
 def get_all(raw_emoji):
