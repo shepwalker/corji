@@ -77,6 +77,10 @@ def resize_image(original_image):
     return picture_body
 
 
+def emoji_is_numeric(text):
+    return len(text) > 1 and text[0] in '1234567890'
+
+
 emojis_for_emoticons = {
     ':D': '😀',
     ':)': '😊',

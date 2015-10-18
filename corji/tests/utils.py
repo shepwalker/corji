@@ -9,8 +9,9 @@ import requests
 
 from corji.utils import (
     emoji_contains_skin_tone,
+    emoji_is_numeric,
     get_content_type_header,
-    text_contains_emoji, 
+    text_contains_emoji,
     resize_image
 )
 
@@ -54,6 +55,10 @@ class UtilsTestCase(unittest.TestCase):
         edited_width = working_image.size[0]
         print(edited_width)
         assert edited_width == 300
+
+    def test_emoji_is_numeric(self):
+        assert not emoji_is_numeric("🏀")
+        assert emoji_is_numeric("3️⃣")
 
 if __name__ == '__main__':
     unittest.main()

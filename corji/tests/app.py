@@ -70,6 +70,11 @@ class AppTestCase(unittest.TestCase):
         assert 'http' in str(response.data)
         assert ':(' not in str(response.data)
 
+    def test_numeric_emojis_should_be_happy(self):
+        response = self.send_message_with_body('6️⃣')
+        assert 'http' in str(response.data)
+        assert ':(' not in str(response.data)
+
 
 def string_contains_image(image_string):
     return (

@@ -23,6 +23,7 @@ import corji.settings as settings
 from corji.utils import (
     emojis_for_emoticons,
     emoji_contains_skin_tone,
+    emoji_is_numeric,
     text_contains_emoji
 )
 
@@ -62,7 +63,7 @@ def get_corgi(original_emoji):
 
         # Check for skin-toned emojis.
         # (This only handles the one-emoji case for now.)
-        if not emoji_contains_skin_tone(original_emoji):
+        if not emoji_contains_skin_tone(original_emoji) and not emoji_is_numeric(original_emoji):
             message = render_template('txt/requested_emoji_does_not_exist.txt',
                                       requested_emoji=original_emoji,
                                       fallback_emoji=emoji)
