@@ -37,4 +37,4 @@ class Config(object):
     STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
     STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
     CONSUMPTIONS_PER_RECHARGE = 50
-    RECHARGE_PRICE = 199
+    RECHARGE_PRICE = 199  # In cents.

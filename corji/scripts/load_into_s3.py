@@ -23,6 +23,7 @@ def worker():
         queue.task_done()
 
 # TODO: Better sysout. ("20% (9/180) complete, that kind of thing.")
+# TODO: if bucket doesn't exist, make it exist
 if __name__ == "__main__":
     logger.debug("Spreadsheet URL defined: %s", SPREADSHEET_URL)
 

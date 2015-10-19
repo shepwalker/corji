@@ -34,7 +34,6 @@ def load():
     # TODO: silently fail if we don't have the thing.
     all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
-
     if 'Contents' in all_objects:
         for obj in all_objects['Contents']:
             possible_url = aws_s3_client.generate_presigned_url(
@@ -51,7 +50,7 @@ def put_all(corgis):
     for emoji in cacheable_corgis:
         put(emoji, corgis)
 
-
+# TODO: This method is wayyyyy too big.
 def put(emoji, corgis):
     corgi_list = corgis[emoji]
 
@@ -90,18 +89,16 @@ def put(emoji, corgis):
                     if Config.IMAGE_RESIZE:
                             file_photodata = BytesIO(picture_request.content)
                             working_image = Image.open(file_photodata)
-                            #width, length
                             original_width = working_image.size[0]
-                            
 
                             if original_width > Config.IMAGE_RESIZE_PIXELS:
                                 picture_body = resize_image(picture_request.content)
                                 content_type = "image/jpeg"
-                    
+
                     if not picture_body:
                         content_type = get_content_type_header(picture_request)
                         picture_body = picture_request.content
-                    
+
                     logger.debug("Adding %s to remote cache", s3_key)
 
                     aws_s3_client.put_object(Body=picture_body,
@@ -130,8 +127,9 @@ def get_all(raw_emoji):
             url = pre_auth_URLS.get(entry['Key'], None)
             if not url:
                 url = aws_s3_client.generate_presigned_url(
-                'get_object', Params={'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
-                                     'Key': entry['Key']}
+                    'get_object', Params={
+                        'Bucket': Config.AWS_S3_CACHE_BUCKET_NAME,
+                        'Key': entry['Key']}
                 )
             urls.append(url)
         return urls

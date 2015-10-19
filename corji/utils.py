@@ -63,7 +63,7 @@ def get_content_type_header(response):
 def resize_image(original_image):
     file_photodata = BytesIO(original_image)
     working_image = Image.open(file_photodata)
-    
+
     original_width = working_image.size[0]
     original_length = working_image.size[1]
     resize_width = Config.IMAGE_RESIZE_PIXELS
