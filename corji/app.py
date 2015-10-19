@@ -118,6 +118,7 @@ def corgi():
         customer_data.new(phone_number)
     elif int(customer['consumptions']['N']) < 1 and not(customer.get('override', None)):
         message = render_template('txt/pay_us_please.txt',
+                                  site_url=settings.Config.SITE_URL
                                   payment_url=url_for('request_charge'),
                                   phone_number=phone_number)
         return create_response(message)

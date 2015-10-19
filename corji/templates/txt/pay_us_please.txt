@@ -1,3 +1,3 @@
 We're glad you're loving all of our corgi pictures, but you've used up all your free ones :(.  To keep getting more, unlock them here:
 
-http://corji.club/{{ payment_url }}?phone_number={{ phone_number }}
+{{ site_url }}{{ payment_url }}?phone_number={{ phone_number }}
