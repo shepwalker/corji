@@ -6,7 +6,9 @@ from flask import (
     Flask,
     render_template,
     request,
+    url_for
 )
+import stripe
 import twilio.twiml
 
 # Why yes, this *is* janky as hell.  Needed to avoid circular imports.
@@ -34,6 +36,7 @@ logger = Logger(app.logger_name,
                 settings.Config.LOG_NAME)
 
 google_spreadsheets.load(settings.Config.SPREADSHEET_URL)
+stripe.api_key = settings.Config.STRIPE_SECRET_KEY
 
 if settings.Config.REMOTE_CACHE_RETRIEVE:
     s3.load()
@@ -104,16 +107,22 @@ def corgi():
     phone_number = request.values.get("From") or ""
     text = request.values.get("Body") or ""
 
+    # If the phone number doesn't exist, it's not a real request.
+    if not phone_number:
+        return
+
     # Keep track of phone numbers.
     # TODO: test this shit, ffs.
     customer = customer_data.get(phone_number)
     if not customer:
         customer_data.new(phone_number)
-    elif int(customer['consumptions']['N']) > 20:
-        # TODO: Don't make this so janky, but I still don't wanna be bankrupted.
-        return str(twilio.twiml.Response())
+    elif int(customer['consumptions']['N']) < 1 and not(customer.get('override', None)):
+        message = render_template('txt/pay_us_please.txt',
+                                  payment_url=url_for('request_charge'),
+                                  phone_number=phone_number)
+        return create_response(message)
     else:
-        customer_data.increment_consumptions(phone_number)
+        customer_data.decrement_consumptions(phone_number)
 
     # Let's just ignore trailing whitespace.
     text = text.strip()
@@ -129,9 +138,7 @@ def corgi():
 
     # Fallback case: no emojis, just text.
     message = render_template('txt/request_does_not_contain_emoji.txt')
-    resp = twilio.twiml.Response()
-    resp.message(message)
-    return str(resp)
+    return create_response(message)
 
 
 @app.route("/sms/fallback", methods=['GET', 'POST'])
@@ -148,6 +155,36 @@ def voice():
     resp = twilio.twiml.Response()
     resp.say(message)
     return str(resp)
+
+
+@app.route('/stripe')
+def request_charge():
+    return render_template('html/stripe.html',
+                           key=settings.Config.STRIPE_PUBLIC_KEY,
+                           phone_number=request.values.get('phone_number'),
+                           recharge_count=settings.Config.CONSUMPTIONS_PER_RECHARGE,
+                           recharge_price=settings.Config.RECHARGE_PRICE)
+
+
+@app.route('/charge', methods=['POST'])
+def process_charge():
+
+    customer = stripe.Customer.create(
+        card=request.form['stripeToken']
+    )
+
+    amount = settings.Config.RECHARGE_PRICE
+    stripe.Charge.create(
+        customer=customer.id,
+        amount=amount,
+        currency='usd',
+        description='Corji'
+    )
+
+    phone_number = request.form['phone_number']
+    customer_data.increment_consumptions(phone_number, settings.Config.CONSUMPTIONS_PER_RECHARGE)
+
+    return render_template('html/stripe_success.html')
 
 
 @app.route("/", methods=['GET'])

@@ -1,0 +1,31 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body {
+        text-align: center;
+      }
+    </style>
+    <link href='https://fonts.googleapis.com/css?family=Sacramento' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+        <h1>corji</h1>
+<h2>Awesome!  Try texting us again :).</h2>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<form action="/charge" method="post">
+  <input type="text" name="phone_number" value="{{ phone_number }}" hidden>
+  <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="{{ key }}"
+          data-description="Unlimited corgis for {{ phone_number }}"
+          data-amount="399"
+          data-locale="auto"></script>
+  <script>
+    $(document).load(function(e) {
+      $(".stripe-button-el").click();
+    });
+    </script>
+</form>
+</body>
+</html>

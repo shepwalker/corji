@@ -25,7 +25,7 @@ def put(item):
     )
 
 
-def increment_consumptions(phone_number):
+def increment_consumptions(phone_number, consumptions):
     dynamo_client.update_item(
         TableName=TABLE_NAME,
         Key={
@@ -34,7 +34,22 @@ def increment_consumptions(phone_number):
         AttributeUpdates={
             "consumptions": {
                 "Action": "ADD",
-                "Value": {"N": "1"}
+                "Value": {"N": str(consumptions)}
+            }
+        }
+    )
+
+
+def decrement_consumptions(phone_number, consumptions=1):
+    dynamo_client.update_item(
+        TableName=TABLE_NAME,
+        Key={
+            'phone_number': {"S": phone_number}
+        },
+        AttributeUpdates={
+            "consumptions": {
+                "Action": "ADD",
+                "Value": {"N": str(consumptions * -1)}
             }
         }
     )
@@ -43,6 +58,6 @@ def increment_consumptions(phone_number):
 def new(phone_number):
     item = {
         'phone_number': {'S': phone_number},
-        'consumptions': {'N': '1'}
+        'consumptions': {'N': '19'}
     }
     put(item)
