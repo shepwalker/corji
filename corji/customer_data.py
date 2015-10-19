@@ -8,7 +8,7 @@ TABLE_NAME = Config.AWS_S3_CACHE_BUCKET_NAME
 
 
 def sanitize_phone_number(phone_number):
-    return phone_number.strip("+")
+    return phone_number.strip("+").strip()
 
 
 def get(phone_number):
