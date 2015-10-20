@@ -22,7 +22,7 @@ from corji.data_sources import (
 from corji.exceptions import CorgiNotFoundException
 from corji.logging import Logger, logged_view
 import corji.settings as settings
-from corji.utils.emoji_utils import (
+from corji.utils.emoji import (
     emojis_for_emoticons,
     emoji_contains_skin_tone,
     emoji_is_numeric,
