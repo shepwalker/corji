@@ -49,7 +49,7 @@ class AppTestCase(unittest.TestCase):
         assert ":(" not in str(base_response.data)
 
     def test_sad_case_emoji(self):
-        response = self.send_message_with_body('🔶')
+        response = self.send_message_with_body('🔸')
         assert 'http' in str(response.data)
         assert string_contains_image(response.data)
         assert ':(' in str(response.data)
@@ -74,6 +74,13 @@ class AppTestCase(unittest.TestCase):
         response = self.send_message_with_body('6️⃣')
         assert 'http' in str(response.data)
         assert ':(' not in str(response.data)
+
+    def test_should_not_return_broken_links(self):
+        response = self.send_message_with_body('🌿')
+        assert 'http' in str(response.data)
+        assert ':(' in str(response.data)
+        assert 'not-a-url' not in str(response.data)
+
 
 
 def string_contains_image(image_string):

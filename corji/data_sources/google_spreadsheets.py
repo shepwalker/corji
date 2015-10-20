@@ -32,7 +32,14 @@ def get(emoji):
     """Returns just one corgi for a given emoji."""
     corgis = get_all(emoji)
     if corgis:
-        return random.choice(corgis)
+        corgi = random.choice(corgis)
+
+        # Make sure the URL isn't dead.
+        try:
+            requests.get(corgi)
+            return corgi
+        except:
+            return None
     else:
         return None
 

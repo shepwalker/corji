@@ -10,7 +10,6 @@ from botocore.vendored.requests.exceptions import ConnectionError
 import emoji
 from PIL import Image
 import requests
-from requests.exceptions import ConnectionError as RequestsConnectionError
 
 from corji.exceptions import CorgiNotFoundException
 from corji.settings import Config
@@ -44,11 +43,13 @@ def load():
             )
             pre_auth_URLS[obj['Key']] = possible_url
 
+
 # TODO: delete_all()
 def put_all(corgis):
     cacheable_corgis = [corgi for corgi in corgis if corgis[corgi]]
     for emoji in cacheable_corgis:
         put(emoji, corgis)
+
 
 # TODO: This method is wayyyyy too big.
 def put(emoji, corgis):
@@ -142,7 +143,12 @@ def get(emoji):
     """Returns just one corgi for a given emoji."""
     corgis = get_all(emoji)
     if corgis:
-        return random.choice(corgis)
+        corgi = random.choice(corgis)
+        try:
+            requests.get(corgi)
+            return corgi
+        except:
+            return None
     else:
         return None
 
