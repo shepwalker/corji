@@ -105,6 +105,14 @@ def corgi():
     if not phone_number:
         return
 
+    # TODO: Make this an .env and a template.
+    if True:
+        message = """Thanks for texting! Come back in November for the new and improved Corji.
+
+        Text us 'corgi' if you want us to let you know when we're back online!"""
+        return create_response(message)
+
+
     # Keep track of phone numbers.
     # TODO: test this shit, ffs.
     customer = customer_data.get(phone_number)
