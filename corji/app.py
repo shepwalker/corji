@@ -123,7 +123,7 @@ def corgi():
                                   phone_number=phone_number)
         return create_response(message)
     else:
-        customer_data.decrement_consumptions(phone_number)
+        customer_data.modify_consumptions(phone_number, -1)
 
     # Let's just ignore trailing whitespace.
     text = text.strip()
@@ -183,7 +183,7 @@ def process_charge():
     )
 
     phone_number = request.form['phone_number']
-    customer_data.increment_consumptions(phone_number, settings.Config.CONSUMPTIONS_PER_RECHARGE)
+    customer_data.modify_consumptions(phone_number, settings.Config.CONSUMPTIONS_PER_RECHARGE)
 
     return render_template('html/stripe_success.html')
 
