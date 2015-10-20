@@ -67,52 +67,37 @@ def put(emoji, corgis):
         try:
             if not possible_s3_entry:
                 logger.debug("Adding %s to remote cache", s3_key)
-                logger.debug("Downloading corgi %s in prep for remote cache", corgi)
+                logger.debug(
+                    "Downloading corgi %s in prep for remote cache", corgi)
                 picture_request = requests.get(corgi)
-                logger.debug("Adding %s to remote cache", s3_key)
-                content_type = get_content_type_header(picture_request)
+                picture_body = None
+                content_type = None
+                if Config.IMAGE_RESIZE:
+                        file_photodata = BytesIO(picture_request.content)
+                        working_image = Image.open(file_photodata)
+                        original_width = working_image.size[0]
 
-                aws_s3_client.put_object(Body=picture_request.content,
+                        if original_width > Config.IMAGE_RESIZE_PIXELS:
+                            picture_body = resize_image(picture_request.content)
+                            content_type = "image/jpeg"
+
+                if not picture_body:
+                    content_type = get_content_type_header(picture_request)
+                    picture_body = picture_request.content
+
+                logger.debug("Adding %s to remote cache", s3_key)
+
+                aws_s3_client.put_object(Body=picture_body,
                                          ContentType=content_type,
                                          Key=s3_key,
                                          Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
             else:
-                possible_s3_entry = None
-            try:
-                if not possible_s3_entry:
-                    logger.debug("Adding %s to remote cache", s3_key)
-                    logger.debug(
-                        "Downloading corgi %s in prep for remote cache", corgi)
-                    picture_request = requests.get(corgi)
-                    picture_body = None
-                    content_type = None
-                    if Config.IMAGE_RESIZE:
-                            file_photodata = BytesIO(picture_request.content)
-                            working_image = Image.open(file_photodata)
-                            original_width = working_image.size[0]
+                logger.debug("%s found in remote cache. Skipping", s3_key)
 
-                            if original_width > Config.IMAGE_RESIZE_PIXELS:
-                                picture_body = resize_image(picture_request.content)
-                                content_type = "image/jpeg"
-
-                    if not picture_body:
-                        content_type = get_content_type_header(picture_request)
-                        picture_body = picture_request.content
-
-                    logger.debug("Adding %s to remote cache", s3_key)
-
-                    aws_s3_client.put_object(Body=picture_body,
-                                             ContentType=content_type,
-                                             Key=s3_key,
-                                             Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
-
-                else:
-                    logger.debug("%s found in remote cache. Skipping", s3_key)
-
-            except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
-                logger.error(
-                    "Http error occurred while creating remote cache on %s", s3_key, e)
+        except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
+            logger.error(
+                "Http error occurred while creating remote cache on %s", s3_key, e)
         except OSError as e:
             logger.error("OSError Occurred during resizing", e)
 
