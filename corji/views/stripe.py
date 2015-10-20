@@ -9,7 +9,7 @@ from corji import (
 
 stripe.api_key = settings.Config.STRIPE_SECRET_KEY
 stripe_blueprint = Blueprint('stripe', __name__,
-                   template_folder='templates')
+                             template_folder='templates')
 
 
 @stripe_blueprint.route('/stripe')

@@ -82,7 +82,6 @@ class AppTestCase(unittest.TestCase):
         assert 'not-a-url' not in str(response.data)
 
 
-
 def string_contains_image(image_string):
     return (
         '.jpg' in str(image_string) or

@@ -28,6 +28,7 @@ def get_all(emoji):
     """Returns all corgis for a given emoji."""
     return corgis.get(emoji, [])
 
+
 def get(emoji):
     """Returns just one corgi for a given emoji."""
     corgis = get_all(emoji)
