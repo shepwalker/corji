@@ -62,6 +62,6 @@ def decrement_consumptions(phone_number, consumptions=1):
 def new(phone_number):
     item = {
         'phone_number': {'S': sanitize_phone_number(phone_number)},
-        'consumptions': {'N': '19'}
+        'consumptions': {'N': str(Config.FREE_CONSUMPTIONS)}
     }
     put(item)
