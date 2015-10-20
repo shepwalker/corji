@@ -7,11 +7,14 @@ from PIL import Image
 
 import requests
 
-from corji.utils import (
+from corji.utils.emoji_utils import (
     emoji_contains_skin_tone,
     emoji_is_numeric,
-    get_content_type_header,
     text_contains_emoji,
+)
+
+from corji.utils.image_utils import (
+    get_content_type_header,
     resize_image
 )
 
