@@ -105,7 +105,7 @@ def corgi():
     if not phone_number:
         return ""
 
-    customer = customer_data.get(phone_number)
+    customer = customer_data.get(phone_number) or {}
 
     # If customer has asked us to stop, we stop.
     if customer.get('stop', None):
