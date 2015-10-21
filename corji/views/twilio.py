@@ -82,9 +82,11 @@ def get_corgi(original_emoji):
 
     # If that still doesn't work, we'll just grab a random one.
     if not possible_corji_path:
-        logger.warn("Couldn't find corji for {} to remote URL. Using random one.".format(
+        logger.warn("Couldn't find corji for {} in spreadsheets. Using random one.".format(
                     emoji))
         possible_emojis = google_spreadsheets.keys()
+        if emoji in possible_emojis:
+            possible_emojis.remove(emoji)
         emoji = random.choice(possible_emojis)
         message = render_template('txt/requested_emoji_does_not_exist.txt',
                                   requested_emoji=original_emoji,
