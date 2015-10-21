@@ -6,6 +6,7 @@ class Config(object):
     DEBUG = os.getenv('DEBUG', False)
     PORT = int(os.getenv('PORT', 8000))
     SITE_URL = os.getenv('SITE_URL', '127.0.0.1:8000')
+    DO_NOT_DISTURB = os.getenv('DO_NOT_DISTURB', False)
 
     # Database variables.
     CUSTOMER_DATA_TABLE_NAME = os.getenv('CUSTOMER_DATA_TABLE_NAME', 'corji')
