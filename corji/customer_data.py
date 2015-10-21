@@ -29,6 +29,21 @@ def put(item):
     )
 
 
+def add_metadata(phone_number, key, value):
+    dynamo_client.update_item(
+        TableName=TABLE_NAME,
+        Key={
+            'phone_number': {"S": sanitize_phone_number(phone_number)}
+        },
+        AttributeUpdates={
+            key: {
+                "Action": "PUT",
+                "Value": {"S": str(value)}
+            }
+        }
+    )
+
+
 def modify_consumptions(phone_number, consumptions=1):
     dynamo_client.update_item(
         TableName=TABLE_NAME,

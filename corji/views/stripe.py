@@ -24,8 +24,10 @@ def request_charge():
 @stripe_blueprint.route('/charge', methods=['POST'])
 def process_charge():
 
+    email = request.form['stripeEmail']
     customer = stripe.Customer.create(
-        card=request.form['stripeToken']
+        card=request.form['stripeToken'],
+        email=email
     )
 
     amount = settings.Config.RECHARGE_PRICE
@@ -37,6 +39,8 @@ def process_charge():
     )
 
     phone_number = request.form['phone_number']
+
     customer_data.modify_consumptions(phone_number, settings.Config.CONSUMPTIONS_PER_RECHARGE)
+    customer_data.add_metadata(phone_number, 'email', email)
 
     return render_template('html/stripe_success.html')
