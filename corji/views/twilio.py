@@ -103,22 +103,28 @@ def corgi():
 
     # If the phone number doesn't exist, it's not a real request.
     if not phone_number:
-        return
+        return ""
+
+    customer = customer_data.get(phone_number)
 
     # TODO: Make this an .env and a template.
     if True:
+        if customer.get('showed_disable_prompt', None):
+            return ""
+
+        customer_data.add_metadata(phone_number, 'showed_disable_prompt', 'true')
         message = """Thanks for texting! Come back in November for the new and improved Corji.
 
         Text us 'corgi' if you want us to let you know when we're back online!"""
         return create_response(message)
 
-
-    # Keep track of phone numbers.
     # TODO: test this shit, ffs.
-    customer = customer_data.get(phone_number)
     if not customer:
         customer_data.new(phone_number)
     elif int(customer['consumptions']['N']) < 1 and not(customer.get('override', None)):
+        if customer.get('showed_payment_prompt', None):
+            return ""
+        customer_data.add_metadata(phone_number, 'showed_payment_prompt', 'true')
         message = render_template('txt/pay_us_please.txt',
                                   site_url=settings.Config.SITE_URL,
                                   payment_url=url_for('request_charge'),
