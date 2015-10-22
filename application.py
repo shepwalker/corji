@@ -1,4 +1,4 @@
-from corji.app import APP
+from corji.app import app
 from corji.api import attach_rest_api
 import corji.settings as settings
 

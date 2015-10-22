@@ -97,6 +97,11 @@ def corgi():
         return ""
 
     if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
+        if "corgi" in text.lower() and not customer.get('wants_uptime_notification', None):
+            message = render_template('txt/do_not_disturb_acknowledged.txt')
+            customer_data.add_metadata(phone_number, 'wants_uptime_notification', 'true')
+            return create_response(message)
+
         if customer.get('showed_disable_prompt', None):
             return ""
 

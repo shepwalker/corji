@@ -1,7 +1,6 @@
 # This Python file uses the following encoding: utf-8
 from flask import Flask
 
-
 from corji.api import CorgiResource
 from corji.logging import Logger
 import corji.settings as settings
