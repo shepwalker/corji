@@ -1,41 +1,16 @@
-# This Python file uses the following encoding: utf-8
 from io import BytesIO
 import os
+
 import unittest
-
 from PIL import Image
-
 import requests
 
-from corji.utils import (
-    emoji_contains_skin_tone,
-    emoji_is_numeric,
+from corji.utils.image import (
     get_content_type_header,
-    text_contains_emoji,
     resize_image
 )
 
-
-class UtilsTestCase(unittest.TestCase):
-
-    def test_sanity(self):
-        assert True
-
-    def test_text_contains_emoji(self):
-        assert not text_contains_emoji("")
-        assert not text_contains_emoji("test")
-        assert not text_contains_emoji("lorem ipsum")
-        assert text_contains_emoji("🏀")
-        assert text_contains_emoji("🏀asd")
-        assert text_contains_emoji("asd🏀")
-        assert text_contains_emoji("🇫🇷")
-        assert text_contains_emoji("3️⃣")
-
-    def test_emoji_contains_skin_tone(self):
-        assert not emoji_contains_skin_tone("🏀")
-        assert not emoji_contains_skin_tone("🙏")
-        assert emoji_contains_skin_tone("🙏🏾")
-
+class ImageUtilsTestCase(unittest.TestCase):
     def test_image_identification(self):
         test_png = requests.get("http://i.imgur.com/OacBzQQ.png")
         test_jpg = requests.get("https://i.imgur.com/T0vc7TU.jpg")
@@ -57,9 +32,7 @@ class UtilsTestCase(unittest.TestCase):
         print(edited_width)
         assert edited_width == 300
 
-    def test_emoji_is_numeric(self):
-        assert not emoji_is_numeric("🏀")
-        assert emoji_is_numeric("3️⃣")
+
 
 if __name__ == '__main__':
     unittest.main()

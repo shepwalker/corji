@@ -13,7 +13,7 @@ import requests
 
 from corji.exceptions import CorgiNotFoundException
 from corji.settings import Config
-from corji.utils import (
+from corji.utils.image import (
     get_content_type_header,
     resize_image
 )
