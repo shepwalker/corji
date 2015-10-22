@@ -5,12 +5,19 @@ class Config(object):
     # General variables.
     DEBUG = os.getenv('DEBUG', False)
     PORT = int(os.getenv('PORT', 8000))
+    SITE_URL = os.getenv('SITE_URL', '127.0.0.1:8000')
+    DO_NOT_DISTURB = os.getenv('DO_NOT_DISTURB', False)
 
-    # Data variables.
+    # Database variables.
+    CUSTOMER_DATA_TABLE_NAME = os.getenv('CUSTOMER_DATA_TABLE_NAME', 'corji')
+
+    # Storage variables.
     FALLBACK_IMAGE = os.getenv('FALLBACK_IMAGE', 'https://s-media-cache-ak0.pinimg.com/736x/49/2a/7f/492a7ff287bdc50d34a4989ab83d9830.jpg')
     SPREADSHEET_URL = os.getenv('SPREADSHEET_URL', '')
     REMOTE_CACHE_RETRIEVE = True if (os.getenv('REMOTE_CACHE_RETRIEVE') == "TRUE") else False
     REMOTE_CACHE_POPULATE = True if (os.getenv('REMOTE_CACHE_POPULATE') == "TRUE") else False
+    IMAGE_RESIZE = True if (os.getenv('IMAGE_RESIZE') == "TRUE") else False
+    IMAGE_RESIZE_PIXELS = os.getenv('IMAGE_RESIZE_PIXELS', 300)
 
     # Operational variables.
     LOG_NAME = os.getenv('LOG_NAME', 'corji.log')
@@ -25,3 +32,11 @@ class Config(object):
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'SUPER_NOT_VALID_SECRET')
     AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION', 'SUPER_NOT_VALID_REGION')
     AWS_S3_CACHE_BUCKET_NAME = os.getenv('AWS_S3_CACHE_BUCKET_NAME', 'SUPER_NOT_VALID_BUCKET')
+    AWS_PRELOAD_EXPIRATION_TIME = os.getenv('AWS_PRELOAD_EXPIRATION_TIME', 31540000)
+
+    # Stripe.
+    STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
+    STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
+    FREE_CONSUMPTIONS = 20
+    CONSUMPTIONS_PER_RECHARGE = 50
+    RECHARGE_PRICE = 199  # In cents.

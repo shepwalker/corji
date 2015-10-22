@@ -8,7 +8,7 @@ from corji.data_sources import (
 )
 from corji.exceptions import CorgiNotFoundException
 import corji.settings as settings
-from corji.utils import (
+from corji.utils.emoji import (
     emoji_contains_skin_tone
 )
 

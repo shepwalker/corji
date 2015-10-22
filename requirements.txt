@@ -6,6 +6,9 @@ flask
 flask_restful
 gunicorn
 nose
+pillow
 requests==2.6.1 # Needed for awsebcli.
+stripe
+tabulate
 twilio
 uwsgi

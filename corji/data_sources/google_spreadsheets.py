@@ -20,22 +20,33 @@ def load(url):
             row['gsx$url2']['$t'],
             row['gsx$url3']['$t']
         ]))
-        if len(urls) > 0:
-            corgis[emoji] = urls
+
+        corgis[emoji] = urls
 
 
 def get_all(emoji):
     """Returns all corgis for a given emoji."""
     return corgis.get(emoji, [])
 
+
 def get(emoji):
     """Returns just one corgi for a given emoji."""
     corgis = get_all(emoji)
     if corgis:
-        return random.choice(corgis)
+        corgi = random.choice(corgis)
+
+        # Make sure the URL isn't dead.
+        try:
+            requests.get(corgi)
+            return corgi
+        except:
+            return None
     else:
         return None
 
 
-def keys():
-    return list(corgis.keys())
+def keys(include_empty_keys=False):
+    if include_empty_keys:
+        return list(corgis.keys())
+
+    return list([corgi for corgi in corgis.keys() if len(corgis[corgi])])
