@@ -1,6 +1,8 @@
 import logging
+import random
 
 from flask_restful import Resource, Api
+import requests
 
 from corji.data_sources import (
     google_spreadsheets,
@@ -18,7 +20,10 @@ s3.load()
 
 
 class CorgiResource(Resource):
-    def get(self, emoji):
+    def get(self, emoji=None):
+
+        if not emoji:
+            emoji = random.choice(google_spreadsheets.keys())
 
         # The string we eventually return.
         corgi_url = ""
@@ -38,8 +43,16 @@ class CorgiResource(Resource):
         # If S3 is a no-go, fall back to Spreadsheets.
         corgi_urls = google_spreadsheets.get_all(emoji)
 
+        # TODO: do this smarter somehow.
+        for url in corgi_urls:
+            try:
+                requests.get(url)
+            except:
+                corgi_urls.remove(url)
+
         return {
             "count": len(corgi_url),
+            "emoji": emoji,
             "results": corgi_urls
         }
 

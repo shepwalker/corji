@@ -1,7 +1,5 @@
 import emoji
 
-from corji.settings import Config
-
 
 def text_contains_emoji(text):
     for char in text:
