@@ -1,7 +1,7 @@
 from io import BytesIO
 import os
-
 import unittest
+
 from PIL import Image
 import requests
 
