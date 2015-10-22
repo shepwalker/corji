@@ -82,9 +82,11 @@ def get_corgi(original_emoji):
 
     # If that still doesn't work, we'll just grab a random one.
     if not possible_corji_path:
-        logger.warn("Couldn't find corji for {} to remote URL. Using random one.".format(
+        logger.warn("Couldn't find corji for {} in spreadsheets. Using random one.".format(
                     emoji))
         possible_emojis = google_spreadsheets.keys()
+        if emoji in possible_emojis:
+            possible_emojis.remove(emoji)
         emoji = random.choice(possible_emojis)
         message = render_template('txt/requested_emoji_does_not_exist.txt',
                                   requested_emoji=original_emoji,
@@ -105,17 +107,18 @@ def corgi():
     if not phone_number:
         return ""
 
-    customer = customer_data.get(phone_number)
+    customer = customer_data.get(phone_number) or {}
 
-    # TODO: Make this an .env and a template.
-    if True:
+    # If customer has asked us to stop, we stop.
+    if customer.get('stop', None):
+        return ""
+
+    if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
         if customer.get('showed_disable_prompt', None):
             return ""
 
         customer_data.add_metadata(phone_number, 'showed_disable_prompt', 'true')
-        message = """Thanks for texting! Come back in November for the new and improved Corji.
-
-        Text us 'corgi' if you want us to let you know when we're back online!"""
+        message = render_template('txt/do_not_disturb.txt')
         return create_response(message)
 
     # TODO: test this shit, ffs.
@@ -144,6 +147,13 @@ def corgi():
     emoji = emojis_for_emoticons.get(text, None)
     if emoji:
         return get_corgi(emoji)
+
+    # If they tell us to stop, then stop.
+    if "stop" in text.lower():
+        customer_data.add_metadata(phone_number, 'stop', 'true')
+        message = render_template('txt/request_asks_to_stop.txt')
+        return create_response(message)
+
 
     # Fallback case: no emojis, just text.
     message = render_template('txt/request_does_not_contain_emoji.txt')
