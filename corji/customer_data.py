@@ -29,22 +29,22 @@ def put(item):
     )
 
 
-def increment_consumptions(phone_number, consumptions):
+def add_metadata(phone_number, key, value):
     dynamo_client.update_item(
         TableName=TABLE_NAME,
         Key={
             'phone_number': {"S": sanitize_phone_number(phone_number)}
         },
         AttributeUpdates={
-            "consumptions": {
-                "Action": "ADD",
-                "Value": {"N": str(consumptions)}
+            key: {
+                "Action": "PUT",
+                "Value": {"S": str(value)}
             }
         }
     )
 
 
-def decrement_consumptions(phone_number, consumptions=1):
+def modify_consumptions(phone_number, consumptions=1):
     dynamo_client.update_item(
         TableName=TABLE_NAME,
         Key={
@@ -62,6 +62,6 @@ def decrement_consumptions(phone_number, consumptions=1):
 def new(phone_number):
     item = {
         'phone_number': {'S': sanitize_phone_number(phone_number)},
-        'consumptions': {'N': '19'}
+        'consumptions': {'N': str(Config.FREE_CONSUMPTIONS)}
     }
     put(item)
