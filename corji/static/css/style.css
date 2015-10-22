@@ -49,3 +49,14 @@ h2 {
     border: 1px #aaa solid;
     box-sizing: border-box;
 }
+
+img {
+    max-width: 100%;
+}
+
+.emphasize {
+    background-color: #d1f3fa;
+    padding: 1em;
+    margin-top: 1em;
+    border-radius: 10px;
+}

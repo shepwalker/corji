@@ -21,7 +21,7 @@ def request_charge():
                            recharge_price=settings.Config.RECHARGE_PRICE)
 
 
-@stripe_blueprint.route('/charge', methods=['POST'])
+@stripe_blueprint.route('/charge', methods=['GET'])
 def process_charge():
 
     email = request.form['stripeEmail']

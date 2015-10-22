@@ -1,7 +1,8 @@
 {% extends 'html/base.html' %}
 {% block content %}
-  <h2>Awesome!  Try texting us again :).</h2>
-  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+  <h2>Awesome!  Us right now:</h2>
+  <img src="{{ url_for('static', filename='img/corgi3.jpg') }}">
+  <h2>What are you waiting for? Try texting us again!</h2>
   <form action="/charge" method="post">
     <input type="text" name="phone_number" value="{{ phone_number }}" hidden>
     <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
