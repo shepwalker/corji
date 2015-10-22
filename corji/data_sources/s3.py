@@ -83,13 +83,13 @@ def put(emoji, corgis):
                 picture_body = None
                 content_type = None
                 if Config.IMAGE_RESIZE:
-                        file_photodata = BytesIO(picture_request.content)
-                        working_image = Image.open(file_photodata)
-                        original_width = working_image.size[0]
+                    file_photodata = BytesIO(picture_request.content)
+                    working_image = Image.open(file_photodata)
+                    original_width = working_image.size[0]
 
-                        if original_width > Config.IMAGE_RESIZE_PIXELS:
-                            picture_body = resize_image(picture_request.content)
-                            content_type = "image/jpeg"
+                    if original_width > Config.IMAGE_RESIZE_PIXELS:
+                        picture_body = resize_image(picture_request.content)
+                        content_type = "image/jpeg"
 
                 if not picture_body:
                     content_type = get_content_type_header(picture_request)

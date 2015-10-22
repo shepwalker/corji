@@ -1,9 +1,4 @@
-from io import BytesIO
-import os
-
 import unittest
-from PIL import Image
-import requests
 
 from corji.utils.emoji import (
     emoji_contains_skin_tone,

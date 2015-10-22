@@ -16,11 +16,14 @@ from corji.utils.emoji import (
 
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 google_spreadsheets.load(settings.Config.SPREADSHEET_URL)
-s3.load()
+if settings.Config.REMOTE_CACHE_RETRIEVE:
+    s3.load()
 
 
 class CorgiResource(Resource):
     def get(self, emoji=None):
+        """Returns an emoji associated with the given emoji.
+        If no emoji is supplied, a random corji is returned."""
 
         if not emoji:
             emoji = random.choice(google_spreadsheets.keys())
@@ -47,7 +50,8 @@ class CorgiResource(Resource):
         for url in corgi_urls:
             try:
                 requests.get(url)
-            except:
+            except Exception as e:
+                logger.warn("URL {} is invalid; not returning.".format(url))
                 corgi_urls.remove(url)
 
         return {

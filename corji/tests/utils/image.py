@@ -10,6 +10,7 @@ from corji.utils.image import (
     resize_image
 )
 
+
 class ImageUtilsTestCase(unittest.TestCase):
     def test_image_identification(self):
         test_png = requests.get("http://i.imgur.com/OacBzQQ.png")
@@ -31,7 +32,6 @@ class ImageUtilsTestCase(unittest.TestCase):
         edited_width = working_image.size[0]
         print(edited_width)
         assert edited_width == 300
-
 
 
 if __name__ == '__main__':

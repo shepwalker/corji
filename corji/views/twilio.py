@@ -68,8 +68,9 @@ def get_corgi(original_emoji):
         logger.warn("Couldn't find corgi for {}. Using random one.".format(
                     emoji))
 
-        results = api.get()
-        emoji, corgi_urls = results['emoji'], results['results']
+        while not corgi_urls:
+            results = api.get()
+            emoji, corgi_urls = results['emoji'], results['results']
         message = render_template('txt/requested_emoji_does_not_exist.txt',
                                   requested_emoji=original_emoji,
                                   fallback_emoji=emoji)
@@ -106,7 +107,7 @@ def corgi():
     # TODO: test this shit, ffs.
     if not customer:
         customer_data.new(phone_number)
-    elif int(customer['consumptions']['N']) < 1 and not(customer.get('override', None)):
+    elif int(customer['consumptions']['N']) < 1 and not customer.get('override', None):
         if customer.get('showed_payment_prompt', None):
             return ""
         customer_data.add_metadata(phone_number, 'showed_payment_prompt', 'true')
