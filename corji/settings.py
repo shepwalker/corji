@@ -18,6 +18,8 @@ class Config(object):
     REMOTE_CACHE_POPULATE = True if (os.getenv('REMOTE_CACHE_POPULATE') == "TRUE") else False
     IMAGE_RESIZE = True if (os.getenv('IMAGE_RESIZE') == "TRUE") else False
     IMAGE_RESIZE_PIXELS = os.getenv('IMAGE_RESIZE_PIXELS', 300)
+    PREGENERATE_S3_URLS = os.getenv('PREGENERATE_S3_URLS', False)
+    MAXIMUM_S3_FILESIZE = os.getenv('MAXIMUM_S3_FILESIZE', 400000)
 
     # Operational variables.
     LOG_NAME = os.getenv('LOG_NAME', 'corji.log')
