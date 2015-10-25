@@ -14,14 +14,14 @@ stripe_blueprint = Blueprint('stripe', __name__,
 
 @stripe_blueprint.route('/stripe')
 def request_charge():
-    return render_template('html/stripe.html',
+    return render_template('html/stripe/stripe.html',
                            key=settings.Config.STRIPE_PUBLIC_KEY,
                            phone_number=request.values.get('phone_number'),
                            recharge_count=settings.Config.CONSUMPTIONS_PER_RECHARGE,
                            recharge_price=settings.Config.RECHARGE_PRICE)
 
 
-@stripe_blueprint.route('/charge', methods=['POST'])
+@stripe_blueprint.route('/charge', methods=['GET'])
 def process_charge():
 
     email = request.form['stripeEmail']
@@ -43,4 +43,4 @@ def process_charge():
     customer_data.modify_consumptions(phone_number, settings.Config.CONSUMPTIONS_PER_RECHARGE)
     customer_data.add_metadata(phone_number, 'email', email)
 
-    return render_template('html/stripe_success.html')
+    return render_template('html/stripe/stripe_success.html')

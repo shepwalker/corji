@@ -1,7 +1,5 @@
 import emoji
 
-from corji.settings import Config
-
 
 def text_contains_emoji(text):
     for char in text:
@@ -40,10 +38,8 @@ def emoji_contains_skin_tone(text):
     return text[1] in skin_tone_characters
 
 
-
 def emoji_is_numeric(text):
     return len(text) > 1 and text[0] in '1234567890'
-
 
 emojis_for_emoticons = {
     ':D': '😀',

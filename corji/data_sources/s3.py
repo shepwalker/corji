@@ -29,7 +29,6 @@ pre_auth_URLS = {}
 def load():
     global aws_s3_client, all_objects
     aws_s3_client = boto3.client("s3")
-
     # TODO: silently fail if we don't have the thing.
     all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
@@ -44,7 +43,18 @@ def load():
             pre_auth_URLS[obj['Key']] = possible_url
 
 
-# TODO: delete_all()
+def delete(emoji, i=0):
+    s3_key = get_file_name_from_emoji(i, emoji)
+    aws_s3_client.delete_object(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME,
+                                Key=s3_key)
+
+
+def delete_all(corgis):
+    for corgi in corgis:
+        for i in range(len(corgis[corgi])):
+            delete(corgi, number=i)
+
+
 def put_all(corgis):
     cacheable_corgis = [corgi for corgi in corgis if corgis[corgi]]
     for emoji in cacheable_corgis:
@@ -73,13 +83,13 @@ def put(emoji, corgis):
                 picture_body = None
                 content_type = None
                 if Config.IMAGE_RESIZE:
-                        file_photodata = BytesIO(picture_request.content)
-                        working_image = Image.open(file_photodata)
-                        original_width = working_image.size[0]
+                    file_photodata = BytesIO(picture_request.content)
+                    working_image = Image.open(file_photodata)
+                    original_width = working_image.size[0]
 
-                        if original_width > Config.IMAGE_RESIZE_PIXELS:
-                            picture_body = resize_image(picture_request.content)
-                            content_type = "image/jpeg"
+                    if original_width > Config.IMAGE_RESIZE_PIXELS:
+                        picture_body = resize_image(picture_request.content)
+                        content_type = "image/jpeg"
 
                 if not picture_body:
                     content_type = get_content_type_header(picture_request)

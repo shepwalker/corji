@@ -1,0 +1,34 @@
+<html>
+<head>
+
+    <title>corji: the Corgi Delivery Network</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href='https://fonts.googleapis.com/css?family=Sacramento' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/bigfoot.css') }}">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bigfoot.js') }}">></script>
+
+    {% include "html/snippets/google_analytics.html" %}
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>corji</h1>
+        {% block content %}
+        {% endblock %}
+        
+        <div class="footer">
+            Made with love in rainy Seattle by Shep and Justin.  All of this is on <a href="http://github.com/jmduke/corji">GitHub</a>.
+            {% include "html/snippets/social.html" %}
+        </div>
+    </div>
+
+</body>
+</html>

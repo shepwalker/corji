@@ -1,0 +1,23 @@
+{% extends 'html/base.html' %}
+{% block content %}
+  <h2>You're a few seconds away from {{ recharge_count }} more corgis.</h2>
+  <p>Like this one!</p>
+  <img src="{{ url_for('static', filename='img/corgi1.jpg') }}">
+  <p>Or this one.</p>
+  <img src="{{ url_for('static', filename='img/corgi2.jpg') }}">
+  <form action="/charge" method="post" class="emphasize">
+    For the low price of $1.99, text us to your heart's content.<br /><br />
+    <input type="text" name="phone_number" value="{{ phone_number }}" hidden>
+    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="{{ key }}"
+            data-description="{{ recharge_count }} more corgis for {{ phone_number }}"
+            data-amount="199"
+            data-locale="auto"
+            data-label="I want more corgis!"></script>
+    <script>
+      $(document).load(function(e) {
+        $(".stripe-button-el").click();
+      });
+      </script>
+  </form>
+{% endblock %}

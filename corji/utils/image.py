@@ -1,7 +1,10 @@
 import imghdr
 from io import BytesIO
 
+from PIL import Image
+
 from corji.settings import Config
+
 
 def get_content_type_header(response):
     """Given a requests response from an image download, attempts to
@@ -22,7 +25,7 @@ def get_content_type_header(response):
 def resize_image(original_image):
     file_photodata = BytesIO(original_image)
     working_image = Image.open(file_photodata)
-    
+
     original_width = working_image.size[0]
     original_length = working_image.size[1]
     resize_width = Config.IMAGE_RESIZE_PIXELS

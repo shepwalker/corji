@@ -1,7 +1,7 @@
 from io import BytesIO
 import os
-
 import unittest
+
 from PIL import Image
 import requests
 
@@ -9,6 +9,7 @@ from corji.utils.image import (
     get_content_type_header,
     resize_image
 )
+
 
 class ImageUtilsTestCase(unittest.TestCase):
     def test_image_identification(self):
@@ -31,7 +32,6 @@ class ImageUtilsTestCase(unittest.TestCase):
         edited_width = working_image.size[0]
         print(edited_width)
         assert edited_width == 300
-
 
 
 if __name__ == '__main__':
