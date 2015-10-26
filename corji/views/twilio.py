@@ -14,6 +14,10 @@ import twilio.twiml
 from corji.api import CorgiResource
 import corji.customer_data as customer_data
 import corji.data_sources.google_spreadsheets as google_spreadsheets
+from corji.exceptions import (
+    UserNotFoundException,
+    CorjiFreeLoaderException
+    )
 from corji.logging import logged_view
 import corji.settings as settings
 from corji.utils.emoji import (
@@ -22,22 +26,24 @@ from corji.utils.emoji import (
     emoji_is_numeric,
     text_contains_emoji
 )
+from corji.utils.twilio import (
+    create_response
+)
+
+from corji.messages.abstract_message import (
+    EmojiRequest,
+    message_factory
+    )
+
+from corji.admin import (
+    process_interrupts
+    )
 
 twilio_blueprint = Blueprint('twilio', __name__,
                              template_folder='templates')
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 
 api = CorgiResource()
-
-
-def create_response(text, image_url=None):
-    """Crafts a TwiML response using the supplied text and image."""
-    resp = twilio.twiml.Response()
-    with resp.message(text) as m:
-        if image_url:
-            m.media(image_url)
-
-    return str(resp)
 
 
 @twilio_blueprint.route("/sms/<original_emoji>", methods=['GET'])
@@ -95,46 +101,25 @@ def corgi():
     # If customer has asked us to stop, we stop.
     if customer.get('stop', None):
         return ""
-
-    if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
-        if "corgi" in text.lower() and not customer.get('wants_uptime_notification', None):
-            message = render_template('txt/do_not_disturb_acknowledged.txt')
-            customer_data.add_metadata(phone_number, 'wants_uptime_notification', 'true')
-            return create_response(message)
-
-        if customer.get('showed_disable_prompt', None):
-            return ""
-
-        customer_data.add_metadata(phone_number, 'showed_disable_prompt', 'true')
-        message = render_template('txt/do_not_disturb.txt')
-        return create_response(message)
-
-    # TODO: test this shit, ffs.
+    print(customer)
+    
     if not customer:
         customer_data.new(phone_number)
-    elif int(customer['consumptions']['N']) < 1 and not customer.get('override', None):
-        if customer.get('showed_payment_prompt', None):
-            return ""
-        customer_data.add_metadata(phone_number, 'showed_payment_prompt', 'true')
-        message = render_template('txt/pay_us_please.txt',
-                                  site_url=settings.Config.SITE_URL,
-                                  payment_url=url_for('request_charge'),
-                                  phone_number=phone_number)
-        return create_response(message)
-    else:
-        customer_data.modify_consumptions(phone_number, -1)
+        customer = customer_data.get(phone_number)
+    print(customer)
 
-    # Let's just ignore trailing whitespace.
-    text = text.strip()
+    #Process any system-wide or user-specific interrupts.
+    interupts = process_interrupts(customer)
+    #generate instance of Abstract Message that
+    #corresponds ot input
+    message = message_factory(text, phone_number)
 
-    # Base case: the text has emoji.
-    if text_contains_emoji(text):
-        return get_corgi(text)
-
-    # Edge case: the text has emoticons but not emoji.
-    emoji = emojis_for_emoticons.get(text, None)
-    if emoji:
-        return get_corgi(emoji)
+    try:
+        response = message.create_reply()
+    except CorjiFreeLoaderException:
+        return generate_freeloader_response(customer)
+    except UserNotFoundException:
+        blerg = "Something really fucking up here"
 
     # If they tell us to stop, then stop.
     if "stop" in text.lower():
