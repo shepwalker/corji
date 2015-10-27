@@ -1,21 +1,21 @@
 import random
 
-from corji.admin import consumed_func
 from corji.api import CorgiResource
 from corji.utils.emoji import (
 	text_contains_emoji,
 	emojis_for_emoticons
 	)
+from corji.utils.message import consumed_func
 
 api = CorgiResource()
 
-def message_factory(text, phone_number):
+def create_message(text, phone_number):
 	if emojis_for_emoticons.get(text, None) or text_contains_emoji(text):
 		return EmojiRequest(text, phone_number)
 
-	return ""
+	return None
 
-class AbstractCorgjiRequest(object):
+class AbstractCorjiRequest(object):
 	"""Abstract class for messages received to the service"""
 	def __init__(self, text, phone_number):
 		self.text = text
@@ -24,7 +24,7 @@ class AbstractCorgjiRequest(object):
 		raise NotImplementedError
 
 
-class EmojiRequest(AbstractCorgjiRequest):
+class EmojiRequest(AbstractCorjiRequest):
 
 	@consumed_func()
 	def create_reply(self):
@@ -43,7 +43,7 @@ class EmojiRequest(AbstractCorgjiRequest):
 
 		return None
 
-class SecretRequest(AbstractCorgjiRequest):
+class SecretRequest(AbstractCorjiRequest):
 	"""docstring for ClassName"""
 	def __init__(self, body, sender):
 		super(ClassName, self).__init__(body, sender)

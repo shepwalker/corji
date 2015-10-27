@@ -1,4 +1,7 @@
-
+""" 
+Set of utility functions for processing messages 
+and replying.
+"""
 from functools import wraps
 
 from flask import (
@@ -21,7 +24,7 @@ def consumed_func():
                 raise CorjiFreeloaderException
             fn = f(self, *args)
             if fn:
-            	customer_data.modify_consumptions(self.phone_number, -1)
+            	customer_data.modify_consumptions(self.phone_number, 1)
             return fn
         return decorated_function
     return inner_decorator
@@ -30,7 +33,7 @@ def consumed_func():
 
 def process_interrupts(customer):
     if customer.get('stop', None):
-        return ""
+        return None
 
     if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
         if "corgi" in text.lower() and not customer.get('wants_uptime_notification', None):

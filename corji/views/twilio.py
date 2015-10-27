@@ -17,7 +17,7 @@ import corji.data_sources.google_spreadsheets as google_spreadsheets
 from corji.exceptions import (
     UserNotFoundException,
     CorjiFreeLoaderException
-    )
+)
 from corji.logging import logged_view
 import corji.settings as settings
 from corji.utils.emoji import (
@@ -26,18 +26,22 @@ from corji.utils.emoji import (
     emoji_is_numeric,
     text_contains_emoji
 )
+
+from corji.utils.message import (
+    process_interrupts
+)
 from corji.utils.twilio import (
     create_response
 )
 
-from corji.messages.abstract_message import (
+from corji.messages.messages import (
     EmojiRequest,
-    message_factory
-    )
+    create_message
+)
 
-from corji.admin import (
+from corji.utils.message import (
     process_interrupts
-    )
+)
 
 twilio_blueprint = Blueprint('twilio', __name__,
                              template_folder='templates')
@@ -91,7 +95,7 @@ def corgi():
     """Respond to incoming calls with a simple text message."""
     phone_number = request.values.get("From") or ""
     text = request.values.get("Body") or ""
-    print(text)
+
     # If the phone number doesn't exist, it's not a real request.
     if not phone_number:
         return ""
@@ -101,25 +105,25 @@ def corgi():
     # If customer has asked us to stop, we stop.
     if customer.get('stop', None):
         return ""
-    print(customer)
-    
-    if not customer:
-        customer_data.new(phone_number)
-        customer = customer_data.get(phone_number)
-    print(customer)
 
-    #Process any system-wide or user-specific interrupts.
-    interupts = process_interrupts(customer)
-    #generate instance of Abstract Message that
-    #corresponds ot input
-    message = message_factory(text, phone_number)
+    if not customer:
+        customer = customer_data.new(phone_number)
+
+    # Process any system-wide or user-specific interrupts.
+    interrupts = process_interrupts(customer)
+
+    # Tricky because we want to return an empty string if it appears.
+    if interrupts is not None:
+        return interrupts
+
+    # generate instance of Abstract Message that
+    # corresponds ot input
+    message = create_message(text, phone_number)
 
     try:
         return message.create_reply()
     except CorjiFreeLoaderException:
         return generate_freeloader_response(customer)
-    except UserNotFoundException:
-        blerg = "Something really fucking up here"
 
     # If they tell us to stop, then stop.
     if "stop" in text.lower():
