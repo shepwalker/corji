@@ -17,7 +17,7 @@ def consumed_func():
             customer = customer_data.get(self.phone_number) or {}
             if not customer:
                 raise UserNotFoundException
-            if (customer['consumptions']['N']) < 1 and not customer.get('override', None):
+            if int(customer['consumptions']['N']) < 1 and not customer.get('override', None):
                 raise CorjiFreeloaderException
             fn = f(self, *args)
             if fn:

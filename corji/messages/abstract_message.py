@@ -1,3 +1,5 @@
+import random
+
 from corji.admin import consumed_func
 from corji.api import CorgiResource
 from corji.utils.emoji import (
@@ -29,15 +31,17 @@ class EmojiRequest(AbstractCorgjiRequest):
 		text = self.text
 		text = text.strip()
 		if text_contains_emoji(text):
-			return api.get_corgi(text)
+			results = api.get(text)
 
 		# Edge case: the text has emoticons but not emoji.
 		emoji = emojis_for_emoticons.get(text, None)
 		if emoji:
-		    return api.get_corgi(emoji)
+		    results = api.get(emoji)
+		if results:
+			emoji, corgi_urls = results['emoji'], results['results']
+			return random.choice(corgi_urls)
 
 		return None
-
 
 class SecretRequest(AbstractCorgjiRequest):
 	"""docstring for ClassName"""

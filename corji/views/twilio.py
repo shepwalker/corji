@@ -91,7 +91,7 @@ def corgi():
     """Respond to incoming calls with a simple text message."""
     phone_number = request.values.get("From") or ""
     text = request.values.get("Body") or ""
-
+    print(text)
     # If the phone number doesn't exist, it's not a real request.
     if not phone_number:
         return ""
@@ -115,7 +115,7 @@ def corgi():
     message = message_factory(text, phone_number)
 
     try:
-        response = message.create_reply()
+        return message.create_reply()
     except CorjiFreeLoaderException:
         return generate_freeloader_response(customer)
     except UserNotFoundException:
