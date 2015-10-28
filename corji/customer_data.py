@@ -25,7 +25,7 @@ def get(phone_number):
 def put(item):
     dynamo_client.put_item(
         TableName=TABLE_NAME,
-        Item=item, 
+        Item=item
     )
 
 

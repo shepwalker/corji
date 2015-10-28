@@ -14,6 +14,11 @@ from corji.exceptions import UserNotFoundException, CorjiFreeLoaderException
 import corji.settings as settings
 
 def consumed_func():
+    """
+    Decorator that decrements consumption "credit" for a User after
+    successful execution of the wrapped function.
+    Throws error if user is out of consumption credits.
+    """
     def inner_decorator(f):
         @wraps(f)
         def decorated_function(self, *args):
@@ -32,8 +37,14 @@ def consumed_func():
 
 
 def process_interrupts(customer):
+    """
+    Processes user input for global, or user-specific process_interrupts
+    that would preclude sending a message to the user. 
+    NONE should be treated as no relevant interrupts, so messaging can proceed
+    empty string should be treated as a no-response to the user 
+    """
     if customer.get('stop', None):
-        return None
+        return ""
 
     if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
         if "corgi" in text.lower() and not customer.get('wants_uptime_notification', None):

@@ -117,7 +117,7 @@ def corgi():
         return interrupts
 
     # generate instance of Abstract Message that
-    # corresponds ot input
+    # corresponds to input
     message = create_message(text, phone_number)
 
     try:
