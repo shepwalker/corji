@@ -3,7 +3,7 @@ import os
 
 class Config(object):
     # General variables.
-    DEBUG = True if (os.getenv('DEBUG') == "TRUE") else False
+    DEBUG = os.getenv('DEBUG', False)
     PORT = int(os.getenv('PORT', 8000))
     SITE_URL = os.getenv('SITE_URL', '127.0.0.1:8000')
     DO_NOT_DISTURB = os.getenv('DO_NOT_DISTURB', False)
@@ -32,7 +32,6 @@ class Config(object):
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'SUPER_NOT_VALID_SECRET')
     AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION', 'SUPER_NOT_VALID_REGION')
     AWS_S3_CACHE_BUCKET_NAME = os.getenv('AWS_S3_CACHE_BUCKET_NAME', 'SUPER_NOT_VALID_BUCKET')
-    AWS_DYNAMO_TABLE_NAME = os.getenv('AWS_DYNAMO_TABLE_NAME', 'SUPER_NOT_VALID_TABLE')
     AWS_PRELOAD_EXPIRATION_TIME = os.getenv('AWS_PRELOAD_EXPIRATION_TIME', 31540000)
 
     # Stripe.
