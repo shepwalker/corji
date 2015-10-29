@@ -2,9 +2,9 @@ import boto3
 
 from corji.settings import Config
 
-dynamo_client = boto3.client("dynamodb", region_name="us-west-1")
+dynamo_client = boto3.client("dynamodb", region_name=Config.AWS_DEFAULT_REGION)
 
-TABLE_NAME = Config.AWS_S3_CACHE_BUCKET_NAME
+TABLE_NAME = Config.AWS_DYNAMO_TABLE_NAME
 
 
 def sanitize_phone_number(phone_number):
@@ -65,3 +65,4 @@ def new(phone_number):
         'consumptions': {'N': str(Config.FREE_CONSUMPTIONS)}
     }
     put(item)
+    return item
