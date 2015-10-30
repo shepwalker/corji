@@ -1,5 +1,4 @@
 """Views that return TwiML."""
-
 import logging
 import random
 
@@ -110,7 +109,7 @@ def corgi():
         customer = customer_data.new(phone_number)
 
     # Process any system-wide or user-specific interrupts.
-    interrupts = process_interrupts(customer)
+    interrupts = process_interrupts(customer, text)
 
     # Tricky because we want to return an empty string if it appears.
     if interrupts is not None:
@@ -120,6 +119,9 @@ def corgi():
     # corresponds to input
     message = create_message(text, phone_number)
 
+    if not message:
+        message = render_template('txt/request_does_not_contain_emoji.txt')
+        return create_response(message)
     try:
         return message.create_reply()
     except CorjiFreeLoaderException:

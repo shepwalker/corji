@@ -36,7 +36,7 @@ def consumed_func():
 
 
 
-def process_interrupts(customer):
+def process_interrupts(customer, text):
     """
     Processes user input for global, or user-specific process_interrupts
     that would preclude sending a message to the user. 
@@ -49,13 +49,13 @@ def process_interrupts(customer):
     if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
         if "corgi" in text.lower() and not customer.get('wants_uptime_notification', None):
             message = render_template('txt/do_not_disturb_acknowledged.txt')
-            customer_data.add_metadata(phone_number, 'wants_uptime_notification', 'true')
+            customer_data.add_metadata(customer['phone_number'], 'wants_uptime_notification', 'true')
             return create_response(message)
 
         if customer.get('showed_disable_prompt', None):
             return ""
 
-        customer_data.add_metadata(phone_number, 'showed_disable_prompt', 'true')
+        customer_data.add_metadata(customer['phone_number'], 'showed_disable_prompt', 'true')
         message = render_template('txt/do_not_disturb.txt')
         return create_response(message)
 
