@@ -136,4 +136,4 @@ class SecretRequest(AbstractCorjiRequest):
     def create_reply(self):
         text=self.body
         text=text.strip()
-        return get_corgi(text)
+        raise NotImplementedError

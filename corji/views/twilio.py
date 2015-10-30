@@ -48,46 +48,6 @@ logger = logging.getLogger(settings.Config.LOGGER_NAME)
 
 api = CorgiResource()
 
-
-@twilio_blueprint.route("/sms/<original_emoji>", methods=['GET'])
-@logged_view(logger)
-def get_corgi(original_emoji):
-    """Returns the TWIML to mock a given request."""
-
-    message = ""
-    emoji = original_emoji
-
-    # If it's a multi-emoji that we don't track, just grab the first emoji.
-    # TODO: abstract out use of `keys()`.
-    if len(emoji) > 1 and emoji not in google_spreadsheets.keys():
-        emoji = original_emoji[0]
-
-        # Check for skin-toned emojis.
-        # (This only handles the one-emoji case for now.)
-        if not emoji_contains_skin_tone(original_emoji) and not emoji_is_numeric(original_emoji):
-            message = render_template('txt/requested_emoji_does_not_exist.txt',
-                                      requested_emoji=original_emoji,
-                                      fallback_emoji=emoji)
-
-    # Time to grab the filepath for the emoji!
-    corgi_urls = api.get(emoji)['results']
-
-    # If that still doesn't work, we'll just grab a random one.
-    if not corgi_urls:
-        logger.warn("Couldn't find corgi for {}. Using random one.".format(
-                    emoji))
-
-        while not corgi_urls:
-            results = api.get()
-            emoji, corgi_urls = results['emoji'], results['results']
-        message = render_template('txt/requested_emoji_does_not_exist.txt',
-                                  requested_emoji=original_emoji,
-                                  fallback_emoji=emoji)
-
-    corgi_url = random.choice(corgi_urls)
-    return create_response(message, image_url=corgi_url)
-
-
 @twilio_blueprint.route("/sms", methods=['GET', 'POST'])
 @logged_view(logger)
 def corgi():
