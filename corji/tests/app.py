@@ -52,7 +52,6 @@ class AppTestCase(unittest.TestCase):
         response = self.send_message_with_body('🔸')
         assert 'http' in str(response.data)
         assert string_contains_image(response.data)
-        print(response.data)
         assert ':(' in str(response.data)
 
     def test_emoticon_support(self):
