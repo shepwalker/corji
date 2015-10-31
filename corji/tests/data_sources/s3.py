@@ -20,7 +20,7 @@ class S3DataSourceTestCase(unittest.TestCase):
         Config.MAXIMUM_S3_FILESIZE = maximum_filesize
         Config.IMAGE_RESIZE = False
 
-        large_url = 'http://i.imgur.com/9FPR1Vw.jpg'
+        large_url = 'https://upload.wikimedia.org/wikipedia/commons/6/64/A_massive_dust_storm_blew_through_central_Asia_on_May_7,_2007.jpg'
         response = requests.head(large_url)
         filesize_in_bytes = int(response.headers['content-length'])
         assert filesize_in_bytes > maximum_filesize

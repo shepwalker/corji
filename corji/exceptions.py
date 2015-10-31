@@ -6,5 +6,5 @@ class UserNotFoundException(Exception):
     pass
 
 
-class CorjiFreeLoaderException(Exception):
+class CorjiFreeloaderException(Exception):
     pass

@@ -43,7 +43,7 @@ def process_interrupts(customer, text):
     NONE should be treated as no relevant interrupts, so messaging can proceed
     empty string should be treated as a no-response to the user
     """
-    if not customer or customer.get('stop', None):
+    if customer and customer.get('stop', None):
         return ""
 
     if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
