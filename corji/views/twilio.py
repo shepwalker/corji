@@ -1,5 +1,4 @@
 """Views that return TwiML."""
-
 import logging
 import random
 
@@ -14,6 +13,10 @@ import twilio.twiml
 from corji.api import CorgiResource
 import corji.customer_data as customer_data
 import corji.data_sources.google_spreadsheets as google_spreadsheets
+from corji.exceptions import (
+    UserNotFoundException,
+    CorjiFreeLoaderException
+)
 from corji.logging import logged_view
 import corji.settings as settings
 from corji.utils.emoji import (
@@ -23,61 +26,27 @@ from corji.utils.emoji import (
     text_contains_emoji
 )
 
+from corji.utils.message import (
+    process_interrupts
+)
+from corji.utils.twilio import (
+    create_response
+)
+
+from corji.messages.messages import (
+    EmojiRequest,
+    create_message
+)
+
+from corji.utils.message import (
+    process_interrupts
+)
+
 twilio_blueprint = Blueprint('twilio', __name__,
                              template_folder='templates')
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 
 api = CorgiResource()
-
-
-def create_response(text, image_url=None):
-    """Crafts a TwiML response using the supplied text and image."""
-    resp = twilio.twiml.Response()
-    with resp.message(text) as m:
-        if image_url:
-            m.media(image_url)
-
-    return str(resp)
-
-
-@twilio_blueprint.route("/sms/<original_emoji>", methods=['GET'])
-@logged_view(logger)
-def get_corgi(original_emoji):
-    """Returns the TWIML to mock a given request."""
-
-    message = ""
-    emoji = original_emoji
-
-    # If it's a multi-emoji that we don't track, just grab the first emoji.
-    # TODO: abstract out use of `keys()`.
-    if len(emoji) > 1 and emoji not in google_spreadsheets.keys():
-        emoji = original_emoji[0]
-
-        # Check for skin-toned emojis.
-        # (This only handles the one-emoji case for now.)
-        if not emoji_contains_skin_tone(original_emoji) and not emoji_is_numeric(original_emoji):
-            message = render_template('txt/requested_emoji_does_not_exist.txt',
-                                      requested_emoji=original_emoji,
-                                      fallback_emoji=emoji)
-
-    # Time to grab the filepath for the emoji!
-    corgi_urls = api.get(emoji)['results']
-
-    # If that still doesn't work, we'll just grab a random one.
-    if not corgi_urls:
-        logger.warn("Couldn't find corgi for {}. Using random one.".format(
-                    emoji))
-
-        while not corgi_urls:
-            results = api.get()
-            emoji, corgi_urls = results['emoji'], results['results']
-        message = render_template('txt/requested_emoji_does_not_exist.txt',
-                                  requested_emoji=original_emoji,
-                                  fallback_emoji=emoji)
-
-    corgi_url = random.choice(corgi_urls)
-    return create_response(message, image_url=corgi_url)
-
 
 @twilio_blueprint.route("/sms", methods=['GET', 'POST'])
 @logged_view(logger)
@@ -96,45 +65,27 @@ def corgi():
     if customer.get('stop', None):
         return ""
 
-    if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
-        if "corgi" in text.lower() and not customer.get('wants_uptime_notification', None):
-            message = render_template('txt/do_not_disturb_acknowledged.txt')
-            customer_data.add_metadata(phone_number, 'wants_uptime_notification', 'true')
-            return create_response(message)
-
-        if customer.get('showed_disable_prompt', None):
-            return ""
-
-        customer_data.add_metadata(phone_number, 'showed_disable_prompt', 'true')
-        message = render_template('txt/do_not_disturb.txt')
-        return create_response(message)
-
-    # TODO: test this shit, ffs.
     if not customer:
-        customer_data.new(phone_number)
-    elif int(customer['consumptions']['N']) < 1 and not customer.get('override', None):
-        if customer.get('showed_payment_prompt', None):
-            return ""
-        customer_data.add_metadata(phone_number, 'showed_payment_prompt', 'true')
-        message = render_template('txt/pay_us_please.txt',
-                                  site_url=settings.Config.SITE_URL,
-                                  payment_url=url_for('request_charge'),
-                                  phone_number=phone_number)
+        customer = customer_data.new(phone_number)
+
+    # Process any system-wide or user-specific interrupts.
+    interrupts = process_interrupts(customer, text)
+
+    # Tricky because we want to return an empty string if it appears.
+    if interrupts is not None:
+        return interrupts
+
+    # generate instance of Abstract Message that
+    # corresponds to input
+    message = create_message(text, phone_number)
+
+    if not message:
+        message = render_template('txt/request_does_not_contain_emoji.txt')
         return create_response(message)
-    else:
-        customer_data.modify_consumptions(phone_number, -1)
-
-    # Let's just ignore trailing whitespace.
-    text = text.strip()
-
-    # Base case: the text has emoji.
-    if text_contains_emoji(text):
-        return get_corgi(text)
-
-    # Edge case: the text has emoticons but not emoji.
-    emoji = emojis_for_emoticons.get(text, None)
-    if emoji:
-        return get_corgi(emoji)
+    try:
+        return message.create_reply()
+    except CorjiFreeLoaderException:
+        return generate_freeloader_response(customer)
 
     # If they tell us to stop, then stop.
     if "stop" in text.lower():

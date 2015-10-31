@@ -9,3 +9,4 @@ machine:
     version: 3.4.2
   environment:
     SPREADSHEET_URL: https://spreadsheets.google.com/feeds/list/1gQpp8csAHm3vTDob7fJ46iruLuZeaqAL5d3sT5otPLc/od6/public/values?alt=json
+    AWS_DEFAULT_REGION: us-west-2
