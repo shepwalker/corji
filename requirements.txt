@@ -1,4 +1,5 @@
 awsebcli
+boto
 boto3
 coverage
 emoji
