@@ -29,6 +29,11 @@ class Config(object):
     # Frontend variables.
     GOOGLE_ANALYTICS_ID = os.getenv('GOOGLE_ANALYTICS_ID', '')
 
+    # Twilio variables.
+    TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', '')
+    TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', '')
+    TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER', '')
+
     # AWS variables.
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', 'SUPER_NOT_VALID_KEY')
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'SUPER_NOT_VALID_SECRET')
