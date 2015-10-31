@@ -1,6 +1,7 @@
 awsebcli
 boto
 boto3
+celery
 coverage
 emoji
 flask
