@@ -43,49 +43,6 @@ class AbstractCorjiRequest(object):
 class EmojiRequest(AbstractCorjiRequest):
 
     @consumed_func()
-    def create_reply2(self):
-        text = self.text
-        text = text.strip()
-        emoji = emojis_for_emoticons.get(text, None)
-        message = ""
-        #if text_contains_emoji(text):
-        #    results = api.get(text)
-        #elif emoji:
-        #    results = api.get(emoji)
-        #else:
-        #    raise RuntimeError("Improperly identified message type")
-
-
-
-        #if its a string of emoji and the recipe isn't in the spreadsheet
-        if len(text) > 1 and text not in google_spreadsheets.keys():
-            emoji = text[0]
-
-        # Check for skin-toned emojis.
-        # (This only handles the one-emoji case for now.)
-            if not emoji_contains_skin_tone(text) and not emoji_is_numeric(text):
-                message = render_template('txt/requested_emoji_does_not_exist.txt',
-                                          requested_emoji=text,
-                                          fallback_emoji=emoji)
-
-        # Time to grab the filepath for the emoji!
-        corgi_urls = api.get(emoji)['results']
-
-        # If that still doesn't work, we'll just grab a random one.
-        if not corgi_urls:
-            logger.warn("Couldn't find corgi for {}. Using random one.".format(
-                        emoji))
-
-            while not corgi_urls:
-                results = api.get()
-                emoji, corgi_urls = results['emoji'], results['results']
-            message = render_template('txt/requested_emoji_does_not_exist.txt',
-                                      requested_emoji=text,
-                                      fallback_emoji=emoji)
-        corgi_url = random.choice(corgi_urls)
-        return create_response(message, image_url=corgi_url)
-     
-    @consumed_func()
     def create_reply(self):
         message = ""
         text = self.text
