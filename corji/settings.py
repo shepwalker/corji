@@ -25,6 +25,8 @@ class Config(object):
     LOG_NAME = os.getenv('LOG_NAME', 'corji.log')
     LOG_PATH = os.getenv('LOG_PATH', './.logs')
     LOGGER_NAME = "FLASK_APP_LOGGER"
+
+    # Celery.
     CELERY_BROKER_URL = "sqs://"
 
     # Frontend variables.
