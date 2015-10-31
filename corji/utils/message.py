@@ -1,5 +1,5 @@
-""" 
-Set of utility functions for processing messages 
+"""
+Set of utility functions for processing messages
 and replying.
 """
 from functools import wraps
@@ -7,11 +7,12 @@ from functools import wraps
 from flask import (
     render_template,
     url_for
-    )
+)
 
 import corji.customer_data as customer_data
-from corji.exceptions import UserNotFoundException, CorjiFreeLoaderException
+from corji.exceptions import CorjiFreeloaderException, UserNotFoundException
 import corji.settings as settings
+
 
 def consumed_func():
     """
@@ -29,19 +30,18 @@ def consumed_func():
                 raise CorjiFreeloaderException
             fn = f(self, *args)
             if fn:
-            	customer_data.modify_consumptions(self.phone_number, 1)
+                customer_data.modify_consumptions(self.phone_number, 1)
             return fn
         return decorated_function
     return inner_decorator
 
 
-
 def process_interrupts(customer, text):
     """
     Processes user input for global, or user-specific process_interrupts
-    that would preclude sending a message to the user. 
+    that would preclude sending a message to the user.
     NONE should be treated as no relevant interrupts, so messaging can proceed
-    empty string should be treated as a no-response to the user 
+    empty string should be treated as a no-response to the user
     """
     if not customer or customer.get('stop', None):
         return ""

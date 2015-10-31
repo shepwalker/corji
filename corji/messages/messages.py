@@ -9,12 +9,11 @@ import corji.settings as settings
 from corji.utils.emoji import (
     text_contains_emoji,
     emojis_for_emoticons,
-    emoji_contains_skin_tone, 
+    emoji_contains_skin_tone,
     emoji_is_numeric
-    )
+)
 from corji.utils.message import (
-    consumed_func,
-    process_interrupts
+    consumed_func
 )
 from corji.utils.twilio import (
     create_response
@@ -23,6 +22,7 @@ from corji.utils.twilio import (
 api = CorgiResource()
 
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
+
 
 def create_message(text, phone_number):
     if emojis_for_emoticons.get(text, None) or text_contains_emoji(text):
@@ -51,11 +51,11 @@ class EmojiRequest(AbstractCorjiRequest):
         text = self.text
         text = text.strip()
         if text_contains_emoji(text):
-        	emoji = text
+            emoji = text
         else:
-        	emoji = emojis_for_emoticons.get(text, None)
-       	if not emoji:
-       		raise RuntimeError("Improperly identified message type") 
+            emoji = emojis_for_emoticons.get(text, None)
+            if not emoji:
+                raise RuntimeError("Improperly identified message type")
         # If it's a multi-emoji that we don't track, just grab the first emoji.
         # TODO: abstract out use of `keys()`.
         if len(emoji) > 1 and emoji not in google_spreadsheets.keys():
@@ -86,12 +86,7 @@ class EmojiRequest(AbstractCorjiRequest):
         corgi_url = random.choice(corgi_urls)
         return create_response(message, image_url=corgi_url)
 
+
 class SecretRequest(AbstractCorjiRequest):
-    """Placeholder for implementation of Secret-request handling"""
-    def __init__(self, body, sender):
-        super(ClassName, self).__init__(body, sender)
-        self.arg=arg
-
-
     def create_reply(self):
         raise NotImplementedError
