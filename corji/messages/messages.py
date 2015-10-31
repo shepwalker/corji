@@ -29,7 +29,6 @@ def create_message(text, phone_number):
 
 
 class AbstractCorjiRequest(object):
-
     """Abstract class for messages received to the service"""
 
     def __init__(self, text, phone_number):
@@ -41,6 +40,7 @@ class AbstractCorjiRequest(object):
 
 
 class EmojiRequest(AbstractCorjiRequest):
+    """Request class for messages that contain emoji or emoticons"""
 
     @consumed_func()
     def create_reply(self):
@@ -84,13 +84,11 @@ class EmojiRequest(AbstractCorjiRequest):
         return create_response(message, image_url=corgi_url)
 
 class SecretRequest(AbstractCorjiRequest):
-    """docstring for ClassName"""
+    """Placeholder for implementation of Secret-request handling"""
     def __init__(self, body, sender):
         super(ClassName, self).__init__(body, sender)
         self.arg=arg
 
 
     def create_reply(self):
-        text=self.body
-        text=text.strip()
         raise NotImplementedError
