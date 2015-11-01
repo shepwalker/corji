@@ -1,46 +1,29 @@
 """Views that return TwiML."""
 import logging
-import random
 
 from flask import (
     Blueprint,
     redirect,
     render_template,
-    request,
-    url_for
+    request
 )
 import twilio.twiml
 
 from corji.api import CorgiResource
 import corji.customer_data as customer_data
-import corji.data_sources.google_spreadsheets as google_spreadsheets
 from corji.exceptions import (
-    UserNotFoundException,
-    CorjiFreeLoaderException
+    CorjiFreeloaderException
 )
 from corji.logging import logged_view
 import corji.settings as settings
-from corji.utils.emoji import (
-    emojis_for_emoticons,
-    emoji_contains_skin_tone,
-    emoji_is_numeric,
-    text_contains_emoji
-)
-
 from corji.utils.message import (
     process_interrupts
 )
 from corji.utils.twilio import (
     create_response
 )
-
 from corji.messages.messages import (
-    EmojiRequest,
     create_message
-)
-
-from corji.utils.message import (
-    process_interrupts
 )
 
 twilio_blueprint = Blueprint('twilio', __name__,
@@ -48,6 +31,7 @@ twilio_blueprint = Blueprint('twilio', __name__,
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 
 api = CorgiResource()
+
 
 @twilio_blueprint.route("/sms", methods=['GET', 'POST'])
 @logged_view(logger)
@@ -85,7 +69,7 @@ def corgi():
         return create_response(message)
     try:
         return message.create_reply()
-    except CorjiFreeLoaderException:
+    except CorjiFreeloaderException:
         return generate_freeloader_response(customer)
 
     # If they tell us to stop, then stop.

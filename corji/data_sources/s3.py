@@ -32,7 +32,8 @@ def load():
     # TODO: silently fail if we don't have the thing.
     all_objects = aws_s3_client.list_objects(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
 
-    if 'Contents' in all_objects:
+    # This operation takes like ~6-10sec right now.
+    if 'Contents' in all_objects and Config.PREGENERATE_S3_URLS:
         for obj in all_objects['Contents']:
             possible_url = aws_s3_client.generate_presigned_url(
                 'get_object', ExpiresIn=31540000, Params={
@@ -58,14 +59,19 @@ def delete_all(corgis):
 def put_all(corgis):
     cacheable_corgis = [corgi for corgi in corgis if corgis[corgi]]
     for emoji in cacheable_corgis:
-        put(emoji, corgis)
+        put(emoji, corgis[emoji])
 
 
 # TODO: This method is wayyyyy too big.
-def put(emoji, corgis):
-    corgi_list = corgis[emoji]
+def put(emoji, corgis, override_existing_file=False):
+    """Places all corgis in a bucket for the given emoji.
 
-    for i, corgi in enumerate(corgi_list):
+    Returns True if at least one put is successful; returns False otherwise.
+    """
+
+    success = False
+
+    for i, corgi in enumerate(corgis):
         s3_key = get_file_name_from_emoji(i, emoji)
 
         # see if this corgi already exists in s3 bucket
@@ -75,14 +81,17 @@ def put(emoji, corgis):
         else:
             possible_s3_entry = None
         try:
-            if not possible_s3_entry:
+            if not possible_s3_entry or override_existing_file:
                 logger.debug("Adding %s to remote cache", s3_key)
                 logger.debug(
                     "Downloading corgi %s in prep for remote cache", corgi)
                 picture_request = requests.get(corgi)
                 picture_body = None
                 content_type = None
-                if Config.IMAGE_RESIZE:
+
+                # If the image is greater than the max size, resize it no matter what.
+                original_filesize = int(picture_request.headers['content-length'])
+                if Config.IMAGE_RESIZE or original_filesize > Config.MAXIMUM_S3_FILESIZE:
                     file_photodata = BytesIO(picture_request.content)
                     working_image = Image.open(file_photodata)
                     original_width = working_image.size[0]
@@ -101,15 +110,17 @@ def put(emoji, corgis):
                                          ContentType=content_type,
                                          Key=s3_key,
                                          Bucket=Config.AWS_S3_CACHE_BUCKET_NAME)
+                success = True
 
             else:
                 logger.debug("%s found in remote cache. Skipping", s3_key)
 
         except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
-            logger.error(
-                "Http error occurred while creating remote cache on %s", s3_key, e)
+            logger.error("Error occurred adding %s to S3.", s3_key, e)
         except OSError as e:
-            logger.error("OSError Occurred during resizing", e)
+            logger.error("Error occurred resizing %s.", s3_key, e)
+
+        return success
 
 
 def get_all(raw_emoji):

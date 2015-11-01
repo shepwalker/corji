@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+from celery import Celery
 from flask import Flask
 
 from corji.api import CorgiResource
@@ -15,8 +16,9 @@ app.register_blueprint(marketing_blueprint)
 app.register_blueprint(stripe_blueprint)
 app.register_blueprint(twilio_blueprint)
 
-
 api = CorgiResource()
+celery = Celery(app.name, broker=settings.Config.CELERY_BROKER_URL)
+celery.conf.update(app.config)
 logger = Logger(app.logger_name,
                 settings.Config.LOG_PATH,
                 settings.Config.LOG_NAME)

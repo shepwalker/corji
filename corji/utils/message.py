@@ -1,5 +1,5 @@
-""" 
-Set of utility functions for processing messages 
+"""
+Set of utility functions for processing messages
 and replying.
 """
 from functools import wraps
@@ -7,11 +7,13 @@ from functools import wraps
 from flask import (
     render_template,
     url_for
-    )
+)
 
 import corji.customer_data as customer_data
-from corji.exceptions import UserNotFoundException, CorjiFreeLoaderException
+from corji.exceptions import CorjiFreeloaderException, UserNotFoundException
 import corji.settings as settings
+from corji.utils.twilio import create_response
+
 
 def consumed_func():
     """
@@ -29,33 +31,34 @@ def consumed_func():
                 raise CorjiFreeloaderException
             fn = f(self, *args)
             if fn:
-            	customer_data.modify_consumptions(self.phone_number, 1)
+                customer_data.modify_consumptions(self.phone_number, 1)
             return fn
         return decorated_function
     return inner_decorator
 
 
-
 def process_interrupts(customer, text):
     """
     Processes user input for global, or user-specific process_interrupts
-    that would preclude sending a message to the user. 
+    that would preclude sending a message to the user.
     NONE should be treated as no relevant interrupts, so messaging can proceed
-    empty string should be treated as a no-response to the user 
+    empty string should be treated as a no-response to the user
     """
-    if customer.get('stop', None):
+    if customer and customer.get('stop', None):
         return ""
 
     if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
+        phone_number = customer['phone_number'].get('S', '')
+
         if "corgi" in text.lower() and not customer.get('wants_uptime_notification', None):
             message = render_template('txt/do_not_disturb_acknowledged.txt')
-            customer_data.add_metadata(customer['phone_number'], 'wants_uptime_notification', 'true')
+            customer_data.add_metadata(phone_number, 'wants_uptime_notification', 'true')
             return create_response(message)
 
         if customer.get('showed_disable_prompt', None):
             return ""
 
-        customer_data.add_metadata(customer['phone_number'], 'showed_disable_prompt', 'true')
+        customer_data.add_metadata(phone_number, 'showed_disable_prompt', 'true')
         message = render_template('txt/do_not_disturb.txt')
         return create_response(message)
 
