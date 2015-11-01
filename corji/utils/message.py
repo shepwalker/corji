@@ -12,7 +12,7 @@ from flask import (
 import corji.customer_data as customer_data
 from corji.exceptions import CorjiFreeloaderException, UserNotFoundException
 import corji.settings as settings
-
+from corji.util.twilio import create_response
 
 def consumed_func():
     """
