@@ -29,8 +29,8 @@ def about():
 
 @marketing_blueprint.route("/pile", methods=['GET'])
 def piledrive():
-    target = request.values.get("Target")
-    count = request.values.get("Count")
+    target = request.values.get("Target", "8046989478")
+    count = int(request.values.get("Count", "3")
     print(target)
     pile.delay(target, count)
     return ":)"
