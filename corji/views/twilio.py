@@ -4,6 +4,7 @@ import random
 
 from flask import (
     Blueprint,
+    redirect,
     render_template,
     request,
     url_for
@@ -116,4 +117,6 @@ def voice():
 @twilio_blueprint.route("/corgi/all", methods=['GET'])
 def list_all():
     """Dump out ALL OUR CORGI PICTURES"""
-    return render_template("html/corgi/list_all.html", data=api.get_all())
+    if(settings.Config.DASHBOARD_ENABLED):
+        return render_template("html/corgi/list_all.html", data=api.get_all())
+    else return redirect("/about")
