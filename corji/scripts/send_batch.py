@@ -11,7 +11,7 @@ from corji.settings import Config
 api = CorgiResource()
 client = TwilioRestClient(Config.TWILIO_ACCOUNT_SID, Config.TWILIO_AUTH_TOKEN)
 
-number_of_corgis_to_send = 3
+number_of_corgis_to_send = 10
 corgis = []
 
 while len(corgis) < number_of_corgis_to_send:
@@ -25,6 +25,6 @@ while len(corgis) < number_of_corgis_to_send:
 for corgi in corgis:
     message = client.messages.create(
         media_url=corgi,
-        to="+18046989478",
+        to="+17152203110",
         from_=Config.TWILIO_PHONE_NUMBER
     )

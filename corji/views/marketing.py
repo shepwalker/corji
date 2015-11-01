@@ -22,7 +22,7 @@ marketing_blueprint = Blueprint('marketing', __name__,
 def about():
     """Much hype.  Very disruptive.  Such blurb."""
     return render_template('html/marketing/about.html',
-                           google_analytics_id=settings.Config.GOOGLE_ANALYTICS_ID)
+                           google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
 
 
 @marketing_blueprint.route("/pile", methods=['GET'])
@@ -31,7 +31,8 @@ def piledrive():
     return ":)"
 
 
-celery = Celery('corji', broker='sqs://')
+celery = Celery("corji", broker=Config.CELERY_BROKER_URL)
+
 @celery.task
 def pile():
     """Much hype.  Very disruptive.  Such blurb."""
