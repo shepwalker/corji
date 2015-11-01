@@ -6,12 +6,10 @@ class Config(object):
     DEBUG = os.getenv('DEBUG', False)
     PORT = int(os.getenv('PORT', 8000))
     SITE_URL = os.getenv('SITE_URL', '127.0.0.1:8000')
-<<<<<<< HEAD
+
     DO_NOT_DISTURB = True if (os.getenv('DO_NOT_DISTURB') == "TRUE") else False
     DASHBOARD_ENABLED = True if (os.getenv('DASHBOARD_ENABLED') == "TRUE") else False
-=======
-   
->>>>>>> 39f6184984de1d00f54ab98a0fc3f7f3238990ae
+
 
     # Database variables.
     CUSTOMER_DATA_TABLE_NAME = os.getenv('CUSTOMER_DATA_TABLE_NAME', 'corji')
@@ -48,6 +46,7 @@ class Config(object):
     AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION', 'SUPER_NOT_VALID_REGION')
     AWS_S3_CACHE_BUCKET_NAME = os.getenv('AWS_S3_CACHE_BUCKET_NAME', 'SUPER_NOT_VALID_BUCKET')
     AWS_PRELOAD_EXPIRATION_TIME = os.getenv('AWS_PRELOAD_EXPIRATION_TIME', 31540000)
+    AWS_DYNAMO_TABLE_NAME = os.getenv('AWS_DYNAMO_TABLE_NAME', 'SUPER_NOT_VALID_DYNAMO')
 
     # Stripe.
     STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')

@@ -3,6 +3,7 @@ import random
 import unittest
 
 import corji.customer_data as customer_data
+from corji.settings import Config
 
 
 # TODO: actually relying on the SPREADSHEET_URL is a codesmell.

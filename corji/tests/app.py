@@ -3,6 +3,7 @@ import random
 import unittest
 
 from corji.app import app
+from corji.settings import Config
 
 
 # TODO: actually relying on the SPREADSHEET_URL is a codesmell.
@@ -81,8 +82,11 @@ class AppTestCase(unittest.TestCase):
         assert ':(' in str(response.data)
         assert 'not-a-url' not in str(response.data)
 
-    def test_dashboard_unreachable(self)
-        response = self.self.app.get("/corgi/all")
+    def test_dashboard_unreachable(self):
+        Config.DASHBOARD_ENABLED = False
+        response = self.app.get("/corgi/all")
+        assert '/corgi/all' not in str(response.data)
+        assert 'table' not in str(response.data)
 
 def string_contains_image(image_string):
     return (
