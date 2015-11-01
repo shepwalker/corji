@@ -119,4 +119,5 @@ def list_all():
     """Dump out ALL OUR CORGI PICTURES"""
     if(settings.Config.DASHBOARD_ENABLED):
         return render_template("html/corgi/list_all.html", data=api.get_all())
-    else return redirect("/about")
+    else:
+        return redirect("/about")

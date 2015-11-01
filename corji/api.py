@@ -30,7 +30,7 @@ class CorgiResource(Resource):
             emoji = random.choice(google_spreadsheets.keys())
 
         # The string we eventually return.
-        corgi_url = ""
+        corgi_urls = ""
 
         # Check for skin-toned emojis and fallback to the undecorated one.
         if len(emoji) == 2 and emoji_contains_skin_tone(emoji):
@@ -57,7 +57,7 @@ class CorgiResource(Resource):
                 corgi_urls.remove(url)
 
         return {
-            "count": len(corgi_url),
+            "count": len(corgi_urls),
             "emoji": emoji,
             "results": corgi_urls
         }
