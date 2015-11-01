@@ -1,6 +1,7 @@
 import logging
 import random
 
+import emoji
 from flask_restful import Resource, Api
 import requests
 
@@ -44,7 +45,8 @@ class CorgiResource(Resource):
                 logger.warn("Corji not found for emoji %s", emoji)
 
         # If S3 is a no-go, fall back to Spreadsheets.
-        corgi_urls = google_spreadsheets.get_all(emoji)
+        if not corgi_urls:
+            corgi_urls = google_spreadsheets.get_all(emoji)
 
         # TODO: do this smarter somehow.
         for url in corgi_urls:
@@ -59,6 +61,27 @@ class CorgiResource(Resource):
             "emoji": emoji,
             "results": corgi_urls
         }
+
+    def get_all(self):
+        all_keys = google_spreadsheets.keys(include_empty_keys=True)
+        all_emojis = {}
+        for key in all_keys: 
+            this_corgi = {'emoji' : key}
+            corgi_urls = ""
+            if settings.Config.REMOTE_CACHE_RETRIEVE:
+                try:
+                    corgi_urls = s3.get_all(key)
+                except CorgiNotFoundException as e:
+                    logger.error(e)
+                    logger.warn("Corji not found for emoji %s", emoji)
+            if not corgi_urls:
+                corgi_urls = google_spreadsheets.get_all(key)
+            emoji_name = emoji.demojize(key).replace(":", "")
+            all_emojis[key] = {
+                "urls": corgi_urls,
+                "emoji_name": emoji_name
+            }
+        return all_emojis
 
 
 def attach_rest_api(app):

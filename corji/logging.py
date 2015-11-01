@@ -35,7 +35,7 @@ def Logger(logger_name, log_path, log_name):
     logger = logging.getLogger(logger_name)
     logger.addHandler(file_handler)
     logger.setLevel(logging.DEBUG)
-    local_handler = logging.StreamHandler(sys.stdout)
+    local_handler = logging.StreamHandler(sys.stderr)
     logger.addHandler(local_handler)
     return logger
 

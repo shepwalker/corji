@@ -114,6 +114,8 @@ def put(emoji, corgis):
 
 def get_all(raw_emoji):
     folder_name = emoji.demojize(raw_emoji).replace(":", "")
+    if len(folder_name) == 0:
+        return None
     possible_s3_entries = [
         item for item in all_objects['Contents'] if folder_name in item['Key']]
 
