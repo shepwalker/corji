@@ -63,25 +63,24 @@ class CorgiResource(Resource):
         }
 
     def get_all(self):
-        all_keys = google_spreadsheets.keys(include_empty_keys=True)
-        all_emojis = {}
-        for key in all_keys: 
-            this_corgi = {'emoji' : key}
+        all_emojis = google_spreadsheets.keys(include_empty_keys=True)
+        corgis_for_emojis = {}
+        for this_emoji in all_emojis: 
             corgi_urls = ""
             if settings.Config.REMOTE_CACHE_RETRIEVE:
                 try:
-                    corgi_urls = s3.get_all(key)
+                    corgi_urls = s3.get_all(this_emoji)
                 except CorgiNotFoundException as e:
                     logger.error(e)
-                    logger.warn("Corji not found for emoji %s", emoji)
+                    logger.warn("Corji not found for emoji %s", this_emoji)
             if not corgi_urls:
-                corgi_urls = google_spreadsheets.get_all(key)
-            emoji_name = emoji.demojize(key).replace(":", "")
-            all_emojis[key] = {
+                corgi_urls = google_spreadsheets.get_all(this_emoji)
+            emoji_name = emoji.demojize(this_emoji).replace(":", "")
+            corgis_for_emojis[this_emoji] = {
                 "urls": corgi_urls,
                 "emoji_name": emoji_name
             }
-        return all_emojis
+        return corgis_for_emojis
 
 
 def attach_rest_api(app):

@@ -1,40 +1,39 @@
 {% extends 'html/base.html' %}
 {% block content %}
-<div id="all_the_things">
-	<table>
-		{% for corgi in data %}
-		{% set beenHere = "" %}
-				{% for url in data[corgi].urls %}
-				<tr class="corgi_row">
-					{% if beenHere %}
-					<td> <label>  </label> </td>
-					<td> <label>  </label> </td>					
-					{% else %}
-					<td> <label> {{ corgi }} </label> </td>
-					<td> <label> {{data[corgi].emoji_name}} </label> </td>
-					{% endif %}
-					<td>
-					<img src="{{ url }}" width=256>
-				</td>
-					{% set beenHere = "True" %}
-			</tr>
-				{% endfor %}
-		{% endfor %}
-	</table>
+<div>
+    <table>
+        {% for corgi in data %}
+                {% for url in data[corgi].urls %}
+                <tr class="corgi_row">
+                    {% if loop.first %}
+                    <td> <label> {{ corgi }} </label> </td>
+                    <td> <label> {{data[corgi].emoji_name}} </label> </td>                  
+                    {% else %}
+                    <td> <label>  </label> </td>
+                    <td> <label>  </label> </td> 
+                    {% endif %}
+                    <td>
+                    <img src="{{ url }}" width=256>
+                </td>
+                    {% set beenHere = "True" %}
+            </tr>
+                {% endfor %}
+        {% endfor %}
+    </table>
 </div>
 
 <script type="text/javascript">
-	
-	$(document).ready(function(){
-		$("tr img").load(function(){
-			thisRow = $(this).closest("tr");
-			if($(this).attr('src').indexOf("s3") > -1){
-				$(thisRow).css("background-color", "FFFF70")
-				var image = new Image();
-				image.src = $(this).attr("src");
-				$(thisRow).append('<td> width: ' + image.naturalWidth + ' and height: ' + image.naturalHeight + "</td>");
-			}
-		});
-	});
+    
+    $(document).ready(function(){
+        $("tr img").load(function(){
+            thisRow = $(this).closest("tr");
+            if($(this).attr('src').indexOf("s3") > -1){
+                $(thisRow).css("background-color", "FFFF70")
+                var image = new Image();
+                image.src = $(this).attr("src");
+                $(thisRow).append('<td> width: ' + image.naturalWidth + ' and height: ' + image.naturalHeight + "</td>");
+            }
+        });
+    });
 </script>
 {% endblock %}
