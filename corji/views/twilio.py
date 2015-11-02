@@ -97,11 +97,4 @@ def voice():
     resp = twilio.twiml.Response()
     resp.say(message)
     return str(resp)
-
-@twilio_blueprint.route("/corgi/all", methods=['GET'])
-def list_all():
-    """Dump out ALL OUR CORGI PICTURES"""
-    if(settings.Config.DASHBOARD_ENABLED):
-        return render_template("html/corgi/list_all.html", data=api.get_all())
-    else:
-        return redirect("/about")
+    
