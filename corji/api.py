@@ -11,7 +11,8 @@ from corji.data_sources import (
 from corji.exceptions import CorgiNotFoundException
 import corji.settings as settings
 from corji.utils.emoji import (
-    emoji_contains_skin_tone
+    emoji_contains_skin_tone,
+    text_contains_emoji
 )
 
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
@@ -27,9 +28,6 @@ class CorgiResource(Resource):
 
         if not emoji:
             emoji = random.choice(google_spreadsheets.keys())
-
-        # The string we eventually return.
-        corgi_url = ""
 
         # Check for skin-toned emojis and fallback to the undecorated one.
         if len(emoji) == 2 and emoji_contains_skin_tone(emoji):
@@ -55,8 +53,8 @@ class CorgiResource(Resource):
                 corgi_urls.remove(url)
 
         return {
-            "count": len(corgi_url),
-            "emoji": emoji,
+            "count": len(corgi_urls),
+            "emoji": emoji if text_contains_emoji(emoji) else "",
             "results": corgi_urls
         }
 
