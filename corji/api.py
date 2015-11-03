@@ -1,6 +1,7 @@
 import logging
 import random
 
+import emoji
 from flask_restful import Resource, Api
 import requests
 
@@ -29,6 +30,8 @@ class CorgiResource(Resource):
         if not emoji:
             emoji = random.choice(google_spreadsheets.keys())
 
+        corgi_urls = []
+
         # Check for skin-toned emojis and fallback to the undecorated one.
         if len(emoji) == 2 and emoji_contains_skin_tone(emoji):
             emoji = emoji[0]
@@ -42,7 +45,8 @@ class CorgiResource(Resource):
                 logger.warn("Corji not found for emoji %s", emoji)
 
         # If S3 is a no-go, fall back to Spreadsheets.
-        corgi_urls = google_spreadsheets.get_all(emoji)
+        if not corgi_urls:
+            corgi_urls = google_spreadsheets.get_all(emoji)
 
         # TODO: do this smarter somehow.
         for url in corgi_urls:
@@ -57,6 +61,26 @@ class CorgiResource(Resource):
             "emoji": emoji if text_contains_emoji(emoji) else "",
             "results": corgi_urls
         }
+
+    def get_all(self):
+        all_emojis = google_spreadsheets.keys(include_empty_keys=True)
+        corgis_for_emojis = {}
+        for this_emoji in all_emojis:
+            corgi_urls = ""
+            if settings.Config.REMOTE_CACHE_RETRIEVE:
+                try:
+                    corgi_urls = s3.get_all(this_emoji)
+                except CorgiNotFoundException as e:
+                    logger.error(e)
+                    logger.warn("Corji not found for emoji %s", this_emoji)
+            if not corgi_urls:
+                corgi_urls = google_spreadsheets.get_all(this_emoji)
+            emoji_name = emoji.demojize(this_emoji).replace(":", "")
+            corgis_for_emojis[this_emoji] = {
+                "urls": corgi_urls,
+                "emoji_name": emoji_name
+            }
+        return corgis_for_emojis
 
 
 def attach_rest_api(app):

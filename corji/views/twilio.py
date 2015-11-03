@@ -3,6 +3,7 @@ import logging
 
 from flask import (
     Blueprint,
+    redirect,
     render_template,
     request
 )
@@ -96,3 +97,4 @@ def voice():
     resp = twilio.twiml.Response()
     resp.say(message)
     return str(resp)
+    
