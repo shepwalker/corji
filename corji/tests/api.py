@@ -49,3 +49,16 @@ class ApiTestCase(unittest.TestCase):
         assert response["count"] == 0
         assert response["emoji"] == '🌿'
         assert response["results"] == []
+
+    def test_get_all(self):
+        response = self.api.get_all()
+        assert response is not None
+        assert response["count"] > 10
+        for result in response["results"]:
+            assert result["emoji"] in response["emojis"]
+            assert result["emoji_name"] is not None
+            assert result["urls"] is not None
+
+
+if __name__ == '__main__':
+    unittest.main()

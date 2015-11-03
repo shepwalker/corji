@@ -64,7 +64,7 @@ class CorgiResource(Resource):
 
     def get_all(self):
         all_emojis = google_spreadsheets.keys(include_empty_keys=True)
-        corgis_for_emojis = {}
+        corjis = []
         for this_emoji in all_emojis:
             corgi_urls = ""
             if settings.Config.REMOTE_CACHE_RETRIEVE:
@@ -76,11 +76,16 @@ class CorgiResource(Resource):
             if not corgi_urls:
                 corgi_urls = google_spreadsheets.get_all(this_emoji)
             emoji_name = emoji.demojize(this_emoji).replace(":", "")
-            corgis_for_emojis[this_emoji] = {
+            corjis.append({
                 "urls": corgi_urls,
+                "emoji": this_emoji,
                 "emoji_name": emoji_name
-            }
-        return corgis_for_emojis
+            })
+        return {
+            "count": len(corjis),
+            "emojis": [corji["emoji"] for corji in corjis],
+            "results": corjis
+        }
 
 
 def attach_rest_api(app):
