@@ -9,9 +9,9 @@
         <li>Cure your loved ones</li>
         <li>Save the world</li>
     </ol>
-    <form id="bomb">
-    <input type="text" placeholder="Your name">
-    <input type="text" placeholder="Target's phone number">
+    <form id="bomb" action="pile" method="POST">
+    <input type="text" placeholder="Your name" name="name" id="name">
+    <input type="text" placeholder="Target's phone number" name="target" id="target">
     <select>
         <option>Click to choose a package...</option>
     </select>
@@ -19,7 +19,7 @@
     <br />
         <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
             data-key="{{ key }}"
-            data-description="{{ recharge_count }} more corgis for {{ phone_number }}"
+            data-description="Dogpile"
             data-amount="199"
             data-locale="auto"
             data-label="I want more corgis!"></script>

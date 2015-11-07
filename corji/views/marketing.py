@@ -7,6 +7,7 @@ from flask import (
     request,
     render_template
 )
+import stripe
 from twilio.rest import TwilioRestClient
 
 from corji.api import CorgiResource
@@ -27,17 +28,32 @@ def about():
                            google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
 
 
-@marketing_blueprint.route("/pile", methods=['GET'])
+@marketing_blueprint.route("/pile", methods=['POST'])
 def piledrive():
-    target = request.values.get("Target", "8046989478")
-    count = int(request.values.get("Count", "3"))
-    print(target)
-    pile.delay(target, count)
+    recipient_number = request.form['target']
+    sender_name = request.form['name']
+
+    email = request.form['stripeEmail']
+    customer = stripe.Customer.create(
+        card=request.form['stripeToken'],
+        email=email
+    )
+
+    amount = 199
+    stripe.Charge.create(
+        customer=customer.id,
+        amount=amount,
+        currency='usd',
+        description='Corji'
+    )
+
+    count = 1
+    pile.delay(recipient_number, count, sender_name)
     return ":)"
 
 
 @celery.task
-def pile(target, count):
+def pile(target, count, sender):
     """Much hype.  Very disruptive.  Such blurb."""
 
     api = CorgiResource()
@@ -55,16 +71,22 @@ def pile(target, count):
                     corgis.append(result)
 
     for corgi in corgis:
-        message = client.messages.create(
+        client.messages.create(
             media_url=corgi,
             to=target,
             from_=Config.TWILIO_PHONE_NUMBER
         )
+
+    client.messages.create(
+        body="This dogpile sent to you by {}.".format(sender),
+        to=target,
+        from_=Config.TWILIO_PHONE_NUMBER
+    )
 
 
 @marketing_blueprint.route("/bomb", methods=['GET'])
 def bomb():
     """Much hype.  Very disruptive.  Such blurb."""
     return render_template('html/marketing/bomb.html',
-                           google_analytics_id=settings.Config.GOOGLE_ANALYTICS_ID)
-
+                           key=Config.STRIPE_PUBLIC_KEY,
+                           google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
