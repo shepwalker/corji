@@ -60,3 +60,11 @@ def pile(target, count):
             to=target,
             from_=Config.TWILIO_PHONE_NUMBER
         )
+
+
+@marketing_blueprint.route("/bomb", methods=['GET'])
+def bomb():
+    """Much hype.  Very disruptive.  Such blurb."""
+    return render_template('html/marketing/bomb.html',
+                           google_analytics_id=settings.Config.GOOGLE_ANALYTICS_ID)
+

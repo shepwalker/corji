@@ -1,0 +1,31 @@
+{% extends 'html/base.html' %}
+{% block content %}
+<div style="width: 100%; float: left; clear: both; margin-top: 3em; margin-bottom: 3em;">
+    <div class="bombblurb">
+    <h3>Use corgis to:</h3>
+    <ol>
+        <li>Pacify your enemies</li>
+        <li>Aggravate your friends</li>
+        <li>Cure your loved ones</li>
+        <li>Save the world</li>
+    </ol>
+    <form id="bomb">
+    <input type="text" placeholder="Your name">
+    <input type="text" placeholder="Target's phone number">
+    <select>
+        <option>Click to choose a package...</option>
+    </select>
+    <br />
+    <br />
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="{{ key }}"
+            data-description="{{ recharge_count }} more corgis for {{ phone_number }}"
+            data-amount="199"
+            data-locale="auto"
+            data-label="I want more corgis!"></script>
+    </form>
+    </div>
+
+    <div class="iphone"></div>
+</div>
+{% endblock %}
