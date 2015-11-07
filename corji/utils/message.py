@@ -47,7 +47,7 @@ def process_interrupts(customer, text):
     if customer and customer.get('stop', None):
         return ""
 
-    if settings.Config.DO_NOT_DISTURB and not customer.get('override', None):
+    if settings.Config.DO_NOT_DISTURB and customer and not customer.get('override', None):
         phone_number = customer['phone_number'].get('S', '')
 
         if "corgi" in text.lower() and not customer.get('wants_uptime_notification', None):
