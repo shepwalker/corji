@@ -13,8 +13,11 @@
     <form id="bomb" action="pile" method="POST">
     <input type="text" placeholder="Your name" name="name" id="name">
     <input type="text" placeholder="Target's phone number" name="target" id="target">
-    <select>
-        <option>Click to choose a package...</option>
+    <select name="pileType" id="pileType">
+        <option>Choose an option..
+        {% for pile_type in piles %}
+        <option value="{{ pile_type.name }}">{{ pile_type.name }} ({{ pile_type.emojis }})
+        {% endfor %}
     </select>
     <br />
     <br />

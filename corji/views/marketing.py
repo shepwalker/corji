@@ -1,4 +1,5 @@
 """Random, likely static, views that don't actually consist within the app."""
+from collections import namedtuple
 import random
 
 from celery import Celery
@@ -21,6 +22,10 @@ marketing_blueprint = Blueprint('marketing', __name__,
                                 template_folder='templates')
 
 
+PileType = namedtuple('PileType', ['name', 'emojis'])
+piles = [PileType('Party', '🍺🍻🍷🍸🍹')]
+
+
 @marketing_blueprint.route("/", methods=['GET'])
 def about():
     """Much hype.  Very disruptive.  Such blurb."""
@@ -32,6 +37,9 @@ def about():
 def piledrive():
     recipient_number = request.form['target']
     sender_name = request.form['name']
+    pile_type = request.form['pileType']
+
+    chosen_pile = [pile for pile in piles if pile.name == pile_type][0]
 
     email = request.form['stripeEmail']
     customer = stripe.Customer.create(
@@ -47,25 +55,22 @@ def piledrive():
         description='Corji'
     )
 
-    count = 1
-    pile.delay(recipient_number, count, sender_name)
+    pile.delay(recipient_number, chosen_pile.emojis, sender_name)
     return render_template('html/marketing/bomb_success.html',
                            google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
 
 
 @celery.task
-def pile(target, count, sender):
+def pile(target, emojis, sender):
     """Much hype.  Very disruptive.  Such blurb."""
 
     api = CorgiResource()
     client = TwilioRestClient(Config.TWILIO_ACCOUNT_SID, Config.TWILIO_AUTH_TOKEN)
 
-    number_of_corgis_to_send = count
     corgis = []
 
-    while len(corgis) < number_of_corgis_to_send:
-        random_emoji = random.choice(google_spreadsheets.keys())
-        results = api.get(random_emoji)['results']
+    for emoji in emojis:
+        results = api.get(emoji)['results']
         if len(results):
             for result in results:
                 if result not in corgis:
@@ -90,4 +95,5 @@ def bomb():
     """Much hype.  Very disruptive.  Such blurb."""
     return render_template('html/marketing/bomb.html',
                            key=Config.STRIPE_PUBLIC_KEY,
+                           piles=piles,
                            google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
