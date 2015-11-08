@@ -49,7 +49,8 @@ def piledrive():
 
     count = 1
     pile.delay(recipient_number, count, sender_name)
-    return ":)"
+    return render_template('html/marketing/bomb_success.html',
+                           google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
 
 
 @celery.task
