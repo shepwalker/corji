@@ -22,9 +22,6 @@
     <link rel='stylesheet' href="{{ url_for('static', filename='css/bigfoot.css') }}">
     <link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
 
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/bigfoot.js') }}">></script>
-
     {% include "html/snippets/google_analytics.html" %}
 
 </head>
@@ -41,6 +38,12 @@
             {% include "html/snippets/social.html" %}
         </div>
     </div>
+
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bigfoot.js') }}">></script>
+    {% block scripts %}
+    {% endblock %}
 
 </body>
 </html>
