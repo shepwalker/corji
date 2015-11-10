@@ -83,8 +83,10 @@ def pile(target, emojis, sender):
             from_=Config.TWILIO_PHONE_NUMBER
         )
 
+    message = render_template('txt/bomb_finished_sending.txt',
+                              sender=sender)
     client.messages.create(
-        body="This dogpile sent to you by {}.".format(sender),
+        body=message,
         to=target,
         from_=Config.TWILIO_PHONE_NUMBER
     )
