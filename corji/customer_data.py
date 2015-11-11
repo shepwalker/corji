@@ -65,3 +65,4 @@ def new(phone_number):
         'consumptions': {'N': str(Config.FREE_CONSUMPTIONS)}
     }
     put(item)
+    return item
