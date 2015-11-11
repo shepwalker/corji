@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import logging
 
 from flask import (
@@ -20,6 +21,8 @@ api = CorgiResource()
 def list_all():
     """Dump out ALL OUR CORGI PICTURES"""
     if(settings.Config.DASHBOARD_ENABLED):
-        return render_template("html/corgi/list_all.html", data=api.get_all())
+        data = api.get_all()
+        data = OrderedDict(sorted(data.items()))
+        return render_template("html/corgi/list_all.html", data=data)
     else:
         return redirect("/about")
