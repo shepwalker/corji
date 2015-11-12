@@ -17,6 +17,7 @@ class Config(object):
     # Storage variables.
     FALLBACK_IMAGE = os.getenv('FALLBACK_IMAGE', 'https://s-media-cache-ak0.pinimg.com/736x/49/2a/7f/492a7ff287bdc50d34a4989ab83d9830.jpg')
     SPREADSHEET_URL = os.getenv('SPREADSHEET_URL', '')
+    PILES_URL = os.getenv('PILES_URL', '')
     REMOTE_CACHE_RETRIEVE = True if (os.getenv('REMOTE_CACHE_RETRIEVE') == "TRUE") else False
     REMOTE_CACHE_POPULATE = True if (os.getenv('REMOTE_CACHE_POPULATE') == "TRUE") else False
     IMAGE_RESIZE = True if (os.getenv('IMAGE_RESIZE') == "TRUE") else False
@@ -43,10 +44,10 @@ class Config(object):
     # AWS variables.
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', 'SUPER_NOT_VALID_KEY')
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'SUPER_NOT_VALID_SECRET')
-    AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION', 'SUPER_NOT_VALID_REGION')
-    AWS_S3_CACHE_BUCKET_NAME = os.getenv('AWS_S3_CACHE_BUCKET_NAME', 'SUPER_NOT_VALID_BUCKET')
+    AWS_DEFAULT_REGION = os.getenv('AWS_DEFAULT_REGION', 'us-west-1')
+    AWS_S3_CACHE_BUCKET_NAME = os.getenv('AWS_S3_CACHE_BUCKET_NAME', 'corji')
     AWS_PRELOAD_EXPIRATION_TIME = os.getenv('AWS_PRELOAD_EXPIRATION_TIME', 31540000)
-    AWS_DYNAMO_TABLE_NAME = os.getenv('AWS_DYNAMO_TABLE_NAME', 'SUPER_NOT_VALID_DYNAMO')
+    AWS_DYNAMO_TABLE_NAME = os.getenv('AWS_DYNAMO_TABLE_NAME', 'corji')
 
     # Stripe.
     STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')

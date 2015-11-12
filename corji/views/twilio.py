@@ -64,13 +64,11 @@ def corgi():
     # corresponds to input
     message = create_message(text, phone_number)
 
-    if not message:
-        message = render_template('txt/request_does_not_contain_emoji.txt')
-        return create_response(message)
-    try:
-        return message.create_reply()
-    except CorjiFreeloaderException:
-        return generate_freeloader_response(customer)
+    if message:
+        try:
+            return message.create_reply()
+        except CorjiFreeloaderException:
+            return generate_freeloader_response(customer)
 
     # If they tell us to stop, then stop.
     if "stop" in text.lower():

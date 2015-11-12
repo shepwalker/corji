@@ -86,8 +86,8 @@ def put(emoji, corgis, override_existing_file=False):
                 logger.debug(
                     "Downloading corgi %s in prep for remote cache", corgi)
                 picture_request = requests.get(corgi)
-                picture_body = None
-                content_type = None
+                picture_body = picture_request.content
+                content_type = get_content_type_header(picture_request)
 
                 # If the image is greater than the max size, resize it no matter what.
                 original_filesize = int(picture_request.headers['content-length'])
@@ -96,13 +96,10 @@ def put(emoji, corgis, override_existing_file=False):
                     working_image = Image.open(file_photodata)
                     original_width = working_image.size[0]
 
-                    if original_width > Config.IMAGE_RESIZE_PIXELS:
+                    # Don't resize gifs.
+                    if content_type != "image/gif" and original_width > Config.IMAGE_RESIZE_PIXELS:
                         picture_body = resize_image(picture_request.content)
                         content_type = "image/jpeg"
-
-                if not picture_body:
-                    content_type = get_content_type_header(picture_request)
-                    picture_body = picture_request.content
 
                 logger.debug("Adding %s to remote cache", s3_key)
 

@@ -3,11 +3,11 @@
 <div>
     <table>
         {% for corgi in data %}
-            {% for url in data[corgi].urls %}
+            {% for url in corgi.urls %}
 	            <tr class="corgi_row">
 	                {% if loop.first %}
-		                <td> <label> {{ corgi }} </label> </td>
-		                <td> <label> {{data[corgi].emoji_name}} </label> </td>                  
+		                <td> <label> {{ corgi.emoji }} </label> </td>
+		                <td> <label> {{ corgi.emoji_name}} </label> </td>                  
 	                {% else %}
 		                <td> <label>  </label> </td>
 		                <td> <label>  </label> </td> 

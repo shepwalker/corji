@@ -7,16 +7,19 @@ import requests
 
 from corji.data_sources import (
     google_spreadsheets,
+    piles,
     s3
 )
 from corji.exceptions import CorgiNotFoundException
 import corji.settings as settings
 from corji.utils.emoji import (
-    emoji_contains_skin_tone
+    emoji_contains_skin_tone,
+    text_contains_emoji
 )
 
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 google_spreadsheets.load(settings.Config.SPREADSHEET_URL)
+piles.load(settings.Config.PILES_URL)
 if settings.Config.REMOTE_CACHE_RETRIEVE:
     s3.load()
 
@@ -29,8 +32,7 @@ class CorgiResource(Resource):
         if not emoji:
             emoji = random.choice(google_spreadsheets.keys())
 
-        # The string we eventually return.
-        corgi_urls = ""
+        corgi_urls = []
 
         # Check for skin-toned emojis and fallback to the undecorated one.
         if len(emoji) == 2 and emoji_contains_skin_tone(emoji):
@@ -58,14 +60,14 @@ class CorgiResource(Resource):
 
         return {
             "count": len(corgi_urls),
-            "emoji": emoji,
+            "emoji": emoji if text_contains_emoji(emoji) else "",
             "results": corgi_urls
         }
 
     def get_all(self):
         all_emojis = google_spreadsheets.keys(include_empty_keys=True)
-        corgis_for_emojis = {}
-        for this_emoji in all_emojis: 
+        corjis = []
+        for this_emoji in all_emojis:
             corgi_urls = ""
             if settings.Config.REMOTE_CACHE_RETRIEVE:
                 try:
@@ -76,11 +78,16 @@ class CorgiResource(Resource):
             if not corgi_urls:
                 corgi_urls = google_spreadsheets.get_all(this_emoji)
             emoji_name = emoji.demojize(this_emoji).replace(":", "")
-            corgis_for_emojis[this_emoji] = {
+            corjis.append({
                 "urls": corgi_urls,
+                "emoji": this_emoji,
                 "emoji_name": emoji_name
-            }
-        return corgis_for_emojis
+            })
+        return {
+            "count": len(corjis),
+            "emojis": [corji["emoji"] for corji in corjis],
+            "results": corjis
+        }
 
 
 def attach_rest_api(app):

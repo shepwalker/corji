@@ -1,0 +1,44 @@
+{% extends 'html/base.html' %}
+
+{% block content %}
+<div style="width: 100%; float: left; clear: both; margin-top: 3em; margin-bottom: 3em;">
+    <div class="bombblurb">
+    <h3>Use corgis to:</h3>
+    <ol>
+        <li>Pacify your enemies</li>
+        <li>Aggravate your friends</li>
+        <li>Cure your loved ones</li>
+        <li>Save the world</li>
+    </ol>
+    <form id="bomb" action="pile" method="POST">
+    <input type="text" placeholder="Your name" name="name" id="name">
+    <input type="text" placeholder="Target's phone number" name="target" id="target">
+    <select name="pileType" id="pileType">
+        <option>Choose an option..
+        {% for pile_type in piles %}
+        <option value="{{ pile_type.name }}">{{ pile_type.name }} ({{ pile_type.emojis }})
+        {% endfor %}
+    </select>
+    <br />
+    <br />
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="{{ key }}"
+            data-description="Dogpile"
+            data-amount="199"
+            data-locale="auto"
+            data-label="I want more corgis!"></script>
+    </form>
+    </div>
+
+    <div class="iphone"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.inputmask.js') }}"></script>
+<script>
+    $(document).ready(function(){
+        $("#target").inputmask("(999) 999-9999");
+    });
+</script>
+{% endblock %}

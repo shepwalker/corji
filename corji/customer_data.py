@@ -8,7 +8,7 @@ TABLE_NAME = Config.AWS_DYNAMO_TABLE_NAME
 
 
 def sanitize_phone_number(phone_number):
-    return phone_number.strip("+").strip()
+    return str(phone_number).strip("+").strip()
 
 
 def get(phone_number):
@@ -65,3 +65,4 @@ def new(phone_number):
         'consumptions': {'N': str(Config.FREE_CONSUMPTIONS)}
     }
     put(item)
+    return item
