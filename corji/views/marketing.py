@@ -25,7 +25,7 @@ def about():
                            google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
 
 
-@marketing_blueprint.route("/pile", methods=['POST'])
+@marketing_blueprint.route("/pile_success", methods=['POST'])
 def piledrive():
     recipient_number = request.form['target']
     sender_name = request.form['name']
@@ -82,7 +82,7 @@ def pile(target, emojis, sender):
     )
 
 
-@marketing_blueprint.route("/bomb", methods=['GET'])
+@marketing_blueprint.route("/pile", methods=['GET'])
 def bomb():
     """Much hype.  Very disruptive.  Such blurb."""
     return render_template('html/marketing/bomb.html',
