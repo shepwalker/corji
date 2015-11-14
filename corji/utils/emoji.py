@@ -6,6 +6,9 @@ def text_contains_emoji(text):
         if emoji.demojize(char) != char:
             return True
 
+    if emoji.demojize(text) != text:
+        return True
+
     # Edge case: check for flags as they're represented as multiple chars:
     # https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
     if len(text) == 2:

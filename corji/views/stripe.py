@@ -2,10 +2,8 @@
 from flask import Blueprint, render_template, request
 import stripe
 
-from corji import (
-    customer_data,
-    settings
-)
+from corji import settings
+from corji.models import emoji_customer
 
 stripe.api_key = settings.Config.STRIPE_SECRET_KEY
 stripe_blueprint = Blueprint('stripe', __name__,
@@ -40,7 +38,7 @@ def process_charge():
 
     phone_number = request.form['phone_number']
 
-    customer_data.modify_consumptions(phone_number, settings.Config.CONSUMPTIONS_PER_RECHARGE)
-    customer_data.add_metadata(phone_number, 'email', email)
+    emoji_customer.modify_consumptions(phone_number, settings.Config.CONSUMPTIONS_PER_RECHARGE)
+    emoji_customer.add_metadata(phone_number, 'email', email)
 
     return render_template('html/stripe/stripe_success.html')
