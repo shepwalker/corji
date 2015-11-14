@@ -50,9 +50,9 @@ def piledrive():
         description='Corji'
     )
 
-    # pile.delay(recipient_number,
-    #            chosen_pile.emojis,
-    #            sender_name)
+    pile.delay(recipient_number,
+               chosen_pile.emojis,
+               sender_name)
 
     # Store this, just in case.
     pile_id = str(uuid.uuid4())
