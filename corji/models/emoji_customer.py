@@ -4,7 +4,8 @@ from corji.settings import Config
 
 dynamo_client = boto3.client("dynamodb", region_name=Config.AWS_DEFAULT_REGION)
 
-TABLE_NAME = Config.AWS_DYNAMO_TABLE_NAME
+# Normally this should be something more specific -- but legacy reasons.
+TABLE_NAME = "corji"
 
 
 def sanitize_phone_number(phone_number):

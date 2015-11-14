@@ -10,10 +10,6 @@ class Config(object):
     DO_NOT_DISTURB = True if (os.getenv('DO_NOT_DISTURB') == "TRUE") else False
     DASHBOARD_ENABLED = True if (os.getenv('DASHBOARD_ENABLED') == "TRUE") else False
 
-
-    # Database variables.
-    CUSTOMER_DATA_TABLE_NAME = os.getenv('CUSTOMER_DATA_TABLE_NAME', 'corji')
-
     # Storage variables.
     FALLBACK_IMAGE = os.getenv('FALLBACK_IMAGE', 'https://s-media-cache-ak0.pinimg.com/736x/49/2a/7f/492a7ff287bdc50d34a4989ab83d9830.jpg')
     SPREADSHEET_URL = os.getenv('SPREADSHEET_URL', '')

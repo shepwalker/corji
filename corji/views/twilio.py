@@ -3,18 +3,17 @@ import logging
 
 from flask import (
     Blueprint,
-    redirect,
     render_template,
     request
 )
 import twilio.twiml
 
 from corji.api import CorgiResource
-import corji.customer_data as customer_data
 from corji.exceptions import (
     CorjiFreeloaderException
 )
 from corji.logging import logged_view
+from corji.models import emoji_customer
 import corji.settings as settings
 from corji.utils.message import (
     process_interrupts
@@ -44,14 +43,14 @@ def corgi():
     if not phone_number:
         return ""
 
-    customer = customer_data.get(phone_number) or {}
+    customer = emoji_customer.get(phone_number) or {}
 
     # If customer has asked us to stop, we stop.
     if customer.get('stop', None):
         return ""
 
     if not customer:
-        customer = customer_data.new(phone_number)
+        customer = emoji_customer.new(phone_number)
 
     # Process any system-wide or user-specific interrupts.
     interrupts = process_interrupts(customer, text)
@@ -72,7 +71,7 @@ def corgi():
 
     # If they tell us to stop, then stop.
     if "stop" in text.lower():
-        customer_data.add_metadata(phone_number, 'stop', 'true')
+        emoji_customer.add_metadata(phone_number, 'stop', 'true')
         message = render_template('txt/request_asks_to_stop.txt')
         return create_response(message)
 
@@ -95,4 +94,3 @@ def voice():
     resp = twilio.twiml.Response()
     resp.say(message)
     return str(resp)
-    
