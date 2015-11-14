@@ -1,1 +1,1 @@
-This pile of corgis sent to you by {{ sender }}.  Check us out at http://corgi.club!
+This pile of corgis sent to you by {{ sender }}.  Check us out at http://corgi.club! (Or, if you want to see more corgis... try texting us an emoji.)
