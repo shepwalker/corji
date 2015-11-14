@@ -122,7 +122,7 @@ def put(emoji, corgis, override_existing_file=False):
 
 def get_all(raw_emoji):
     folder_name = emoji.demojize(raw_emoji).replace(":", "")
-    #In case we're trying to get a folder that we don't have demojitize for. 
+    # In case we're trying to get a folder that we don't have demojitize for.
     if not folder_name:
         return None
     possible_s3_entries = [
