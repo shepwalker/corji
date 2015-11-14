@@ -1,7 +1,4 @@
 """Random, likely static, views that don't actually consist within the app."""
-from collections import namedtuple
-import random
-
 from celery import Celery
 from flask import (
     Blueprint,
@@ -12,18 +9,13 @@ import stripe
 from twilio.rest import TwilioRestClient
 
 from corji.api import CorgiResource
-from corji.data_sources import (
-    google_spreadsheets
-)
+from corji.data_sources.piles import piles
 from corji.settings import Config
 
 celery = Celery("corji", broker=Config.CELERY_BROKER_URL)
 marketing_blueprint = Blueprint('marketing', __name__,
                                 template_folder='templates')
 
-
-PileType = namedtuple('PileType', ['name', 'emojis'])
-piles = [PileType('Party', '🍺🍻🍷🍸🍹')]
 
 
 @marketing_blueprint.route("/", methods=['GET'])
@@ -33,7 +25,7 @@ def about():
                            google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
 
 
-@marketing_blueprint.route("/pile", methods=['POST'])
+@marketing_blueprint.route("/pile_success", methods=['POST'])
 def piledrive():
     recipient_number = request.form['target']
     sender_name = request.form['name']
@@ -92,7 +84,7 @@ def pile(target, emojis, sender):
     )
 
 
-@marketing_blueprint.route("/bomb", methods=['GET'])
+@marketing_blueprint.route("/pile", methods=['GET'])
 def bomb():
     """Much hype.  Very disruptive.  Such blurb."""
     return render_template('html/marketing/bomb.html',

@@ -7,6 +7,7 @@ import requests
 
 from corji.data_sources import (
     google_spreadsheets,
+    piles,
     s3
 )
 from corji.exceptions import CorgiNotFoundException
@@ -18,6 +19,7 @@ from corji.utils.emoji import (
 
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 google_spreadsheets.load(settings.Config.SPREADSHEET_URL)
+piles.load(settings.Config.PILES_URL)
 if settings.Config.REMOTE_CACHE_RETRIEVE:
     s3.load()
 
