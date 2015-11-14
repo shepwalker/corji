@@ -10,7 +10,7 @@ from corji.api import CorgiResource
 import corji.settings as settings
 
 admin_blueprint = Blueprint('admin', __name__,
-                             template_folder='templates')
+                            template_folder='templates')
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 
 api = CorgiResource()

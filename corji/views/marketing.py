@@ -1,4 +1,7 @@
 """Random, likely static, views that don't actually consist within the app."""
+import datetime
+import uuid
+
 from celery import Celery
 from flask import (
     Blueprint,
@@ -10,12 +13,12 @@ from twilio.rest import TwilioRestClient
 
 from corji.api import CorgiResource
 from corji.data_sources.piles import piles
+from corji.models import pile_customer
 from corji.settings import Config
 
 celery = Celery("corji", broker=Config.CELERY_BROKER_URL)
 marketing_blueprint = Blueprint('marketing', __name__,
                                 template_folder='templates')
-
 
 
 @marketing_blueprint.route("/", methods=['GET'])
@@ -47,7 +50,18 @@ def piledrive():
         description='Corji'
     )
 
-    pile.delay(recipient_number, chosen_pile.emojis, sender_name)
+    # pile.delay(recipient_number,
+    #            chosen_pile.emojis,
+    #            sender_name)
+
+    # Store this, just in case.
+    pile_id = str(uuid.uuid4())
+    pile_customer.new(pile_id,
+                      recipient_number,
+                      sender_name,
+                      chosen_pile.name,
+                      datetime.datetime.now())
+
     return render_template('html/marketing/bomb_success.html',
                            google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
 
