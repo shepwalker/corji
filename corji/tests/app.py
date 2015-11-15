@@ -3,7 +3,7 @@ import random
 import unittest
 
 from corji.app import app
-import corji.customer_data as customer_data
+from corji.models import emoji_customer
 from corji.settings import Config
 
 
@@ -86,7 +86,7 @@ class AppTestCase(unittest.TestCase):
         phone_number = random.random()
         response = self.send_message_with_body('stop', phone_number=phone_number)
         assert 'http' not in str(response.data)
-        customer = customer_data.get(phone_number)
+        customer = emoji_customer.get(phone_number)
         assert 'stop' in customer
         assert customer['stop'] is not None
 

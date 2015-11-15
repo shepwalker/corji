@@ -26,24 +26,24 @@ def Logger(logger_name, log_path, log_name):
         except Exception:
             # TODO: WTF
             pass
-    #Get logger, set debug level
+    # Get logger, set debug level
     logger = logging.getLogger(logger_name)
     logger.setLevel(logging.DEBUG)
-    
-    #Setup file handler log rotating by day
+
+    # Setup file handler log rotating by day
     qualified_log_name = log_path + '/' + log_name
     file_handler = TimedRotatingFileHandler(qualified_log_name, 'midnight', 1)
     file_handler.setFormatter(
         logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s %(filename)s %(funcName)s %(lineno)d'))
     file_handler.setLevel(logging.DEBUG)
 
-    #Setup local handler to output to stderr
+    # Setup local handler to output to stderr
     local_handler = logging.StreamHandler(sys.stderr)
-    
-    #Add handlers to logger
+
+    # Add handlers to logger
     logger.addHandler(file_handler)
     logger.addHandler(local_handler)
-    
+
     return logger
 
 
