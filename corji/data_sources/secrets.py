@@ -1,3 +1,7 @@
+"""
+Special responses to certain user text-input. Can contain images 
+and/or a text response. 
+"""
 from collections import namedtuple
 
 import requests
@@ -18,3 +22,8 @@ def load(url):
         text = row['gsx$text']['$t']
         media = row['gsx$media']['$t']
         secrets.append(SecretType(trigger, text, media)) 
+
+def get_secret(possible_trigger):
+	relevant_indexes = [i for i, v in enumerate(secrets) if v.trigger == possible_trigger.strip().lower()]
+	matched_secret = secrets[relevant_indexes[0]] if relevant_indexes else None
+	return matched_secret

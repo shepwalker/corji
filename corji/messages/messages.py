@@ -31,9 +31,7 @@ def create_message(text, phone_number):
     if emojis_for_emoticons.get(text, None) or text_contains_emoji(text):
         return EmojiRequest(text, phone_number)
     
-    relevant_indexes = [i for i, v in enumerate(Secrets.secrets) if v.trigger == text.strip().lower()]
-    matched_secret = Secrets.secrets[relevant_indexes[0]] if relevant_indexes else None
-    if(matched_secret):
+    if Secrets.get_secret(text):
         return SecretRequest(text, phone_number)
     return None
 
@@ -96,8 +94,7 @@ class EmojiRequest(AbstractCorjiRequest):
 
 class SecretRequest(AbstractCorjiRequest):
     def create_reply(self):
-        relevant_indexes = [i for i, v in enumerate(Secrets.secrets) if v.trigger == self.text.strip().lower()]
-        matched_secret = Secrets.secrets[relevant_indexes[0]] if relevant_indexes else None
+        matched_secret = Secrets.get_secret(self.text)
         if not matched_secret:
             raise RuntimeError("Improperly identified message type")
         return create_response(matched_secret.text, matched_secret.media)

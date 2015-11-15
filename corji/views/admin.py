@@ -23,6 +23,6 @@ def list_all():
     if(settings.Config.DASHBOARD_ENABLED):
         data = api.get_all()
         data = OrderedDict(sorted(data.items()))
-        return render_template("html/corgi/list_all.html", data=data)
+        return render_template("html/admin/list_all.html", data=data)
     else:
         return redirect("/")
