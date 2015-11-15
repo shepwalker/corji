@@ -1,9 +1,10 @@
-import boto3
-
 from corji.models.utils.phone_numbers import sanitize_phone_number
-from corji.settings import Config
+from corji.models.utils.dynamo import (
+    dynamo_client,
+    put
+)
 
-dynamo_client = boto3.client("dynamodb", region_name=Config.AWS_DEFAULT_REGION)
+from corji.settings import Config
 
 # Normally this should be something more specific -- but legacy reasons.
 TABLE_NAME = "corji"
@@ -18,13 +19,6 @@ def get(phone_number):
         return response['Item']
     else:
         return None
-
-
-def put(item):
-    dynamo_client.put_item(
-        TableName=TABLE_NAME,
-        Item=item
-    )
 
 
 def add_metadata(phone_number, key, value):
@@ -62,5 +56,5 @@ def new(phone_number):
         'phone_number': {'S': sanitize_phone_number(phone_number)},
         'consumptions': {'N': str(Config.FREE_CONSUMPTIONS)}
     }
-    put(item)
+    put(TABLE_NAME, item)
     return item
