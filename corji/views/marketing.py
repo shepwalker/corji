@@ -82,7 +82,7 @@ def pile(target, emojis, sender):
     )
 
 
-@marketing_blueprint.route("/bomb", methods=['GET'])
+@marketing_blueprint.route("/pile", methods=['GET'])
 def bomb():
     """Much hype.  Very disruptive.  Such blurb."""
     return render_template('html/marketing/bomb.html',
