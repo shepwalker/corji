@@ -23,7 +23,9 @@ def load(url):
         media = row['gsx$media']['$t']
         secrets.append(SecretType(trigger, text, media)) 
 
+
 def get_secret(possible_trigger):
-	relevant_indexes = [i for i, v in enumerate(secrets) if v.trigger == possible_trigger.strip().lower()]
-	matched_secret = secrets[relevant_indexes[0]] if relevant_indexes else None
+	"""Returns relevant secret or none"""
+	relevant_secrets = [s for s in enumerate(secrets) if s.trigger == possible_trigger.strip().lower()]
+	matched_secret = relevant_indexes[0] if relevant_indexes else None
 	return matched_secret

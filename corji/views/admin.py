@@ -21,7 +21,7 @@ api = CorgiResource()
 @admin_blueprint.route("/corgi/all", methods=['GET'])
 def list_all():
     """Dump out ALL OUR CORGI PICTURES"""
-    if(settings.Config.DASHBOARD_ENABLED):
+    if settings.Config.DASHBOARD_ENABLED:
         results = api.get_all()['results']
         results = sorted(results, key=itemgetter('emoji')) 
 
