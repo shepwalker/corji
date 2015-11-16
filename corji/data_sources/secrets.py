@@ -26,6 +26,6 @@ def load(url):
 
 def get_secret(possible_trigger):
 	"""Returns relevant secret or none"""
-	relevant_secrets = [s for s in enumerate(secrets) if s.trigger == possible_trigger.strip().lower()]
+	relevant_secrets = [s for s in secrets if s.trigger == possible_trigger.strip().lower()]
 	matched_secret = relevant_indexes[0] if relevant_indexes else None
 	return matched_secret
