@@ -10,5 +10,5 @@ machine:
   environment:
     SPREADSHEET_URL: https://spreadsheets.google.com/feeds/list/1gQpp8csAHm3vTDob7fJ46iruLuZeaqAL5d3sT5otPLc/od6/public/values?alt=json
     PILES_URL: https://spreadsheets.google.com/feeds/list/1vDkS3vwXrT4mSyI8JVHQ_Z7GGRF90GnUTbX8p0zoqNM/2/public/values?alt=json
-    SECRETS_URL: https://spreadsheets.google.com/feeds/list/1vDkS3vwXrT4mSyI8JVHQ_Z7GGRF90GnUTbX8p0zoqNM/3/public/values?alt=json
+    SECRETS_LIST_URL: https://spreadsheets.google.com/feeds/list/1vDkS3vwXrT4mSyI8JVHQ_Z7GGRF90GnUTbX8p0zoqNM/3/public/values?alt=json
     AWS_DEFAULT_REGION: us-west-2
