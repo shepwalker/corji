@@ -113,9 +113,9 @@ def put(emoji, corgis, override_existing_file=False):
                 logger.debug("%s found in remote cache. Skipping", s3_key)
 
         except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
-            logger.error("Error occurred adding %s to S3.", s3_key, e)
+            logger.error("Error occurred adding %s to S3.", s3_key, str(e))
         except OSError as e:
-            logger.error("Error occurred resizing %s.", s3_key, e)
+            logger.error("Error occurred resizing %s.", s3_key, str(e))
 
         return success
 

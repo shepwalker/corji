@@ -1,3 +1,5 @@
+from collections import OrderedDict
+from operator import itemgetter
 import logging
 
 from flask import (
@@ -21,6 +23,8 @@ def list_all():
     """Dump out ALL OUR CORGI PICTURES"""
     if settings.Config.DASHBOARD_ENABLED:
         results = api.get_all()['results']
+        results = sorted(results, key=itemgetter('emoji')) 
+
         return render_template("html/admin/list_all.html", data=results)
     else:
         return redirect("/")

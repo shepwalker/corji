@@ -5,6 +5,7 @@ from flask import render_template
 
 from corji.api import CorgiResource
 import corji.data_sources.google_spreadsheets as google_spreadsheets
+import corji.data_sources.secrets as Secrets
 import corji.settings as settings
 from corji.utils.emoji import (
     text_contains_emoji,
@@ -23,11 +24,15 @@ api = CorgiResource()
 
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 
+Secrets.load(settings.Config.SECRETS_LIST_URL)
+
 
 def create_message(text, phone_number):
     if emojis_for_emoticons.get(text, None) or text_contains_emoji(text):
         return EmojiRequest(text, phone_number)
-
+    
+    if Secrets.get_secret(text):
+        return SecretRequest(text, phone_number)
     return None
 
 
@@ -89,4 +94,7 @@ class EmojiRequest(AbstractCorjiRequest):
 
 class SecretRequest(AbstractCorjiRequest):
     def create_reply(self):
-        raise NotImplementedError
+        matched_secret = Secrets.get_secret(self.text)
+        if not matched_secret:
+            raise RuntimeError("Improperly identified message type")
+        return create_response(matched_secret.text, matched_secret.media)

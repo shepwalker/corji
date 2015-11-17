@@ -105,6 +105,18 @@ class AppTestCase(unittest.TestCase):
         assert '<tr' in str(response.data)
         assert '<img' in str(response.data)
 
+    def test_valid_secret(self):
+        response = self.send_message_with_body('test123')
+        assert 'http' not in str(response.data)
+        assert 'This is a test entry!' in str(response.data)
+
+        response = self.send_message_with_body('    test123 ')
+        assert 'http' not in str(response.data)
+        assert 'This is a test entry!' in str(response.data)
+
+        response = self.send_message_with_body('test123pic')
+        assert 'http' in str(response.data)
+        assert '.jpg' in str(response.data)
 
 def string_contains_image(image_string):
     return (
