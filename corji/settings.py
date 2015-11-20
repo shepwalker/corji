@@ -14,6 +14,7 @@ class Config(object):
     # Storage variables.
     FALLBACK_IMAGE = os.getenv('FALLBACK_IMAGE', 'https://s-media-cache-ak0.pinimg.com/736x/49/2a/7f/492a7ff287bdc50d34a4989ab83d9830.jpg')
     SPREADSHEET_URL = os.getenv('SPREADSHEET_URL', '')
+    SUPPLEMENTS_URL = os.getenv('SUPPLEMENTS_URL', '')
     PILES_URL = os.getenv('PILES_URL', '')
     SECRETS_LIST_URL = os.getenv('SECRETS_LIST_URL', '')
     REMOTE_CACHE_RETRIEVE = True if (os.getenv('REMOTE_CACHE_RETRIEVE') == "TRUE") else False

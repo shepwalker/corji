@@ -1,3 +1,5 @@
+
+
 from corji.models.utils.phone_numbers import sanitize_phone_number
 from corji.models.utils.dynamo import (
     dynamo_client,
@@ -46,6 +48,18 @@ def modify_consumptions(phone_number, consumptions=1):
             "consumptions": {
                 "Action": "ADD",
                 "Value": {"N": str(consumptions * -1)}
+            }
+        }
+    )
+    dynamo_client.update_item(
+        TableName=TABLE_NAME,
+        Key={
+            'phone_number': {"S": sanitize_phone_number(phone_number)}
+        },
+        AttributeUpdates={
+            "message_count": {
+                "Action": "ADD",
+                "Value": {"N": str(consumptions * 1)}
             }
         }
     )
