@@ -46,12 +46,13 @@ def modify_consumptions(phone_number, consumptions=1):
             "consumptions": {
                 "Action": "ADD",
                 "Value": {"N": str(consumptions * -1)}
-            }
+            },
             "message_count": {
                 "Action": "ADD",
                 "Value": {"N": str(consumptions * 1)}
             }
         }
+        )
 
 
 

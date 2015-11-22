@@ -25,7 +25,7 @@ def get_supplement_messsage(customer_phone_number, message):
             trigger_count = int(s.Param)
             if (
                     message_count >= trigger_count and
-                    not s.Name in customer
+                    s.Name not in customer
             ):
                 emoji_customer.add_metadata(
                     customer_phone_number, s.Name, "true")

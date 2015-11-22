@@ -95,7 +95,7 @@ class EmojiRequest(AbstractCorjiRequest):
         if message == "":
             supplements = get_supplement_messsage(self.phone_number, self.text)
             if supplements:
-                message=supplements
+                message = supplements
         return create_response(message, image_url=corgi_url)
 
 

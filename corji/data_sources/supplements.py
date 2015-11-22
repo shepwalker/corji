@@ -10,7 +10,7 @@ supplements = []
 
 SupplementType = namedtuple(
     'SupplementType', [
-        'Name',         # Unique name for the trigger.
+        'Name',         # Unique name for the trigger used in dynamo.
         'TriggerType',  # Type of trigger - ie, what the rule is triggering off of.
         'Param',        # Value for the trigger type that ignites the trigger.
         'Text',         # Text response if the trigger is activated.
