@@ -92,9 +92,7 @@ class EmojiRequest(AbstractCorjiRequest):
                                       fallback_emoji=emoji)
 
         corgi_url = random.choice(corgi_urls)
-        print("Got here!")
         if message == "":
-            print("inside message!!")
             supplements = get_supplement_messsage(self.phone_number, self.text)
             if supplements:
                 message=supplements
