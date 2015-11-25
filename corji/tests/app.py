@@ -118,6 +118,15 @@ class AppTestCase(unittest.TestCase):
         assert 'http' in str(response.data)
         assert '.jpg' in str(response.data)
 
+    def test_supplements(self):
+        phone_number = random.random()
+        for x in range(0,2):
+            self.send_message_with_body('🌈', phone_number=phone_number)
+        response = self.send_message_with_body('🌈', phone_number=phone_number)
+        assert 'test' in str(response.data)
+        response2 = self.send_message_with_body('🌈', phone_number=phone_number)
+        assert 'test' not in str(response2.data)
+
 def string_contains_image(image_string):
     return (
         '.jpg' in str(image_string) or

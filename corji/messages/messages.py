@@ -16,6 +16,9 @@ from corji.utils.emoji import (
 from corji.utils.message import (
     consumed_func
 )
+from corji.utils.supplement import(
+    get_supplement_messsage
+)
 from corji.utils.twilio import (
     create_response
 )
@@ -89,6 +92,10 @@ class EmojiRequest(AbstractCorjiRequest):
                                       fallback_emoji=emoji)
 
         corgi_url = random.choice(corgi_urls)
+        if message == "":
+            supplements = get_supplement_messsage(self.phone_number, self.text)
+            if supplements:
+                message = supplements
         return create_response(message, image_url=corgi_url)
 
 
