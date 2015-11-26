@@ -51,6 +51,6 @@ class Config(object):
     # Stripe.
     STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
     STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
-    FREE_CONSUMPTIONS = 20
+    FREE_CONSUMPTIONS = int(os.getenv('FREE_CONSUMPTIONS', '20'))
     CONSUMPTIONS_PER_RECHARGE = 50
     RECHARGE_PRICE = 199  # In cents.
