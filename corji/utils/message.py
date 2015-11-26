@@ -66,11 +66,12 @@ def process_interrupts(customer, text):
 
 
 def generate_freeloader_response(customer):
+    phone_number = customer['phone_number'].get('S', '')
     if customer.get('showed_payment_prompt', None):
         return ""
     emoji_customer.add_metadata(phone_number, 'showed_payment_prompt', 'true')
     message = render_template('txt/pay_us_please.txt',
                               site_url=settings.Config.SITE_URL,
-                              payment_url=url_for('request_charge'),
+                              payment_url='/stripe',
                               phone_number=phone_number)
     return create_response(message)
