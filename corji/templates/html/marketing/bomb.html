@@ -16,7 +16,7 @@
     <select name="pileType" id="pileType">
         <option>Choose an option..
         {% for pile_type in piles %}
-        <option value="{{ pile_type.name }}">{{ pile_type.name }} ({{ pile_type.emojis }})
+        <option value="{{ pile_type.name }}">{{ pile_type.name }}
         {% endfor %}
     </select>
     <br />
@@ -26,11 +26,37 @@
             data-description="Dogpile"
             data-amount="199"
             data-locale="auto"
-            data-label="I want more corgis!"></script>
+            data-label="Corgis plz"></script>
     </form>
     </div>
 
-    <div class="iphone"></div>
+    <div class="iphone">
+        <div class="messages" style="position: absolute; height: 80px; z-index: 999">
+        </div>
+        <div class="messagewrapper">
+                <img src="http://i.imgur.com/GX0zPsy.jpg ">
+            
+                <img src="https://randyscorgistories.files.wordpress.com/2013/08/money-corgi.jpg ">
+            
+                <img src="http://netdna.corgiflop.com/wp-content/uploads/2014/08/scared-corgi-2.jpg ">
+            
+                <img src="http://www.themarysue.com/wp-content/uploads/2011/04/corgi-pack-550x412.jpg ">
+            
+                <img src="http://i.imgur.com/dzT0MKC.jpg ">
+            
+                <img src="https://c2.staticflickr.com/4/3327/3430093785_96dba0af53.jpg ">
+            
+                <img src="https://s-media-cache-ak0.pinimg.com/236x/5e/0c/2a/5e0c2a140d421f0c4fa5f6194e92d97b.jpg ">
+            
+                <img src="http://blog.pawshpal.com/wp-content/uploads/2011/05/sleepy-corgi-300x217.jpg ">
+            
+                <img src="https://cuteoverload.files.wordpress.com/2009/06/178734860_9b17318915_o.jpg?w=560&amp;h=447 ">
+            
+                <img src="http://static.tumblr.com/gzzf2nn/m7Pl4u36l/stickrace.jpg ">
+        </div>     
+        <div class="messages" style="position: absolute; height: 50px; z-index: 999; background-position: left bottom">
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -40,5 +66,14 @@
     $(document).ready(function(){
         $("#target").inputmask("(999) 999-9999");
     });
+    var corgiIndex = 0;
+var scrollBuffer = 0;
+window.setInterval(function() {
+  var topVisibleCorgi = $('img')[corgiIndex];
+  var height = topVisibleCorgi.height + 5;
+  scrollBuffer += height;
+  $('.messagewrapper').animate({'scrollTop': scrollBuffer});
+  corgiIndex += 1;
+}, 2000);
 </script>
 {% endblock %}
