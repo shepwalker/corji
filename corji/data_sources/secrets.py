@@ -21,11 +21,11 @@ def load(url):
         trigger = row['gsx$trigger']['$t'].strip().lower()
         text = row['gsx$text']['$t']
         media = row['gsx$media']['$t']
-        secrets.append(SecretType(trigger, text, media)) 
+        secrets.append(SecretType(trigger, text, media))
 
 
 def get_secret(possible_trigger):
-	"""Returns relevant secret or none"""
-	relevant_secrets = [s for s in secrets if s.trigger == possible_trigger.strip().lower()]
-	matched_secret = relevant_indexes[0] if relevant_indexes else None
-	return matched_secret
+    """Returns relevant secret or none"""
+    relevant_secrets = [s for s in secrets if s.trigger == possible_trigger.strip().lower()]
+    matched_secret = relevant_secrets[0] if relevant_secrets else None
+    return matched_secret

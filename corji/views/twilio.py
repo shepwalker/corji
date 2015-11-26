@@ -18,9 +18,6 @@ import corji.settings as settings
 from corji.utils.message import (
     process_interrupts
 )
-from corji.utils.supplement import (
-    get_supplement_messsage
-)
 from corji.utils.twilio import (
     create_response
 )

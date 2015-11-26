@@ -9,6 +9,7 @@ h1 {
     font-size: 96px;
     font-weight: normal;
     margin-bottom: 0;
+    text-align: center;
 }
 
 h2 {
@@ -69,6 +70,14 @@ img {
     margin-bottom: 4em;
     text-align: center;
 }
+@media all and (max-width: 768px) {
+  .bombblurb {
+    width: 100%;
+    margin-right: 0;
+    margin-left: -0.5em;
+  }
+}
+
 .bombblurb ol {
     list-style-type: none;
     padding-left: 0;
@@ -121,4 +130,29 @@ div.iphone {
 
 .bombblurb, .iphone {
     float: left;
+}
+.iphone .messages {
+  width: 340px;
+  height: 475px;
+  box-sizing: border-box;
+  background: url('/static/img/screen.png') no-repeat;
+  background-size: 320px 564px;
+  position: relative;
+}
+.iphone .messagewrapper {
+  padding-top: 80px;
+  padding-left: 20px;
+  width: 300px;
+  overflow-y: scroll;
+  position: relative;
+  background: #fff;
+  height: 438px;
+}
+.iphone .messagewrapper > img {
+    width: 60%;
+    height: auto;
+    margin-top: 5px;
+}
+.messagewrapper::-webkit-scrollbar { 
+    display: none; 
 }
