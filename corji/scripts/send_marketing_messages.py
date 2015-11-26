@@ -23,6 +23,17 @@ def verify_number(test_number):
     return lookup_result.phone_number or None
 
 if __name__ == "__main__":
+    """
+    Super nifty script to spam people using Twilio. Expects that 
+    TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN and TWILIO_PHONE_NUMBER 
+    are all populated correctly.
+    Takes in 4 MANDATORY arguments.  
+    arg1 - path to a file filled with phone numbers (one number per line)
+    arg2 - message to be sent to those phone numbers
+    arg3 - url to a picture to be sent to those phone numbers
+    arg4 - your personal phone numer to make sure it all works before spamming 
+    tons of people.
+    """
     recipient_list_file_path = sys.argv[1]
     message = sys.argv[2]
     media = sys.argv[3]
