@@ -33,7 +33,7 @@ Secrets.load(settings.Config.SECRETS_LIST_URL)
 def create_message(text, phone_number):
     if emojis_for_emoticons.get(text, None) or text_contains_emoji(text):
         return EmojiRequest(text, phone_number)
-    
+
     if Secrets.get_secret(text):
         return SecretRequest(text, phone_number)
     return None
