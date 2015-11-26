@@ -45,13 +45,13 @@ if __name__ == "__main__":
             input_var = input("Enter 'confirm' if message was successfully received by test number: ")
             if input_var != "confirm":
                 print("Confirmation not received, exiting...")
-                exit()
+                exit(2)
         else:
             raise AttributeError("Improper parameters!")
         for row in csvreader:
             if(verify_number(row[0])):
                 message_sid = send_message_to_number(row[0], message, media)
-                print("Message successfully sent to: " + row[0] + " with confirmation SID: " + str(message_sid))
+                print("Message successfully sent to: {} with confirmation SID: {}".format(row[0], str(message_sid)) )
 
                 
 
