@@ -13,3 +13,4 @@ logs/
 .usage/
 .DS_Store
 dev/
+testspam.csv
