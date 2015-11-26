@@ -18,7 +18,12 @@ def load(url):
         urls = list(filter(lambda i: i != '', [
             row['gsx$url1']['$t'],
             row['gsx$url2']['$t'],
-            row['gsx$url3']['$t']
+            row['gsx$url3']['$t'],
+            row['gsx$url4']['$t'],
+            row['gsx$url5']['$t'],
+            row['gsx$url6']['$t'],
+            row['gsx$url7']['$t'],
+            row['gsx$url8']['$t']
         ]))
 
         corgis[emoji] = urls
