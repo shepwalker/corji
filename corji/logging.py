@@ -8,6 +8,9 @@ from logging.handlers import (
     TimedRotatingFileHandler
 )
 
+from slack_log_handler import SlackLogHandler
+
+from corji.settings import Config
 
 """
 LOG LEVELS:
@@ -40,6 +43,12 @@ def Logger(logger_name, log_path, log_name):
     # Setup local handler to output to stderr
     local_handler = logging.StreamHandler(sys.stderr)
 
+    # Build/add slack handler
+    if Config.SLACK_ERROR_LOGGING_ENABLED:
+        slack_handler = SlackLogHandler(Config.SLACK_LOG_WEBHOOK_URL)
+        slack_handler.setLevel(logging.ERROR)
+        logger.addHandler(slack_handler)
+        
     # Add handlers to logger
     logger.addHandler(file_handler)
     logger.addHandler(local_handler)

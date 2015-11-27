@@ -43,7 +43,6 @@ class CorgiResource(Resource):
             try:
                 corgi_urls = s3.get_all(emoji)
             except CorgiNotFoundException as e:
-                logger.error(e)
                 logger.warn("Corji not found for emoji %s", emoji)
 
         # If S3 is a no-go, fall back to Spreadsheets.
@@ -73,7 +72,6 @@ class CorgiResource(Resource):
                 try:
                     corgi_urls = s3.get_all(this_emoji)
                 except CorgiNotFoundException as e:
-                    logger.error(e)
                     logger.warn("Corji not found for emoji %s", this_emoji)
             if not corgi_urls:
                 corgi_urls = google_spreadsheets.get_all(this_emoji)

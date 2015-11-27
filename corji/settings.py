@@ -28,6 +28,8 @@ class Config(object):
     LOG_NAME = os.getenv('LOG_NAME', 'corji.log')
     LOG_PATH = os.getenv('LOG_PATH', './.logs')
     LOGGER_NAME = "FLASK_APP_LOGGER"
+    SLACK_LOG_WEBHOOK_URL = os.getenv('SLACK_LOG_WEBHOOK_URL', '')
+    SLACK_ERROR_LOGGING_ENABLED = True if (os.getenv('SLACK_ERROR_LOGGING_ENABLED') == "TRUE") else False
 
     # Celery.
     CELERY_BROKER_URL = "sqs://"
