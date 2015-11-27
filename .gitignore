@@ -10,5 +10,7 @@ cache/
 logs/
 .logs/
 .cache/
+.usage/
 .DS_Store
 dev/
+testspam.csv
