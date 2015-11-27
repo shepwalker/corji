@@ -10,6 +10,7 @@ gunicorn
 nose
 pillow
 requests==2.6.1 # Needed for awsebcli.
+slack_log_handler
 stripe
 tabulate
 twilio
