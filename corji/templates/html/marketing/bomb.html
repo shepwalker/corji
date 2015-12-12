@@ -64,7 +64,18 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.inputmask.js') }}"></script>
 <script>
     $(document).ready(function(){
-        $("#target").inputmask("(999) 999-9999");
+        $("#target").inputmask({
+            mask: "(999) 999-9999", 
+            onBeforePaste: function (pastedValue, opts) {
+                var nums = pastedValue.match(/\d+/).join("");
+                if (nums.charAt(0) == '1'){
+                    return nums.substring(1, nums.length);
+                }
+                else {
+                    return nums;
+                }
+            }
+        });
     });
     var corgiIndex = 0;
 var scrollBuffer = 0;
