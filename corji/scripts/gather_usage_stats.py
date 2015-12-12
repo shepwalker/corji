@@ -23,4 +23,4 @@ if __name__ == "__main__":
     with open(TARGET_FILE, "w+", newline = '') as csvfile:
         csvwriter = csv.writer(csvfile)
         for message in client.messages.iter(page_size = PAGE_SIZE): 
-            csvwriter.writerow([message.from_, message.to, message.body, message.date_sent, message.num_media, message.status, message.direction, message.error_message or ""])
+            csvwriter.writerow([message.sid, message.from_, message.to, message.body, message.date_sent, message.num_media, message.status, message.direction, message.error_message or ""])
