@@ -68,12 +68,11 @@ def put(emoji, corgis, override_existing_file=False):
 
     Returns True if at least one put is successful; returns False otherwise.
     """
-
+    
     success = False
-    logger.debug(corgis)
+    
     for i, corgi in enumerate(corgis):
         s3_key = get_file_name_from_emoji(i, emoji)
-        logger.debug(corgi)
         # see if this corgi already exists in s3 bucket
         if 'Contents' in all_objects:
             possible_s3_entry = next(
