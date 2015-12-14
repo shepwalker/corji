@@ -73,7 +73,6 @@ def put(emoji, corgis, override_existing_file=False):
 
     for i, corgi in enumerate(corgis):
         s3_key = get_file_name_from_emoji(i, emoji)
-
         # see if this corgi already exists in s3 bucket
         if 'Contents' in all_objects:
             possible_s3_entry = next(
@@ -111,17 +110,18 @@ def put(emoji, corgis, override_existing_file=False):
 
             else:
                 logger.debug("%s found in remote cache. Skipping", s3_key)
-
-        except (HTTPError, ConnectionError, requests.exceptions.ConnectionError) as e:
-            logger.error("Error occurred adding %s to S3.", s3_key, str(e))
         except OSError as e:
             logger.error("Error occurred resizing %s.", s3_key, str(e))
+        except Exception as e:
+            logger.error("Error occurred adding %s to S3.", s3_key, str(e))
 
         return success
 
 
 def get_all(raw_emoji):
-    folder_name = emoji.demojize(raw_emoji).replace(":", "")
+    # Folder name is now just the input emoji
+    folder_name = raw_emoji
+
     # In case we're trying to get a folder that we don't have demojitize for.
     if not folder_name:
         return None
@@ -160,4 +160,5 @@ def get(emoji):
 
 
 def get_file_name_from_emoji(i, raw_emoji):
-    return emoji.demojize(raw_emoji).replace(":", "") + "/0{}.jpg".format(i + 1)
+    #Create file name that's emoji/picture number with at least two digits
+    return raw_emoji + "/{:0>2d}.jpg".format(i + 1)
