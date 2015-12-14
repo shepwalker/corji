@@ -25,6 +25,7 @@ def worker():
         item = queue.get()
         if item is None:
             break
+            
         try:
             s3.put(item, corgis[item])
         except Exception as e:
@@ -35,7 +36,7 @@ def worker():
 def create_bucket_if_not_exist():
     aws_s3_client = boto3.client("s3")
     aws_s3_resource = boto3.resource("s3")
-    relevantBuckets= [bucket for bucket in aws_s3_resource.buckets.all() if(bucket.name==Config.AWS_S3_CACHE_BUCKET_NAME)]
+    relevant_buckets= [bucket for bucket in aws_s3_resource.buckets.all() if(bucket.name==Config.AWS_S3_CACHE_BUCKET_NAME)]
     if not relevantBuckets:
         aws_s3_client.create_bucket(Bucket=Config.AWS_S3_CACHE_BUCKET_NAME, CreateBucketConfiguration={
             'LocationConstraint': Config.AWS_DEFAULT_REGION})
