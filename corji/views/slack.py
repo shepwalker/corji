@@ -64,18 +64,17 @@ def slack_corgi():
         emoji = text
         corgis = api.get(emoji)
         if not corgis['count']:
-            return generate_slack_failure_case_message(
+            response_content = generate_slack_failure_case_message(
                 'Oh no! No corgi found for emoji {},' +
                 ' try sending us a different one!'.format(emoji)),
-            200,
-            {'Content-Type': 'application/json;'}
+            return Response(response_content, mimetype='application/json')
 
     else:
-        return generate_slack_failure_case_message(
+        response_content = generate_slack_failure_case_message(
             'Oh no! No emoji detected in your message! ' +
-            'Try sending us an emoji!'), 200,
-        {'Content-Type': 'application/json;'}
+            'Try sending us an emoji!')
+        return Response(response_content, mimetype='application/json')
 
     corgi_url = random.choice(corgis['results'])
-    return generate_slack_corgi_case(corgi_url), 200,
-    {'Content-Type': 'application/json;'}
+    response_content = generate_slack_corgi_case(corgi_url)
+    return Response(response_content, mimetype='application/json')
