@@ -5,7 +5,8 @@ import random
 from flask import (
     Blueprint,
     render_template,
-    request
+    request,
+    Response
 )
 
 from corji.api import CorgiResource
@@ -65,12 +66,15 @@ def slack_corgi():
         if not corgis['count']:
             return generate_slack_failure_case_message(
                 'Oh no! No corgi found for emoji {},' +
-                ' try sending us a different one!'.format(emoji))
+                ' try sending us a different one!'.format(emoji)),
+                200,
+                {'Content-Type': 'application/json;'}
     else:
         return generate_slack_failure_case_message(
             'Oh no! No emoji detected in your message! ' +
-            'Try sending us an emoji!')
+            'Try sending us an emoji!'), 200,
+            {'Content-Type': 'application/json;'}
 
     corgi_url = random.choice(corgis['results'])
 
-    return generate_slack_corgi_case(corgi_url)
+    return generate_slack_corgi_case(corgi_url), 200, {'Content-Type': 'application/json;'}
