@@ -8,12 +8,14 @@ from corji.views.marketing import marketing_blueprint
 from corji.views.stripe import stripe_blueprint
 from corji.views.twilio import twilio_blueprint
 from corji.views.admin import admin_blueprint
+from corji.views.slack import slack_blueprint
 
 blueprints = [
     admin_blueprint,
     marketing_blueprint,
     stripe_blueprint,
-    twilio_blueprint
+    twilio_blueprint,
+    slack_blueprint
 ]
 
 # Boot up the app.
