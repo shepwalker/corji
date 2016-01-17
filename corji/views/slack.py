@@ -69,6 +69,7 @@ def slack_corgi():
                 ' try sending us a different one!'.format(emoji)),
             200,
             {'Content-Type': 'application/json;'}
+
     else:
         return generate_slack_failure_case_message(
             'Oh no! No emoji detected in your message! ' +
@@ -76,5 +77,5 @@ def slack_corgi():
         {'Content-Type': 'application/json;'}
 
     corgi_url = random.choice(corgis['results'])
-
-    return generate_slack_corgi_case(corgi_url), 200, {'Content-Type': 'application/json;'}
+    return generate_slack_corgi_case(corgi_url), 200,
+    {'Content-Type': 'application/json;'}
