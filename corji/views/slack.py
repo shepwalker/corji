@@ -28,7 +28,7 @@ api = CorgiResource()
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 
 
-def generate_slack_failure_case_message(text, image_url=""):
+def generate_slack_failure_case_message(text, image_url=''):
     message = {}
     message['text'] = text
     if image_url:
@@ -53,24 +53,24 @@ def generate_slack_corgi_case(corgi_url):
     return json.dumps(message)
 
 
-@slack_blueprint.route("/slack", methods=['GET', 'POST'])
+@slack_blueprint.route('/slack', methods=['GET', 'POST'])
 @logged_view(logger)
 def slack_corgi():
-    from_name = request.values.get("user_name") or ""
-    from_team = request.values.get("team_domain") or ""
-    text = request.values.get("text") or ""
+    from_name = request.values.get('user_name', '')
+    from_team = request.values.get('team_domain', '')
+    text = request.values.get('text', '')
     text = text.strip()
     if text_contains_emoji(text):
         emoji = text
         corgis = api.get(emoji)
         if not corgis['count']:
             return generate_slack_failure_case_message(
-                "Oh no! No corgi found for emoji {}," +
-                " try sending us a different one!".format(emoji))
+                'Oh no! No corgi found for emoji {},' +
+                ' try sending us a different one!'.format(emoji))
     else:
         return generate_slack_failure_case_message(
-            "Oh no! No emoji detected in your message! " +
-            "Try sending us an emoji!")
+            'Oh no! No emoji detected in your message! ' +
+            'Try sending us an emoji!')
 
     corgi_url = random.choice(corgis['results'])
 
