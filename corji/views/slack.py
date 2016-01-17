@@ -10,6 +10,7 @@ from flask import (
 
 from corji.api import CorgiResource
 import corji.data_sources.google_spreadsheets as google_spreadsheets
+from corji.exceptions import CorgiNotFoundException
 from corji.logging import logged_view
 import corji.settings as settings
 from corji.utils.emoji import (
@@ -31,21 +32,24 @@ def generate_slack_failure_case_message(text, image_url=""):
     message = {}
     message['text'] = text
     if image_url:
-        attachment = {}
-        attachment = {'image_url': image_url}
-        attachment_array = [attachment]
-        message['attachments'] = attachment_array
+        message['attachments'] = [
+            {
+                'image_url': image_url
+            }
+        ]
     return json.dumps(message)
 
 
 def generate_slack_corgi_case(corgi_url):
-    message = {}
-    message['response_type'] = "in_channel"
-    message['text'] = ""
-    attachment = {}
-    attachment = {'image_url': corgi_url}
-    attachment_array = [attachment]
-    message['attachments'] = attachment_array
+    message = {
+        'response_type': 'in_channel',
+        'text': '',
+        'attachments': [
+            {
+                'image_url': corgi_url
+            }
+        ]
+    }
     return json.dumps(message)
 
 
@@ -58,28 +62,16 @@ def slack_corgi():
     text = text.strip()
     if text_contains_emoji(text):
         emoji = text
+        corgis = api.get(emoji)
+        if not corgis['count']:
+            return generate_slack_failure_case_message(
+                "Oh no! No corgi found for emoji {}," +
+                " try sending us a different one!".format(emoji))
     else:
-        emoji = emojis_for_emoticons.get(text, None)
-        if not emoji:
-            return generate_slack_failure_case_message("No emoji detected! Try sending us an emoji!")
-    # If it's a multi-emoji that we don't track, just grab the first emoji.
-    # TODO: abstract out use of `keys()`.
-    if len(emoji) > 1 and emoji not in google_spreadsheets.keys():
-        emoji = text[0]
+        return generate_slack_failure_case_message(
+            "Oh no! No emoji detected in your message! " +
+            "Try sending us an emoji!")
 
-        # Check for skin-toned emojis.
-        # (This only handles the one-emoji case for now.)
-        if not emoji_contains_skin_tone(text) and not emoji_is_numeric(text):
-            return generate_slack_failure_case_message("No emoji detected! Try sending us an emoji!")
-
-    # Time to grab the filepath for the emoji!
-    corgi_urls = api.get(emoji)['results']
-
-    # If that still doesn't work, we'll just grab a random one.
-    if not corgi_urls:
-        return generate_slack_failure_case_message("Oh nos! We don't have an corgi for that emoji! Try a different one!")
-
-    corgi_url = random.choice(corgi_urls)
+    corgi_url = random.choice(corgis['results'])
 
     return generate_slack_corgi_case(corgi_url)
-    
