@@ -2,6 +2,7 @@ import json
 import logging
 import random
 
+from emoji import emojize
 from flask import (
     Blueprint,
     render_template,
@@ -46,6 +47,7 @@ def generate_slack_corgi_case(corgi_url):
         'text': '',
         'attachments': [
             {
+                'text': '',
                 'image_url': corgi_url
             }
         ]
@@ -60,6 +62,7 @@ def slack_corgi():
     from_team = request.values.get('team_domain', '')
     text = request.values.get('text', '')
     text = text.strip()
+    corgis = {}
     if text_contains_emoji(text):
         emoji = text
         corgis = api.get(emoji)
@@ -68,8 +71,11 @@ def slack_corgi():
                 'Oh no! No corgi found for emoji {},' +
                 ' try sending us a different one!'.format(emoji)),
             return Response(response_content, mimetype='application/json')
-
     else:
+        detected_emoji = emojize(text, use_aliases=True)
+        if len(detected_emoji) != len(text):
+            corgis = api.get(detected_emoji) 
+    if not corgis or not corgis['count']:
         response_content = generate_slack_failure_case_message(
             'Oh no! No emoji detected in your message! ' +
             'Try sending us an emoji!')
