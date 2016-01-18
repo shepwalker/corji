@@ -8,6 +8,10 @@ from logging.handlers import (
     TimedRotatingFileHandler
 )
 
+from flask import (
+    request,
+    Response
+)
 from slack_log_handler import SlackLogHandler
 
 from corji.settings import Config
@@ -42,13 +46,13 @@ def Logger(logger_name, log_path, log_name):
 
     # Setup local handler to output to stderr
     local_handler = logging.StreamHandler(sys.stderr)
-
+    local_handler.setLevel(logging.DEBUG)
     # Build/add slack handler
     if Config.SLACK_ERROR_LOGGING_ENABLED:
         slack_handler = SlackLogHandler(Config.SLACK_LOG_WEBHOOK_URL)
         slack_handler.setLevel(logging.ERROR)
         logger.addHandler(slack_handler)
-        
+
     # Add handlers to logger
     logger.addHandler(file_handler)
     logger.addHandler(local_handler)
@@ -61,10 +65,12 @@ def logged_view(logger):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if logger:
-                logger.info("Request: %s", args or "")
+                logger.info("Request: %s", request or "")
             fn = f(*args, **kwargs)
             if logger:
                 logger.info("Response: %s", fn)
+                if type(fn) is Response:
+                    logger.debug("Response data: %s", fn.get_data())
             return fn
         return decorated_function
     return inner_decorator
