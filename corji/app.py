@@ -19,7 +19,7 @@ blueprints = [
 ]
 
 # Boot up the app.
-app = Flask(__name__)
+app = Flask(_a_name__)
 app.config.from_object('corji.settings.Config')
 for blueprint in blueprints:
     app.register_blueprint(blueprint)
