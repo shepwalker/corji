@@ -1,4 +1,6 @@
 branch-defaults:
+  jd-pricing-pile:
+    environment: corji-dev
   master:
     environment: corji-dev
 global:
