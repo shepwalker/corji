@@ -1,5 +1,5 @@
 # Corji
-A distributed\*, resilient\*, high-availability\* CDN (Corgi Delivery Network) using SMS as a transport layer.  Check it out live [here](http://corji.club).
+A distributed, resilient\*, high-availability\* CDN (Corgi Delivery Network) using SMS as a transport layer.  Check it out live [here](http://corji.club).
 
 ![A corgi!](http://media.giphy.com/media/KY7SQGKthgplm/giphy.gif)
 
