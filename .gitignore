@@ -11,6 +11,7 @@ logs/
 .logs/
 .cache/
 .usage/
+.idea/
 .DS_Store
 dev/
 testspam.csv

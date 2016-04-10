@@ -29,7 +29,6 @@ api = CorgiResource()
 
 logger = logging.getLogger(settings.Config.LOGGER_NAME)
 
-
 def generate_slack_failure_case_message(text, image_url=''):
     message = {'text': text}
     if image_url:

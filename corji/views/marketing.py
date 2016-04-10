@@ -28,6 +28,13 @@ def about():
                            google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
 
 
+@marketing_blueprint.route("/slack/about", methods=['GET'])
+def about_slack():
+    """Much hype.  Very disruptive.  Such blurb. But this time wrt slack."""
+    return render_template('html/marketing/slack_about.html',
+                           google_analytics_id=Config.GOOGLE_ANALYTICS_ID)
+
+
 @marketing_blueprint.route("/pile_success", methods=['POST'])
 def piledrive():
     recipient_number = request.form['target']
