@@ -56,3 +56,7 @@ class Config(object):
     FREE_CONSUMPTIONS = int(os.getenv('FREE_CONSUMPTIONS', '20'))
     CONSUMPTIONS_PER_RECHARGE = 50
     RECHARGE_PRICE = 199  # In cents.
+
+    # Slack
+    SLACK_ID = os.getenv('SLACK_ID', '')
+    SLACK_SECRET = os.getenv('SLACK_SECRET', '')

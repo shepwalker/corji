@@ -12,6 +12,23 @@ h1 {
     text-align: center;
 }
 
+h1.corgibot {
+    font: 64px Avenir;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+h2.corgibot {
+    font-family: 'Sacramento';
+    font-size: 44;
+    font-weight: normal;
+    margin-bottom: 0;
+    text-align: center;
+    line-height: 10px;
+    padding-bottom: 5px;
+}
+
+
 h2 {
     color: #665;
     font-weight: normal;

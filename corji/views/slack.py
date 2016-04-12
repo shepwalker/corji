@@ -5,16 +5,19 @@ import random
 from emoji import emojize
 from flask import (
     Blueprint,
+    redirect,
     render_template,
     request,
-    Response
+    Response,
+    url_for
 )
+import requests
 
 from corji.api import CorgiResource
 import corji.data_sources.google_spreadsheets as google_spreadsheets
 from corji.exceptions import CorgiNotFoundException
 from corji.logging import logged_view
-import corji.settings as settings
+from corji.settings import Config
 from corji.utils.emoji import (
     text_contains_emoji,
     emojis_for_emoticons,
@@ -27,7 +30,7 @@ slack_blueprint = Blueprint('slack', __name__,
 
 api = CorgiResource()
 
-logger = logging.getLogger(settings.Config.LOGGER_NAME)
+logger = logging.getLogger(Config.LOGGER_NAME)
 
 def generate_slack_failure_case_message(text, image_url=''):
     message = {'text': text}
@@ -83,3 +86,20 @@ def slack_corgi():
     corgi_url = random.choice(corgis['results'])
     response_content = generate_slack_corgi_case(corgi_url)
     return Response(response_content, mimetype='application/json')
+
+
+@slack_blueprint.route("/slack/about", methods=['GET'])
+def about_slack():
+    code = request.args.get('code','')
+    redirect_uri = url_for("slack.about_slack", _external=True)
+    if(code):
+        auth_response = requests.post('https://slack.com/api/oauth.access',
+                              data ={
+                                  'client_id': Config.SLACK_ID,
+                                  'client_secret': Config.SLACK_SECRET,
+                                  'code': code,
+                                  'redirect_uri':redirect_uri
+                              })
+    return render_template('html/marketing/slack_about.html',
+                           google_analytics_id=Config.GOOGLE_ANALYTICS_ID,
+                           slack_redirect_uri=redirect_uri)
