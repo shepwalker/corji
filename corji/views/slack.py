@@ -96,6 +96,7 @@ def about_slack():
     redirect_uri = url_for("slack.about_slack", _external=True)
     if code:
         auth_response = requests.post('https://slack.com/api/oauth.access',
+<<<<<<< HEAD
                                       data={
                                           'client_id': Config.SLACK_ID,
                                           'client_secret': Config.SLACK_SECRET,
@@ -103,6 +104,16 @@ def about_slack():
                                           'redirect_uri': redirect_uri
                                       })
         response_content = json.loads(auth_response.text)
+=======
+                              data ={
+                                  'client_id': Config.SLACK_ID,
+                                  'client_secret': Config.SLACK_SECRET,
+                                  'code': code,
+                                  'redirect_uri':redirect_uri
+                              })
+        response_content = json.loads(auth_response.text)
+        print(response_content)
+>>>>>>> 657423dd25a6a53c6b82c65263d4fdb5e7b84574
         if response_content and response_content['ok']:
             slack_customer.new(
                 response_content['team_id'],

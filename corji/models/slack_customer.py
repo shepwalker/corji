@@ -16,6 +16,7 @@ def get(team_id):
     return response.get('Item', None)
 
 
+
 def add_metadata(team_id, key, value):
     dynamo_client.update_item(
         TableName=TABLE_NAME,
