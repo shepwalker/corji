@@ -14,6 +14,6 @@ class SlackTestCase(unittest.TestCase):
         assert 'in_channel' in str(response.data)
 
     def test_slack_sad_case(self):
-        response = self.app.get('/slack?text=💩')
+        response = self.app.get('/slack?text=asdfasdvdszv?')
         assert 'in_channel' not in str(response.data)
         assert 'Oh' in str(response.data)

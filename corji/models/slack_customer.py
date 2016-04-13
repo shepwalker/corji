@@ -13,10 +13,7 @@ def get(team_id):
         TableName=TABLE_NAME,
         Key={'team_id': {'S': team_id}}
     )
-    if 'Item' in response:
-        return response['Item']
-    else:
-        return None
+    return response.get('Item', None)
 
 
 def add_metadata(team_id, key, value):
