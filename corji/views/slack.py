@@ -17,6 +17,7 @@ from corji.api import CorgiResource
 import corji.data_sources.google_spreadsheets as google_spreadsheets
 from corji.exceptions import CorgiNotFoundException
 from corji.logging import logged_view
+from corji.models import slack_customer
 from corji.settings import Config
 from corji.utils.emoji import (
     text_contains_emoji,
@@ -31,6 +32,7 @@ slack_blueprint = Blueprint('slack', __name__,
 api = CorgiResource()
 
 logger = logging.getLogger(Config.LOGGER_NAME)
+
 
 def generate_slack_failure_case_message(text, image_url=''):
     message = {'text': text}
@@ -76,7 +78,7 @@ def slack_corgi():
     else:
         detected_emoji = emojize(text, use_aliases=True)
         if len(detected_emoji) != len(text):
-            corgis = api.get(detected_emoji) 
+            corgis = api.get(detected_emoji)
     if not corgis or not corgis['count']:
         response_content = generate_slack_failure_case_message(
             'Oh no! No emoji detected in your message! ' +
@@ -90,16 +92,25 @@ def slack_corgi():
 
 @slack_blueprint.route("/slack/about", methods=['GET'])
 def about_slack():
-    code = request.args.get('code','')
+    code = request.args.get('code', '')
     redirect_uri = url_for("slack.about_slack", _external=True)
-    if(code):
+    if code:
         auth_response = requests.post('https://slack.com/api/oauth.access',
-                              data ={
-                                  'client_id': Config.SLACK_ID,
-                                  'client_secret': Config.SLACK_SECRET,
-                                  'code': code,
-                                  'redirect_uri':redirect_uri
-                              })
+                                      data={
+                                          'client_id': Config.SLACK_ID,
+                                          'client_secret': Config.SLACK_SECRET,
+                                          'code': code,
+                                          'redirect_uri': redirect_uri
+                                      })
+        response_content = json.loads(auth_response.text)
+        if response_content and response_content['ok']:
+            slack_customer.new(
+                response_content['team_id'],
+                response_content['access_token'],
+                response_content['team_name']
+            )
+    # TODO: PRESENT ERROR IN ABOUT PAGE IF THIS ERRORS OUT
+
     return render_template('html/marketing/slack_about.html',
                            google_analytics_id=Config.GOOGLE_ANALYTICS_ID,
                            slack_redirect_uri=redirect_uri)
