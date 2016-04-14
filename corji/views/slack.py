@@ -97,12 +97,15 @@ def about_slack():
     if code:
         try:
             auth_response = requests.post('https://slack.com/api/oauth.access',
-                                  data={
-                                      'client_id': Config.SLACK_ID,
-                                      'client_secret': Config.SLACK_SECRET,
-                                      'code': code,
-                                      'redirect_uri': redirect_uri
-                                  })
+                                          data={
+                                              'client_id': Config.SLACK_ID,
+                                              'client_secret': Config.SLACK_SECRET,
+                                              'code': code,
+                                              'redirect_uri': redirect_uri
+                                          },
+                                          headers={
+                                              'accept-encoding': 'identity'
+                                          })
             response_content = auth_response.json()
             if response_content and response_content['ok']:
                 slack_customer.new(
