@@ -95,20 +95,24 @@ def about_slack():
     code = request.args.get('code', '')
     redirect_uri = url_for("slack.about_slack", _external=True)
     if code:
-        auth_response = requests.post('https://slack.com/api/oauth.access',
-                              data ={
-                                  'client_id': Config.SLACK_ID,
-                                  'client_secret': Config.SLACK_SECRET,
-                                  'code': code,
-                                  'redirect_uri':redirect_uri
-                              })
-        response_content = json.loads(auth_response.text)
-        if response_content and response_content['ok']:
-            slack_customer.new(
-                response_content['team_id'],
-                response_content['access_token'],
-                response_content['team_name']
-            )
+        try:
+            auth_response = requests.post('https://slack.com/api/oauth.access',
+                                  data={
+                                      'client_id': Config.SLACK_ID,
+                                      'client_secret': Config.SLACK_SECRET,
+                                      'code': code,
+                                      'redirect_uri':"asdfasdfasdfsd"
+                                  })
+            response_content = json.loads(auth_response.text)
+            if response_content and response_content['ok']:
+                slack_customer.new(
+                    response_content['team_id'],
+                    response_content['access_token'],
+                    response_content['team_name']
+                )
+        except:
+            logger.error("error on processing logger auth attempt")
+            logger.error(auth_response.text)
     # TODO: PRESENT ERROR IN ABOUT PAGE IF THIS ERRORS OUT
 
     return render_template('html/marketing/slack_about.html',
