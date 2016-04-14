@@ -101,9 +101,9 @@ def about_slack():
                                       'client_id': Config.SLACK_ID,
                                       'client_secret': Config.SLACK_SECRET,
                                       'code': code,
-                                      'redirect_uri':redirect_uri
+                                      'redirect_uri': redirect_uri
                                   })
-            response_content = json.loads(auth_response.text)
+            response_content = auth_response.json()
             if response_content and response_content['ok']:
                 slack_customer.new(
                     response_content['team_id'],
@@ -113,6 +113,7 @@ def about_slack():
         except:
             logger.error("error on processing logger auth attempt")
             logger.error(auth_response.text)
+            logger.error(auth_response._content)
     # TODO: PRESENT ERROR IN ABOUT PAGE IF THIS ERRORS OUT
 
     return render_template('html/marketing/slack_about.html',
