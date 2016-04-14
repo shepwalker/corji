@@ -110,10 +110,11 @@ def about_slack():
                     response_content['access_token'],
                     response_content['team_name']
                 )
-        except:
+        except Exception as e:
             logger.error("error on processing logger auth attempt")
             logger.error(auth_response.text)
             logger.error(auth_response._content)
+            logging.exception("Exception:")
     # TODO: PRESENT ERROR IN ABOUT PAGE IF THIS ERRORS OUT
 
     return render_template('html/marketing/slack_about.html',
