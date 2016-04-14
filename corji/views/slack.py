@@ -67,6 +67,7 @@ def slack_corgi():
     text = request.values.get('text', '')
     text = text.strip()
     corgis = {}
+    logger.info('Slack Request: %s,%s,%s', from_team, from_name, text)
     if text_contains_emoji(text):
         emoji = text
         corgis = api.get(emoji)
