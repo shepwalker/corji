@@ -101,7 +101,7 @@ def about_slack():
                                       'client_id': Config.SLACK_ID,
                                       'client_secret': Config.SLACK_SECRET,
                                       'code': code,
-                                      'redirect_uri':"asdfasdfasdfsd"
+                                      'redirect_uri':redirect_uri
                                   })
             response_content = json.loads(auth_response.text)
             if response_content and response_content['ok']:
